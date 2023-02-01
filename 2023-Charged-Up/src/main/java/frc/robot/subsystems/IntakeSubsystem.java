@@ -4,15 +4,23 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 public class IntakeSubsystem extends SubsystemBase {
   /** Creates a new IntakeSubsystem. */
+  WPI_TalonFX intakeExtendMotor;
+
   public IntakeSubsystem() {
-    
+    intakeExtendMotor = new WPI_TalonFX(Constants.Intake.MOTOR_DEPLOY_ID);
   }
 
-  @Override
+  public void setMotor(double speed) {
+    intakeExtendMotor.setVoltage(speed);
+  }
+@Override
   public void periodic() {
     // This method will be called once per scheduler run 
   }

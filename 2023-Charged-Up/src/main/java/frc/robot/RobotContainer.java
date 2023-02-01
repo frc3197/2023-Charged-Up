@@ -63,6 +63,7 @@ public class RobotContainer {
 
     controller.y().whileTrue(new Extend(m_ArmSubsystem, Constants.Arm.EXTEND_SPEED));
     controller.a().whileTrue(new Extend(m_ArmSubsystem, -Constants.Arm.EXTEND_SPEED));
+    
   }
 
   /**
@@ -73,5 +74,10 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
     return Autos.exampleAuto(m_exampleSubsystem);
+  }
+
+  public double getTrigger()
+  {
+    return controller.getRightTriggerAxis();
   }
 }

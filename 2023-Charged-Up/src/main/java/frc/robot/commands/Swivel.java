@@ -7,6 +7,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.ArmSubsystem;
+import edu.wpi.first.wpilibj.Encoder;
 
 public class Swivel extends CommandBase {
   /** Creates a new Swivel. */
@@ -15,13 +16,16 @@ public class Swivel extends CommandBase {
   double val;
   int GoalTicks;
   PIDController swivelPID;
-
+  Encoder throughBore;
+   
   public Swivel(ArmSubsystem m_subsystem, String level, double val) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.m_subsystem = m_subsystem;
     this.level = level;
     this.val = val;
     swivelPID = Constants.Arm.LevelPID;
+
+    addRequirements(m_subsystem);
   }
 
   // Called when the command is initially scheduled.
@@ -64,6 +68,7 @@ public class Swivel extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+
     //Finished if the tick value is within the threshold
     return Math.abs(m_subsystem.getTicks() - GoalTicks) < Constants.Arm.TICK_THRESHOLD;
   }
