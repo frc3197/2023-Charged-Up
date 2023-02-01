@@ -58,8 +58,8 @@ public class RobotContainer {
     // cancelling on release.
     m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
 
-    controller.b().whileTrue(new Swivel(m_ArmSubsystem, Constants.Arm.SWIVEL_SPEED));
-    controller.x().whileTrue(new Swivel(m_ArmSubsystem, -Constants.Arm.SWIVEL_SPEED));
+    controller.b().whileTrue(new Swivel(m_ArmSubsystem, "mid", Constants.Arm.SWIVEL_SPEED));
+    controller.x().whileTrue(new Swivel(m_ArmSubsystem, "high", -Constants.Arm.SWIVEL_SPEED));
 
     controller.y().whileTrue(new Extend(m_ArmSubsystem, Constants.Arm.EXTEND_SPEED));
     controller.a().whileTrue(new Extend(m_ArmSubsystem, -Constants.Arm.EXTEND_SPEED));

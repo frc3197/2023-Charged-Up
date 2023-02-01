@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -16,16 +17,15 @@ public class ArmSubsystem extends SubsystemBase {
   WPI_TalonFX swivelMotor;
   WPI_TalonFX extendMotor;
 
+  Encoder throughBore;
+
   public ArmSubsystem() {
 
     swivelMotor = new WPI_TalonFX(Constants.Arm.SWIVEL_MOTOR_ID);
     extendMotor = new WPI_TalonFX(Constants.Arm.EXTENTION_MOTOR_ID);
 
-    swivelMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
-    extendMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
+    throughBore = new Encoder(Constants.Arm.ENCODER_INPUT_ID, Constants.Arm.ENCODER_OUTPUT_ID);
 
-    swivelMotor.setSelectedSensorPosition(0);
-    extendMotor.setSelectedSensorPosition(0);
   }
 
   @Override
@@ -41,5 +41,15 @@ public class ArmSubsystem extends SubsystemBase {
   public void extend(double val)
   {
     extendMotor.set(val);
+  }
+
+  public void resetEncoder()
+  {
+    throughBore.reset();
+  }
+
+  public int getTicks()
+  {
+    return throughBore.get();
   }
 }
