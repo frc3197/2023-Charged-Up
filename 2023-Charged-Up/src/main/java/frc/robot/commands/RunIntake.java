@@ -8,6 +8,8 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 
 public class RunIntake extends CommandBase {
   /** Creates a new RunIntake. */
+  IntakeSubsystem subsystem;
+
   public RunIntake() {
     // Use addRequirements() here to declare subsystem dependencies.
   }
