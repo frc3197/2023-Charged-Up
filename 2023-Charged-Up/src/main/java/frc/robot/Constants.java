@@ -13,6 +13,14 @@ package frc.robot;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+   public static final int ARM_SWIVEL_MOTOR_ID = 9;
+        public static final int ARM_EXTEND_MOTOR_ID = 10;
+
+        public static final class THROUGH_BORE {
+                public static final int ARM_SWIVEL_IN_ID = 0;
+                public static final int ARM_SWIVEL_OUT_ID = 1;
+        }
+  
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
   }
