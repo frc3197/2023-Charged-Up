@@ -14,6 +14,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
   public DrivetrainSubsystem() {
 
     CANCoder frontLeftSteerEncoder = new CANCoder(Constants.Drivetrain.FRONT_LEFT_ENCODER_ID);
+    CANCoder frontRightSteerEncoder = new CANCoder(Constants.Drivetrain.FRONT_RIGHT_ENCODER_ID);
 
   }
 

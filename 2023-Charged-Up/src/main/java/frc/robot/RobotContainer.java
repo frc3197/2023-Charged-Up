@@ -7,9 +7,14 @@ package frc.robot;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Autos;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.commands.Extend;
+import frc.robot.commands.Swivel;
+import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ExampleSubsystem;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 /**
@@ -25,8 +30,11 @@ public class RobotContainer {
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController =
       new CommandXboxController(OperatorConstants.kDriverControllerPort);
-
+  CommandXboxController controller = new CommandXboxController(0);
+  //JoystickButton bButton = new JoystickButton(controller, 2);
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
+
+  ArmSubsystem m_ArmSubsystem = new ArmSubsystem();
   public RobotContainer() {
     // Configure the trigger bindings
     configureBindings();
@@ -49,6 +57,12 @@ public class RobotContainer {
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
     m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
+
+    controller.b().whileTrue(new Swivel(m_ArmSubsystem, Constants.Arm.SWIVEL_SPEED));
+    controller.x().whileTrue(new Swivel(m_ArmSubsystem, -Constants.Arm.SWIVEL_SPEED));
+
+    controller.y().whileTrue(new Extend(m_ArmSubsystem, Constants.Arm.EXTEND_SPEED));
+    controller.a().whileTrue(new Extend(m_ArmSubsystem, -Constants.Arm.EXTEND_SPEED));
   }
 
   /**

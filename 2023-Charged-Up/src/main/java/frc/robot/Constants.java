@@ -17,11 +17,26 @@ public final class Constants {
     public static final int kDriverControllerPort = 0;
   }
 
+  public static class Arm {
+    public static final int SWIVEL_MOTOR_ID = 0;
+    public static final int EXTENTION_MOTOR_ID = 0;
+
+    public static final double SWIVEL_SPEED = 0.25;
+    public static final double EXTEND_SPEED = 0.25;
+
+    public static final int SOFT_LIM_MAX = 50000;
+    public static final int SOFT_LIM_MIN = 0;
+  }
+
   public static class Drivetrain {
     public static final int FRONT_LEFT_DRIVE_ID = 0;
     public static final int FRONT_LEFT_STEER_ID = 0;
     public static final int FRONT_LEFT_ENCODER_ID = 0;
 
     public static final int FRONT_RIGHT_DRIVE_ID = 0;
+    public static final int FRONT_RIGHT_STEER_ID = 0;
+    public static final int FRONT_RIGHT_ENCODER_ID = 0;
+
+
   }
 }
