@@ -6,16 +6,19 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.ArmSubsystem;
+import edu.wpi.first.wpilibj.Encoder;
 
 public class Swivel extends CommandBase {
   /** Creates a new Swivel. */
   ArmSubsystem m_subsystem;
+  Encoder throughBore;
   Double val;
    
   public Swivel(ArmSubsystem m_subsystem, double val) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.m_subsystem = m_subsystem;
     this.val = val;
+    this.throughBore = new Encoder(Constants.THROUGH_BORE.ARM_SWIVEL_IN_ID, Constants.THROUGH_BORE.ARM_SWIVEL_OUT_ID);
   }
 
   // Called when the command is initially scheduled.
