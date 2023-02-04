@@ -3,10 +3,10 @@ package frc.robot.commands.Pneumatics;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.PneumaticSubsystem;
 
-public class PneumaticCommand extends CommandBase {
+public class ClawPneumatic extends CommandBase {
   private PneumaticSubsystem subsystem;
 
-  public PneumaticCommand(PneumaticSubsystem system) {
+  public ClawPneumatic(PneumaticSubsystem system) {
     subsystem = system;
   }
 
@@ -16,7 +16,7 @@ public class PneumaticCommand extends CommandBase {
 
   @Override
   public void execute() {
-    subsystem.toggle();
+    subsystem.toggleClaw();
   }
 
   @Override

@@ -11,28 +11,26 @@ import frc.robot.subsystems.IntakeSubsystem;
 public class SpinIntake extends CommandBase {
   /** Creates a new RunIntake. */
   IntakeSubsystem subsystem;
+  double val;
 
-  public SpinIntake(IntakeSubsystem subsystem) {
+  public SpinIntake(IntakeSubsystem subsystem, double val) {
     this.subsystem = subsystem;
+    this.val = val;
   }
 
-  // Called when the command is initially scheduled.
   @Override
   public void initialize() {
     
   }
 
-  // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    subsystem.setMotor(Constants.Intake.SPIN_SPEED);
+    subsystem.spinIntake(val);
   }
 
-  // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {}
 
-  // Returns true when the command should end.
   @Override
   public boolean isFinished() {
     return false;

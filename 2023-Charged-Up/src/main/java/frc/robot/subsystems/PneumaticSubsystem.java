@@ -9,16 +9,46 @@ import static edu.wpi.first.wpilibj.DoubleSolenoid.Value.*;
 
 public class PneumaticSubsystem extends SubsystemBase {
   
-  DoubleSolenoid solenoid;
+  DoubleSolenoid clawSolenoid;
+  DoubleSolenoid intakeSolenoid;
 
   public PneumaticSubsystem() {
-    solenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, Constants.Pneumatics.FORWARD_CHANNEL, Constants.Pneumatics.REVERSE_CHANNEL);
-    solenoid.set(kReverse);
+    clawSolenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, Constants.Pneumatics.CLAW_FORWARD_CHANNEL, Constants.Pneumatics.CLAW_REVERSE_CHANNEL);
+    clawSolenoid.set(kReverse);
+    intakeSolenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, Constants.Pneumatics.INTAKE_FORWARD_CHANNEL, Constants.Pneumatics.INTAKE_REVERSE_CHANNEL);
+    intakeSolenoid.set(kForward);
   }
 
-  public void toggle() {
-    solenoid.toggle();
-    System.out.println(solenoid.get());
+  public void toggleClaw() {
+    clawSolenoid.toggle();
+  }
+
+  public void closeClaw() {
+    if(clawSolenoid.get() == kForward) {
+      clawSolenoid.toggle();
+    }
+  }
+
+  public void openClaw() {
+    if(clawSolenoid.get() == kReverse) {
+      clawSolenoid.toggle();
+    }
+  }
+
+  public void toggleIntake() {
+    intakeSolenoid.toggle();
+  }
+
+  public void lowerIntake() {
+    if(intakeSolenoid.get() == kForward) {
+      intakeSolenoid.toggle();
+    }
+  }
+
+  public void raiseIntake() {
+    if(intakeSolenoid.get() == kReverse) {
+      intakeSolenoid.toggle();
+    }
   }
 
   @Override

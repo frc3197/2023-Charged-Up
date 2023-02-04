@@ -12,14 +12,24 @@ import frc.robot.Constants;
 public class IntakeSubsystem extends SubsystemBase {
   /** Creates a new IntakeSubsystem. */
   WPI_TalonFX intakeExtendMotor;
+  WPI_TalonFX intakeSpinMotor;
 
   public IntakeSubsystem() {
     intakeExtendMotor = new WPI_TalonFX(Constants.Intake.MOTOR_DEPLOY_ID);
+    intakeSpinMotor = new WPI_TalonFX(Constants.Intake.MOTOR_SPIN_ID);
   }
 
-  public void setMotor(double speed) {
+  public void deployIntake(double speed) {
     intakeExtendMotor.setVoltage(speed);
   }
+
+  public void spinIntake(double val)
+  {
+    intakeSpinMotor.set(val);
+  }
+  
+  // MILES will it use limit switch? probably  Whaddup whaddup?
+
 @Override
   public void periodic() {
     // This method will be called once per scheduler run 

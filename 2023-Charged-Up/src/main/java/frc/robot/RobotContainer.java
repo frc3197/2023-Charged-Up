@@ -4,13 +4,17 @@
 
 package frc.robot;
 
-import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.DefaultDriveCommand;
+import frc.robot.commands.Arm.Extend;
+import frc.robot.commands.Arm.Swivel;
 import frc.robot.commands.Autonomous.AutoLookup;
 import frc.robot.commands.Intake.SpinIntake;
+import frc.robot.commands.Pneumatics.ClawPneumatic;
+import frc.robot.commands.Pneumatics.IntakePneumatic;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.PneumaticSubsystem;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
@@ -41,6 +45,7 @@ public class RobotContainer {
   ArmSubsystem m_ArmSubsystem = new ArmSubsystem();
   static DrivetrainSubsystem m_DrivetrainSubsystem = new DrivetrainSubsystem();
   IntakeSubsystem m_IntakeSubsystem = new IntakeSubsystem();
+  PneumaticSubsystem m_PneumaticSubsystem = new PneumaticSubsystem();
 
   @SuppressWarnings("rawtypes")
   private static SendableChooser m_autoChooser;
@@ -71,13 +76,31 @@ public class RobotContainer {
 
   private void configureBindings() {
 
-    arm_controller.b().whileTrue(new frc.robot.commands.Arm.Swivel(m_ArmSubsystem, "mid", Constants.Arm.SWIVEL_SPEED));
-    arm_controller.x().whileTrue(new frc.robot.commands.Arm.Swivel(m_ArmSubsystem, "high", -Constants.Arm.SWIVEL_SPEED));
+    //Swivel --- (WHILE HELD)
+    arm_controller.b().whileTrue(new Swivel(m_ArmSubsystem, "mid", Constants.Arm.SWIVEL_SPEED));
+    arm_controller.b().whileFalse(new Swivel(m_ArmSubsystem, null, 0));
 
-    arm_controller.y().whileTrue(new frc.robot.commands.Arm.Extend(m_ArmSubsystem, Constants.Arm.EXTEND_SPEED));
-    arm_controller.a().whileTrue(new frc.robot.commands.Arm.Extend(m_ArmSubsystem, -Constants.Arm.EXTEND_SPEED));
+    // Swivel --- (WHILE HELD)
+    arm_controller.x().whileTrue(new Swivel(m_ArmSubsystem, "high", -Constants.Arm.SWIVEL_SPEED));
+    arm_controller.x().whileFalse(new Swivel(m_ArmSubsystem, null, 0));
 
-    drive_controller.a().whileTrue(new SpinIntake(m_IntakeSubsystem));
+    //Extend Arm (WHILE HELD)
+    arm_controller.y().whileTrue(new Extend(m_ArmSubsystem, Constants.Arm.EXTEND_SPEED));
+    arm_controller.y().whileFalse(new Extend(m_ArmSubsystem, 0));
+
+    // Retract Arm (WHILE HELD)
+    arm_controller.a().whileTrue(new Extend(m_ArmSubsystem, -Constants.Arm.EXTEND_SPEED));
+    arm_controller.a().whileFalse(new Extend(m_ArmSubsystem, 0));
+
+    //Intake spin (WHILE HELD)
+    drive_controller.a().whileTrue(new SpinIntake(m_IntakeSubsystem, Constants.Intake.SPIN_SPEED));
+    drive_controller.a().whileFalse(new SpinIntake(m_IntakeSubsystem, 0));
+
+    //Intake Cramp (TOGGLE)
+    drive_controller.x().whileTrue(new IntakePneumatic(m_PneumaticSubsystem));
+
+    //Claw Grab (TOGGLE)
+    drive_controller.y().whileTrue(new ClawPneumatic(m_PneumaticSubsystem));
   }
 
   static SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(m_DrivetrainSubsystem.getKinematics(), m_DrivetrainSubsystem.getGyroscopeRotation(), 

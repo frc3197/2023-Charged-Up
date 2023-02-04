@@ -9,6 +9,8 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 
+import static edu.wpi.first.wpilibj.DoubleSolenoid.Value.*;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants. This class should not be used for any other purpose. All constants should be declared
@@ -24,8 +26,10 @@ public final class Constants {
   }
 
   public static class Pneumatics {
-    public static final int FORWARD_CHANNEL = 6;
-    public static final int REVERSE_CHANNEL = 7;
+    public static final int CLAW_FORWARD_CHANNEL = 6;
+    public static final int CLAW_REVERSE_CHANNEL = 7;
+    public static final int INTAKE_FORWARD_CHANNEL = 4;
+    public static final int INTAKE_REVERSE_CHANNEL = 5;
   }
 
   public static class Controller {
@@ -39,9 +43,10 @@ public final class Constants {
 
   public static class Intake {
     public static final int MOTOR_DEPLOY_ID = 0;
+    public static final int MOTOR_SPIN_ID = 11;
 
     public static final double DEPLOY_SPEED = 0.25;
-    public static final double SPIN_SPEED = 0.25;
+    public static final double SPIN_SPEED = 0.90;
   }
 
   public static class Arm {
