@@ -1,4 +1,4 @@
-package frc.robot.commands;
+package frc.robot.commands.Arm;
 // Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
@@ -55,7 +55,8 @@ public class Swivel extends CommandBase {
   @Override
   public void execute() {
 
-      m_subsystem.swivel(swivelPID.calculate(m_subsystem.getTicks(), GoalTicks));
+      m_subsystem.swivel(val);
+        //swivelPID.calculate(m_subsystem.getTicks(), GoalTicks));
 
   }
 
@@ -70,6 +71,7 @@ public class Swivel extends CommandBase {
   public boolean isFinished() {
 
     //Finished if the tick value is within the threshold
-    return Math.abs(m_subsystem.getTicks() - GoalTicks) < Constants.Arm.TICK_THRESHOLD;
+    return false;
+    //Math.abs(m_subsystem.getTicks() - GoalTicks) < Constants.Arm.TICK_THRESHOLD;
   }
 }

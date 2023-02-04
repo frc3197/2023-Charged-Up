@@ -5,6 +5,9 @@
 package frc.robot;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -15,6 +18,20 @@ import edu.wpi.first.math.controller.PIDController;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+  public static class Limelight {
+    public static final int APRIL_TAG_PIPELINE_INDEX = 0;
+    public static final int RETRO_REFLECTIVE_TAPE_PIPELINE_INDEX = 1;
+  }
+
+  public static class Pneumatics {
+    public static final int FORWARD_CHANNEL = 6;
+    public static final int REVERSE_CHANNEL = 7;
+  }
+
+  public static class Controller {
+    public static final int DRIVE_CONTROLLER_ID = 0;
+    public static final int ARM_CONTROLLER_ID = 1;
+  }
   
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
@@ -24,6 +41,7 @@ public final class Constants {
     public static final int MOTOR_DEPLOY_ID = 0;
 
     public static final double DEPLOY_SPEED = 0.25;
+    public static final double SPIN_SPEED = 0.25;
   }
 
   public static class Arm {
@@ -54,17 +72,49 @@ public final class Constants {
     public static final int FRONT_LEFT_DRIVE_ID = 1;
     public static final int FRONT_LEFT_STEER_ID = 2;
     public static final int FRONT_LEFT_ENCODER_ID = 1;
+    public static final double FRONT_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(291.261);
 
     public static final int FRONT_RIGHT_DRIVE_ID = 3;
     public static final int FRONT_RIGHT_STEER_ID = 4;
     public static final int FRONT_RIGHT_ENCODER_ID = 2;
+    public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(345.410);
 
     public static final int BACK_LEFT_DRIVE_ID = 7;
     public static final int BACK_LEFT_STEER_ID = 8;
     public static final int BACK_LEFT_ENCODER_ID = 4;
+    public static final double BACK_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(296.095);
 
     public static final int BACK_RIGHT_DRIVE_ID = 5;
     public static final int BACK_RIGHT_STEER_ID = 6;
     public static final int BACK_RIGHT_ENCODER_ID = 3;
+    public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(288.542);
+
+    public static final double DRIVETRAIN_TRACKWIDTH_METERS = 0.4572;
+    public static final double DRIVETRAIN_WHEELBASE_METERS = 0.4572;
+
+    public static final Translation2d FRONT_LEFT_TRANS_FROM_CENTER = new Translation2d(0.2832, 0.2832);
+    public static final Translation2d FRONT_RIGHT_TRANS_FROM_CENTER = new Translation2d(0.2832, -0.2832);
+    public static final Translation2d BACK_LEFT_TRANS_FROM_CENTER = new Translation2d(-0.2832, 0.2832);
+    public static final Translation2d BACK_RIGHT_TRANS_FROM_CENTER = new Translation2d(-0.2832, -0.2832);
+
+    public static final class auto {
+
+      private static final double MAX_ANG_VEL_RAD_AUTO = 8 * Math.PI;
+      //public static final TrapezoidProfile.Constraints ROT_PROFILE = new TrapezoidProfile.Constraints(subsystems.H_Auto.MAX_ANGULAR_VELOCITY, subsystems.H_Auto.MAX_ANGULAR_ACCELERATION);
+      public static final TrapezoidProfile.Constraints ROT_PROFILE = new TrapezoidProfile.Constraints(6380.0/60.0, 10*Math.PI);
+
+      
+      public static final PIDController X_PID_CONTROLLER = new PIDController(.2358, 0, 0.18);
+      
+      public static final PIDController Y_PID_CONTROLLER = new PIDController(.00709, 0.03, 0.07);
+      
+      public static final ProfiledPIDController ROT_PID_CONTROLLER = new ProfiledPIDController(0.415, 0, 0.205,
+              ROT_PROFILE);
+      // DRIVING DEFAULT IS 5
+      public static final double LINEAR_VELOCITY_DEFAULT = 0;
+// BEST SO FAR .1 .1 3.4
+
+    }
+
   }
 }

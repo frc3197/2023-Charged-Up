@@ -5,13 +5,19 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.Autos;
-import frc.robot.commands.ExampleCommand;
-import frc.robot.commands.Extend;
-import frc.robot.commands.Swivel;
+import frc.robot.commands.DefaultDriveCommand;
+import frc.robot.commands.Autonomous.AutoLookup;
+import frc.robot.commands.Intake.SpinIntake;
 import frc.robot.subsystems.ArmSubsystem;
-import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.subsystems.DrivetrainSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -24,60 +30,110 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-  // The robot's subsystems and commands are defined here...
-  private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final CommandXboxController m_driverController =
-      new CommandXboxController(OperatorConstants.kDriverControllerPort);
-  CommandXboxController controller = new CommandXboxController(0);
+  
+  CommandXboxController drive_controller = new CommandXboxController(Constants.Controller.DRIVE_CONTROLLER_ID);
+  CommandXboxController arm_controller = new CommandXboxController(Constants.Controller.ARM_CONTROLLER_ID);
   //JoystickButton bButton = new JoystickButton(controller, 2);
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
 
   ArmSubsystem m_ArmSubsystem = new ArmSubsystem();
+  static DrivetrainSubsystem m_DrivetrainSubsystem = new DrivetrainSubsystem();
+  IntakeSubsystem m_IntakeSubsystem = new IntakeSubsystem();
+
+  @SuppressWarnings("rawtypes")
+  private static SendableChooser m_autoChooser;
+
+  @SuppressWarnings("rawtypes")
+  private static SendableChooser m_allianceChooser;
+
   public RobotContainer() {
     // Configure the trigger bindings
+
+    m_autoChooser = new SendableChooser<>();
+
+    m_autoChooser.setDefaultOption("Nothing", null);
+    m_autoChooser.addOption("practice", AutoLookup.getAuto("practice"));
+
+    SmartDashboard.putData(m_autoChooser);
+
+    m_DrivetrainSubsystem.setDefaultCommand(new DefaultDriveCommand(
+      m_DrivetrainSubsystem, 
+      () -> -modifyAxis(drive_controller.getLeftY())*DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND, 
+      () -> -modifyAxis(drive_controller.getLeftY())*DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND, 
+      () -> -modifyAxis(drive_controller.getRightX())*DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND));
+
+    m_DrivetrainSubsystem.resetOdometry();
+    
     configureBindings();
   }
 
-  /**
-   * Use this method to define your trigger->command mappings. Triggers can be created via the
-   * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary
-   * predicate, or via the named factories in {@link
-   * edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for {@link
-   * CommandXboxController Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
-   * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
-   * joysticks}.
-   */
   private void configureBindings() {
-    // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-    new Trigger(m_exampleSubsystem::exampleCondition)
-        .onTrue(new ExampleCommand(m_exampleSubsystem));
 
-    // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
-    // cancelling on release.
-    m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
+    arm_controller.b().whileTrue(new frc.robot.commands.Arm.Swivel(m_ArmSubsystem, "mid", Constants.Arm.SWIVEL_SPEED));
+    arm_controller.x().whileTrue(new frc.robot.commands.Arm.Swivel(m_ArmSubsystem, "high", -Constants.Arm.SWIVEL_SPEED));
 
-    controller.b().whileTrue(new Swivel(m_ArmSubsystem, "mid", Constants.Arm.SWIVEL_SPEED));
-    controller.x().whileTrue(new Swivel(m_ArmSubsystem, "high", -Constants.Arm.SWIVEL_SPEED));
+    arm_controller.y().whileTrue(new frc.robot.commands.Arm.Extend(m_ArmSubsystem, Constants.Arm.EXTEND_SPEED));
+    arm_controller.a().whileTrue(new frc.robot.commands.Arm.Extend(m_ArmSubsystem, -Constants.Arm.EXTEND_SPEED));
 
-    controller.y().whileTrue(new Extend(m_ArmSubsystem, Constants.Arm.EXTEND_SPEED));
-    controller.a().whileTrue(new Extend(m_ArmSubsystem, -Constants.Arm.EXTEND_SPEED));
-    
+    drive_controller.a().whileTrue(new SpinIntake(m_IntakeSubsystem));
   }
+
+  static SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(m_DrivetrainSubsystem.getKinematics(), m_DrivetrainSubsystem.getGyroscopeRotation(), 
+  
+  new SwerveModulePosition[]
+  {
+    m_DrivetrainSubsystem.frontLeftPos(),
+    m_DrivetrainSubsystem.frontRightPos(),
+    m_DrivetrainSubsystem.backLeftPos(),
+    m_DrivetrainSubsystem.backRightPos()
+  }, new Pose2d(m_DrivetrainSubsystem.getPose().getX(), m_DrivetrainSubsystem.getPose().getY(), new Rotation2d()));
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
    * @return the command to run in autonomous
    */
+
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return Autos.exampleAuto(m_exampleSubsystem);
+    return (Command) m_autoChooser.getSelected();
   }
 
   public double getTrigger()
   {
-    return controller.getRightTriggerAxis();
+    return drive_controller.getRightTriggerAxis();
+  }
+
+  public static SwerveDriveOdometry getOdometry()
+  {
+    return m_odometry;
+  }
+
+  public static DrivetrainSubsystem getDriveSubsystem()
+  {
+    return m_DrivetrainSubsystem;
+  }
+
+  private static double deadband(double value, double deadband) {
+    if (Math.abs(value) > deadband) {
+      if (value > 0.0) {
+        return (value - deadband) / (1.0 - deadband);
+      } else {
+        return (value + deadband) / (1.0 - deadband);
+      }
+    } else {
+      return 0.0;
+    }
+  }
+  private static double modifyAxis(double value) {
+    // Deadband
+    value = deadband(value, 0.05);
+  
+    // Square the axis
+    value = Math.copySign(value * value, value);
+  
+    return value;
   }
 }

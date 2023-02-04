@@ -1,11 +1,10 @@
-package frc.robot.commands;
+package frc.robot.commands.Pneumatics;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.PneumaticSubsystem;
 
 public class PneumaticCommand extends CommandBase {
   private PneumaticSubsystem subsystem;
-  private boolean once = false;
 
   public PneumaticCommand(PneumaticSubsystem system) {
     subsystem = system;
@@ -13,13 +12,11 @@ public class PneumaticCommand extends CommandBase {
 
   @Override
   public void initialize() {
-    once = false;
   }
 
   @Override
   public void execute() {
-    subsystem.toggleSingle();
-    once = true;
+    subsystem.toggle();
   }
 
   @Override
@@ -28,6 +25,6 @@ public class PneumaticCommand extends CommandBase {
 
   @Override
   public boolean isFinished() {
-    return once;
+    return true;
   }
 }
