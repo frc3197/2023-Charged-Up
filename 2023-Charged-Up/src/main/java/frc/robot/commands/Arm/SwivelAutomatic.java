@@ -1,41 +1,35 @@
-package frc.robot.commands.Arm;
 // Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
+
+package frc.robot.commands.Arm;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
-import frc.robot.RobotContainer;
 import frc.robot.subsystems.ArmSubsystem;
-import edu.wpi.first.wpilibj.Encoder;
 
-public class Swivel extends CommandBase {
-  /** Creates a new Swivel. */
-  ArmSubsystem m_subsystem;
+public class SwivelAutomatic extends CommandBase {
+  /** Creates a new SwivelAutomatic. */
+
+  ArmSubsystem subsystem;
   String level;
-  double val;
   int GoalTicks;
-  PIDController swivelPID;
-  Encoder throughBore;
+  PIDController levelPID;
   ArmFeedforward feedforward;
-   
-  public Swivel(ArmSubsystem m_subsystem, String level, double val) {
-    // Use addRequirements() here to declare subsystem dependencies.
-    this.m_subsystem = m_subsystem;
-    this.level = level;
-    this.val = val;
-    swivelPID = Constants.Arm.LevelPID;
-    feedforward = new ArmFeedforward(0, 0, 0);
 
-    addRequirements(m_subsystem);
+  public SwivelAutomatic(ArmSubsystem subsystem, String level) {
+    // Use addRequirements() here to declare subsystem dependencies.
+    this.level = level;
+    this.subsystem = subsystem;
+    levelPID = Constants.Arm.LevelPID;
+    feedforward = new ArmFeedforward(0, 0,0 );
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    
     if(level.equals("high"))
     {
       GoalTicks = Constants.Arm.TICKS_TO_HIGH;
@@ -52,29 +46,23 @@ public class Swivel extends CommandBase {
     {
       GoalTicks = 0;
     }
-
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-      m_subsystem.swivel(val);
-        //swivelPID.calculate(m_subsystem.getTicks(), GoalTicks);
+
+    subsystem.swivel(levelPID.calculate(subsystem.getTicks(), GoalTicks));
 
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    m_subsystem.swivel(0);
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-
-    //Finished if the tick value is within the threshold
-    return false;
-    //Math.abs(m_subsystem.getTicks() - GoalTicks) < Constants.Arm.TICK_THRESHOLD;
+    return Math.abs(subsystem.getTicks() - GoalTicks) < Constants.Arm.TICK_THRESHOLD;
   }
 }

@@ -17,14 +17,13 @@ public class ArmSubsystem extends SubsystemBase {
   WPI_TalonFX swivelMotor;
   WPI_TalonFX extendMotor;
 
-  Encoder throughBore;
+  Encoder throughBore = new Encoder(2, 3);
 
   public ArmSubsystem() {
 
     swivelMotor = new WPI_TalonFX(Constants.Arm.SWIVEL_MOTOR_ID);
     extendMotor = new WPI_TalonFX(Constants.Arm.EXTENTION_MOTOR_ID);
-
-    throughBore = new Encoder(Constants.Arm.ENCODER_INPUT_ID, Constants.Arm.ENCODER_OUTPUT_ID);
+    
 
   }
 

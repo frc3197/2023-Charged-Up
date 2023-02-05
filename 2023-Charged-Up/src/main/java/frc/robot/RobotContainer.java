@@ -5,8 +5,10 @@
 package frc.robot;
 
 import frc.robot.commands.DefaultDriveCommand;
+import frc.robot.commands.ZeroGyro;
 import frc.robot.commands.Arm.Extend;
 import frc.robot.commands.Arm.Swivel;
+import frc.robot.commands.Arm.SwivelAutomatic;
 import frc.robot.commands.Autonomous.AutoLookup;
 import frc.robot.commands.Intake.SpinIntake;
 import frc.robot.commands.Pneumatics.ClawPneumatic;
@@ -25,7 +27,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -38,7 +39,7 @@ public class RobotContainer {
   // Replace with CommandPS4Controller or CommandJoystick if needed
   
   CommandXboxController drive_controller = new CommandXboxController(Constants.Controller.DRIVE_CONTROLLER_ID);
-  CommandXboxController arm_controller = new CommandXboxController(Constants.Controller.ARM_CONTROLLER_ID);
+  static CommandXboxController arm_controller = new CommandXboxController(Constants.Controller.ARM_CONTROLLER_ID);
   //JoystickButton bButton = new JoystickButton(controller, 2);
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
 
@@ -76,13 +77,16 @@ public class RobotContainer {
 
   private void configureBindings() {
 
-    //Swivel --- (WHILE HELD)
-    arm_controller.b().whileTrue(new Swivel(m_ArmSubsystem, "mid", Constants.Arm.SWIVEL_SPEED));
-    arm_controller.b().whileFalse(new Swivel(m_ArmSubsystem, null, 0));
+    //Zero Gyroscope (WHILE HELD)
+    drive_controller.start().whileTrue(new ZeroGyro(m_DrivetrainSubsystem));
 
-    // Swivel --- (WHILE HELD)
+    //Swivel up (WHILE HELD)
+    arm_controller.b().whileTrue(new Swivel(m_ArmSubsystem, "mid", Constants.Arm.SWIVEL_SPEED));
+    arm_controller.b().whileFalse(new Swivel(m_ArmSubsystem, "mid", 0));
+
+    // Swivel down (WHILE HELD)
     arm_controller.x().whileTrue(new Swivel(m_ArmSubsystem, "high", -Constants.Arm.SWIVEL_SPEED));
-    arm_controller.x().whileFalse(new Swivel(m_ArmSubsystem, null, 0));
+    arm_controller.x().whileFalse(new Swivel(m_ArmSubsystem, "high", 0));
 
     //Extend Arm (WHILE HELD)
     arm_controller.y().whileTrue(new Extend(m_ArmSubsystem, Constants.Arm.EXTEND_SPEED));
@@ -101,6 +105,12 @@ public class RobotContainer {
 
     //Claw Grab (TOGGLE)
     drive_controller.y().whileTrue(new ClawPneumatic(m_PneumaticSubsystem));
+
+
+    //Automated Swivel (Still in progress)
+    arm_controller.rightBumper().whileTrue(new SwivelAutomatic(m_ArmSubsystem, "high"));
+    arm_controller.start().whileTrue(new SwivelAutomatic(m_ArmSubsystem, "mid"));
+    arm_controller.back().whileTrue(new SwivelAutomatic(m_ArmSubsystem, "low"));
   }
 
   static SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(m_DrivetrainSubsystem.getKinematics(), m_DrivetrainSubsystem.getGyroscopeRotation(), 
@@ -158,5 +168,19 @@ public class RobotContainer {
     value = Math.copySign(value * value, value);
   
     return value;
+  }
+  public static double getPlacerLeftY()
+  {
+    return arm_controller.getLeftY();
+  }
+
+  public static double getPlacerRightY()
+  {
+    return arm_controller.getRightY();
+  }
+
+  public static CommandXboxController getPlacerController()
+  {
+    return arm_controller;
   }
 }

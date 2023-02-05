@@ -20,6 +20,7 @@ import static edu.wpi.first.wpilibj.DoubleSolenoid.Value.*;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+  
   public static class Limelight {
     public static final int APRIL_TAG_PIPELINE_INDEX = 0;
     public static final int RETRO_REFLECTIVE_TAPE_PIPELINE_INDEX = 1;
@@ -35,10 +36,6 @@ public final class Constants {
   public static class Controller {
     public static final int DRIVE_CONTROLLER_ID = 0;
     public static final int ARM_CONTROLLER_ID = 1;
-  }
-  
-  public static class OperatorConstants {
-    public static final int kDriverControllerPort = 0;
   }
 
   public static class Intake {
@@ -56,14 +53,14 @@ public final class Constants {
     public static final int ENCODER_INPUT_ID = 0;
     public static final int ENCODER_OUTPUT_ID = 1;
 
-    public static final double SWIVEL_SPEED = 0.25;
+    public static final double SWIVEL_SPEED = 0.15;
     public static final double EXTEND_SPEED = 0.25;
 
-    public static final int TICKS_TO_HIGH = 50000;
-    public static final int TICKS_TO_MID = 25000;
+    public static final int TICKS_TO_HIGH = 10000;
+    public static final int TICKS_TO_MID = 5000;
     public static final int TICKS_TO_BOTTOM = 1000;
 
-    public static final int TICKS_TO_FAR = 5000;
+    public static final int TICKS_TO_FAR = 8000;
     public static final int TICKS_TO_CLOSE = 2500;
 
     public static final int TICK_THRESHOLD = 10;

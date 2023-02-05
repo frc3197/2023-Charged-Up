@@ -5,6 +5,7 @@
 package frc.robot.commands.Arm;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.ArmSubsystem;
 
 public class Extend extends CommandBase {
@@ -15,6 +16,7 @@ public class Extend extends CommandBase {
     // Use addRequirements() here to declare subsystem dependencies.
     this.m_subsystem = m_subsystem;
     this.val = val;
+    addRequirements(m_subsystem);
   }
 
   // Called when the command is initially scheduled.

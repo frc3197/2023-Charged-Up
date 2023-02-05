@@ -16,7 +16,7 @@ public class PneumaticSubsystem extends SubsystemBase {
     clawSolenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, Constants.Pneumatics.CLAW_FORWARD_CHANNEL, Constants.Pneumatics.CLAW_REVERSE_CHANNEL);
     clawSolenoid.set(kReverse);
     intakeSolenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, Constants.Pneumatics.INTAKE_FORWARD_CHANNEL, Constants.Pneumatics.INTAKE_REVERSE_CHANNEL);
-    intakeSolenoid.set(kForward);
+    intakeSolenoid.set(kReverse);
   }
 
   public void toggleClaw() {
