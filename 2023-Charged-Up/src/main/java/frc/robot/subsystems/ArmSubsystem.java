@@ -17,7 +17,7 @@ public class ArmSubsystem extends SubsystemBase {
   WPI_TalonFX swivelMotor;
   WPI_TalonFX extendMotor;
 
-  Encoder throughBore = new Encoder(2, 3);
+  Encoder throughBore = new Encoder(Constants.Arm.ENCODER_INPUT_ID, Constants.Arm.ENCODER_OUTPUT_ID);
 
   public ArmSubsystem() {
 
