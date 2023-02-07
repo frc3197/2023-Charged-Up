@@ -21,7 +21,7 @@ public class Limelight extends SubsystemBase {
   String pipeline;
 
   public Limelight(String pipelineType) {
-    table = NetworkTableInstance.getDefault().getTable("limelight-mason");
+    table = NetworkTableInstance.getDefault().getTable("limelight-thing");
     tx = table.getEntry("tx");
     ty = table.getEntry("ty");
     ta = table.getEntry("ta");

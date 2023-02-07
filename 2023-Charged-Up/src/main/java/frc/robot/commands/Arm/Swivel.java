@@ -7,7 +7,6 @@ import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
-import frc.robot.RobotContainer;
 import frc.robot.subsystems.ArmSubsystem;
 import edu.wpi.first.wpilibj.Encoder;
 
@@ -53,12 +52,16 @@ public class Swivel extends CommandBase {
       GoalTicks = 0;
     }
 
+    GoalTicks = 50;
+
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+
       m_subsystem.swivel(val);
+      System.out.println(m_subsystem.getTicks());
         //swivelPID.calculate(m_subsystem.getTicks(), GoalTicks);
 
   }

@@ -56,9 +56,9 @@ public final class Constants {
     public static final double SWIVEL_SPEED = 0.15;
     public static final double EXTEND_SPEED = 0.25;
 
-    public static final int TICKS_TO_HIGH = 10000;
-    public static final int TICKS_TO_MID = 5000;
-    public static final int TICKS_TO_BOTTOM = 1000;
+    public static final int TICKS_TO_HIGH = 1365;
+    public static final int TICKS_TO_MID = 819;
+    public static final int TICKS_TO_BOTTOM = 455;
 
     public static final int TICKS_TO_FAR = 8000;
     public static final int TICKS_TO_CLOSE = 2500;
