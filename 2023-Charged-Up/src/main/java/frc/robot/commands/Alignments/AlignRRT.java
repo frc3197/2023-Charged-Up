@@ -4,21 +4,37 @@
 
 package frc.robot.commands.Alignments;
 
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.subsystems.DrivetrainSubsystem;
 
 public class AlignRRT extends CommandBase {
   /** Creates a new AlignRRT. */
-  public AlignRRT() {
+
+  DrivetrainSubsystem subsystem;
+  double[] pose;
+
+  public AlignRRT(DrivetrainSubsystem subsystem) {
+
+    this.subsystem = subsystem;
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+
+    pose = NetworkTableInstance.getDefault().getTable("limelight").getEntry("<variablename>").getDoubleArray(new double[6]);
+
+
+  }
 
   // Called once the command ends or is interrupted.
   @Override

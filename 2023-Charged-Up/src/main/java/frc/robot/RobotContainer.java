@@ -6,6 +6,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -45,6 +46,7 @@ import frc.robot.commands.ResetArmEncoder;
 import frc.robot.commands.ZeroGyro;
 import frc.robot.commands.Arm.Extend;
 import frc.robot.commands.Arm.Swivel;
+import frc.robot.commands.Arm.SwivelAutomatic;
 import frc.robot.commands.Intake.SpinIntake;
 import frc.robot.commands.Pneumatics.ClawPneumatic;
 import frc.robot.commands.Pneumatics.IntakePneumatic;
@@ -132,33 +134,46 @@ public class RobotContainer {
   private void configureButtonBindings() {
     // Back button zeros the gyroscope
     
-    //Zero Gyro
+    //Zero Gyro (ON PRESS)
     driveController.start().whileTrue(new ZeroGyro(m_drivetrainSubsystem));
 
-    //intake Spin
+    //Spin Intake (WHILE HELD)
     driveController.rightBumper().whileTrue(new SpinIntake(intakeSubsystem, Constants.Intake.SPIN_SPEED));
     driveController.rightBumper().whileFalse(new SpinIntake(intakeSubsystem, 0));
 
-    //intakeCramp
+    // Grab Intake (TOGGLE)
     driveController.leftBumper().whileTrue(new IntakePneumatic(pneumaticSubsystem));
 
-    //extend
-    armController.rightBumper().whileTrue(new Extend(armSubsystem, Constants.Arm.EXTEND_SPEED));
+    //extend (WHILE HELD)
+    armController.rightBumper().whileTrue(new Extend(armSubsystem, Constants.Arm.EXTEND_SPEED ));
     armController.rightBumper().whileFalse(new Extend(armSubsystem, 0));
 
+    //Retract (WHILE HELD)
     armController.leftBumper().whileTrue(new Extend(armSubsystem, -Constants.Arm.EXTEND_SPEED));
     armController.leftBumper().whileFalse(new Extend(armSubsystem, 0));
 
-    //swivel
-    armController.b().whileTrue(new Swivel(armSubsystem, "high", Constants.Arm.SWIVEL_SPEED));
-    armController.b().whileFalse(new Swivel(armSubsystem, "high", 0));
+    //Swivel Up (WHILE HELD)
+    armController.leftTrigger(0.1).whileTrue(new Swivel(armSubsystem, Constants.Arm.SWIVEL_SPEED, armController, 2));
+    armController.leftTrigger(0.1).whileFalse(new Swivel(armSubsystem, 0));
 
-    armController.x().whileTrue(new Swivel(armSubsystem, "high", -Constants.Arm.SWIVEL_SPEED));
-    armController.x().whileFalse(new Swivel(armSubsystem, "high", 0));
+    //Swivel Down (WHILE HELD)
+    armController.rightTrigger(0.1).whileTrue(new Swivel(armSubsystem, -Constants.Arm.SWIVEL_SPEED, armController, 3));
+    armController.rightTrigger(0.1).whileFalse(new Swivel(armSubsystem, 0));
 
-    armController.y().whileTrue(new ClawPneumatic(pneumaticSubsystem));
+    //Claw Grab (TOGGLE)
+    armController.x().whileTrue(new ClawPneumatic(pneumaticSubsystem));
 
+    //Automated Swivel ()
+    //armController.y().whileTrue(new SwivelAutomatic(armSubsystem, "high"));
+    //armController.b().whileTrue(new SwivelAutomatic(armSubsystem, "mid"));
+    //armController.a().whileTrue(new SwivelAutomatic(armSubsystem, "low"));
+
+    //Reset Arm Encoder (ON PRESS)
     armController.start().whileTrue(new ResetArmEncoder(armSubsystem));
+  }
+
+  public void test() {
+
   }
 
   /**

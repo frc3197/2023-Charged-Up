@@ -52,7 +52,7 @@ public class SwivelAutomatic extends CommandBase {
   @Override
   public void execute() {
 
-    subsystem.swivel(levelPID.calculate(subsystem.getTicks(), GoalTicks));
+    subsystem.swivel(levelPID.calculate(subsystem.getTicks(), GoalTicks) / 5.0);
   }
 
   // Called once the command ends or is interrupted.

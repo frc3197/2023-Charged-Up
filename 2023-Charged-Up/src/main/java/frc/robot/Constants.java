@@ -24,6 +24,8 @@ public final class Constants {
   public static class Limelight {
     public static final int APRIL_TAG_PIPELINE_INDEX = 0;
     public static final int RETRO_REFLECTIVE_TAPE_PIPELINE_INDEX = 1;
+
+    public static final String limelightName = "lime";
   }
 
   public static class Pneumatics {
@@ -65,7 +67,7 @@ public final class Constants {
 
     public static final int TICK_THRESHOLD = 10;
 
-    public static final PIDController LevelPID = new PIDController(0, 0, 0);
+    public static final PIDController LevelPID = new PIDController(0.3, 0, 0);
   }
 
   public static class Drivetrain {
