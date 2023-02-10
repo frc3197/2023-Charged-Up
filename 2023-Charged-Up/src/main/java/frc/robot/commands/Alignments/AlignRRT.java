@@ -15,8 +15,10 @@ public class AlignRRT extends CommandBase {
   DrivetrainSubsystem subsystem;
   double[] pose;
 
-  public AlignRRT(DrivetrainSubsystem subsystem) {
+  private NetworkTable table;
 
+  public AlignRRT(DrivetrainSubsystem subsystem) {
+    table = NetworkTableInstance.getDefault().getTable("limelight");
     this.subsystem = subsystem;
     // Use addRequirements() here to declare subsystem dependencies.
   }
@@ -31,10 +33,14 @@ public class AlignRRT extends CommandBase {
   @Override
   public void execute() {
 
-    pose = NetworkTableInstance.getDefault().getTable("limelight").getEntry("<variablename>").getDoubleArray(new double[6]);
-
+    //0-2 are offset in meters, goes x, y, z, rest are rotations I assume
+    
+    // MOVE TO SUBSYSTEM, more organized
+    pose = table.getEntry("botpose_targetspace").getDoubleArray(new double[6]);
 
   }
+  
+  
 
   // Called once the command ends or is interrupted.
   @Override
