@@ -36,6 +36,7 @@ public class DefaultDriveCommand extends CommandBase {
                         m_drivetrainSubsystem.getGyroscopeRotation()
                 )
         );
+        System.out.println(m_drivetrainSubsystem.getGyroscopeRotation());
     }
 
     @Override

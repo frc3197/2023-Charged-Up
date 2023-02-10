@@ -76,22 +76,22 @@ public final class Constants {
     public static final int FRONT_LEFT_DRIVE_ID = 1;
     public static final int FRONT_LEFT_STEER_ID = 2;
     public static final int FRONT_LEFT_ENCODER_ID = 1;
-    public static final double FRONT_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(291.261);
+    public static final double FRONT_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(291.17889404296875);
 
     public static final int FRONT_RIGHT_DRIVE_ID = 3;
     public static final int FRONT_RIGHT_STEER_ID = 4;
     public static final int FRONT_RIGHT_ENCODER_ID = 2;
-    public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(345.410);
+    public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(331.951904296875);
 
     public static final int BACK_LEFT_DRIVE_ID = 7;
     public static final int BACK_LEFT_STEER_ID = 8;
     public static final int BACK_LEFT_ENCODER_ID = 4;
-    public static final double BACK_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(296.095);
+    public static final double BACK_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(296.01287841796875);
 
     public static final int BACK_RIGHT_DRIVE_ID = 5;
     public static final int BACK_RIGHT_STEER_ID = 6;
     public static final int BACK_RIGHT_ENCODER_ID = 3;
-    public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(288.542);
+    public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(288.62457275390625);
 
     public static final double DRIVETRAIN_TRACKWIDTH_METERS = 0.4572;
     public static final double DRIVETRAIN_WHEELBASE_METERS = 0.4572;
