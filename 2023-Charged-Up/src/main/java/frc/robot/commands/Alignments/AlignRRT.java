@@ -34,6 +34,8 @@ public class AlignRRT extends CommandBase {
   public void execute() {
 
     //0-2 are offset in meters, goes x, y, z, rest are rotations I assume
+    
+    // MOVE TO SUBSYSTEM, more organized
     pose = table.getEntry("botpose_targetspace").getDoubleArray(new double[6]);
 
   }
