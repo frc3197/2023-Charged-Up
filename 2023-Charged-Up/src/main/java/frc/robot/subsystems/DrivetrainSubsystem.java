@@ -261,7 +261,6 @@ return Rotation2d.fromDegrees(m_pigeon2.getYaw());
     m_backLeftModule.set(states[2].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, states[2].angle.getRadians());
     m_backRightModule.set(states[3].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, states[3].angle.getRadians());
 
-
     Rotation2d gyroAngle = getGyro();
 
   // Update the pose
@@ -392,4 +391,23 @@ public Rotation2d getGyro()
         return getGyroscopeRotation();
 }
 
+public SwerveModule getFrontLeftMod()
+{
+        return m_frontLeftModule;
+}
+
+public SwerveModule getFrontRightMod()
+{
+        return m_frontRightModule;
+}
+
+public SwerveModule getBackLeftMod()
+{
+        return m_backLeftModule;
+}
+
+public SwerveModule getBackRightMod()
+{
+        return m_backRightModule;
+}
 }

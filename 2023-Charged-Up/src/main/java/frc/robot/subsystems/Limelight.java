@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -13,28 +15,20 @@ import frc.robot.Constants;
 public class Limelight extends SubsystemBase {
   NetworkTable table;
 
-  NetworkTableEntry tx;
-  NetworkTableEntry ty;
-  NetworkTableEntry ta;
+  double[] pose;
   NetworkTableEntry pipelineEntry;
 
-  String pipeline;
-
-  public Limelight(String pipelineType) {
-    table = NetworkTableInstance.getDefault().getTable("limelight-thing");
-    tx = table.getEntry("tx");
-    ty = table.getEntry("ty");
-    ta = table.getEntry("ta");
-    pipeline = pipelineType;
+  public Limelight() {
+    table = NetworkTableInstance.getDefault().getTable(Constants.Limelight.limelightName);
     pipelineEntry = table.getEntry("pipeline");
-    setPipeline();
   }
 
-  public String getOutput() {
-    return (tx.getDouble(0.0) + ", " + ty.getDouble(0.0) + ", " + ta.getDouble(0.0));
+  public double[] getTargetSpace() {
+    pose = table.getEntry("botpose_targetspace").getDoubleArray(new double[6]);
+    return pose;
   }
 
-  private void setPipeline() {
+  public void setPipeline(String pipeline) {
     switch(pipeline) {
       case "april":
         pipelineEntry.setNumber(Constants.Limelight.APRIL_TAG_PIPELINE_INDEX);
@@ -49,5 +43,11 @@ public class Limelight extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+  }
+
+  public Pose2d getBotPose()
+  {
+    double[] temp = table.getEntry("botpose").getDoubleArray(new double[6]);
+    return new Pose2d(temp[0], temp[2], new Rotation2d(temp[5]));
   }
 }

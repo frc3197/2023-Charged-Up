@@ -36,7 +36,12 @@ public class DefaultDriveCommand extends CommandBase {
                         m_drivetrainSubsystem.getGyroscopeRotation()
                 )
         );
-        System.out.println(m_drivetrainSubsystem.getGyroscopeRotation());
+       /*  System.out.println(m_drivetrainSubsystem.getGyroscopeRotation());
+
+        System.out.println(m_drivetrainSubsystem.getFrontLeftMod().getDriveVelocity());
+        System.out.println(m_drivetrainSubsystem.getFrontRightMod().getDriveVelocity());
+        System.out.println(m_drivetrainSubsystem.getBackLeftMod().getDriveVelocity());
+        System.out.println(m_drivetrainSubsystem.getBackRightMod().getDriveVelocity());*/
     }
 
     @Override

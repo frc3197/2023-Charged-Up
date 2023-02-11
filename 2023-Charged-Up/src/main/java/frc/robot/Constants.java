@@ -25,7 +25,8 @@ public final class Constants {
     public static final int APRIL_TAG_PIPELINE_INDEX = 0;
     public static final int RETRO_REFLECTIVE_TAPE_PIPELINE_INDEX = 1;
 
-    public static final String limelightName = "lime";
+    public static final String limelightName = "limelight";
+
   }
 
   public static class Pneumatics {

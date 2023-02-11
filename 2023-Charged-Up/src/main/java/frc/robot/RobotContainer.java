@@ -44,9 +44,11 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.ResetArmEncoder;
 import frc.robot.commands.ZeroGyro;
+import frc.robot.commands.Alignments.AlignAT;
 import frc.robot.commands.Arm.Extend;
 import frc.robot.commands.Arm.Swivel;
 import frc.robot.commands.Arm.SwivelAutomatic;
+import frc.robot.commands.Autonomous.AutoLookup;
 import frc.robot.commands.Intake.SpinIntake;
 import frc.robot.commands.Pneumatics.ClawPneumatic;
 import frc.robot.commands.Pneumatics.IntakePneumatic;
@@ -55,6 +57,7 @@ import frc.robot.subsystems.ArmSubsystem;
 //import frc.robot.commands.RunAutonomous;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.PneumaticSubsystem;
 
 /**
@@ -77,6 +80,7 @@ public class RobotContainer {
   IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
   PneumaticSubsystem pneumaticSubsystem = new PneumaticSubsystem();
   ArmSubsystem armSubsystem = new ArmSubsystem();
+  Limelight limelightSubsystem = new Limelight();
 
   @SuppressWarnings("rawtypes")
   private static SendableChooser m_autoChooser;
@@ -92,6 +96,8 @@ public class RobotContainer {
 
     m_autoChooser = new SendableChooser<>();
     m_autoChooser.setDefaultOption("Nothing", null);
+    
+    m_autoChooser.addOption("practice", AutoLookup.getAuto("practice"));
 
     //m_autoChooser.addOption("practice", AutoLookup.getAuto("practice"));
 
@@ -143,6 +149,8 @@ public class RobotContainer {
 
     // Grab Intake (TOGGLE)
     driveController.leftBumper().whileTrue(new IntakePneumatic(pneumaticSubsystem));
+
+    driveController.leftTrigger(0.1).whileTrue(new AlignAT(limelightSubsystem, m_drivetrainSubsystem));
 
     //extend (WHILE HELD)
     armController.rightBumper().whileTrue(new Extend(armSubsystem, Constants.Arm.EXTEND_SPEED ));
