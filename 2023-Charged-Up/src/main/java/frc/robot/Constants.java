@@ -59,14 +59,14 @@ public final class Constants {
     public static final double SWIVEL_SPEED = 0.15;
     public static final double EXTEND_SPEED = 0.25;
 
-    public static final int TICKS_TO_HIGH = 1365;
-    public static final int TICKS_TO_MID = 819;
-    public static final int TICKS_TO_BOTTOM = 455;
+    public static final int TICKS_TO_HIGH = 300;
+    public static final int TICKS_TO_MID = 200;
+    public static final int TICKS_TO_BOTTOM = 50;
 
     public static final int TICKS_TO_FAR = 8000;
     public static final int TICKS_TO_CLOSE = 2500;
 
-    public static final int TICK_THRESHOLD = 10;
+    public static final int TICK_THRESHOLD = 2;
 
     public static final PIDController LevelPID = new PIDController(0.3, 0, 0);
   }
@@ -82,7 +82,7 @@ public final class Constants {
     public static final int FRONT_RIGHT_DRIVE_ID = 3;
     public static final int FRONT_RIGHT_STEER_ID = 4;
     public static final int FRONT_RIGHT_ENCODER_ID = 2;
-    public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(331.951904296875);
+    public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(280.951904296875);
 
     public static final int BACK_LEFT_DRIVE_ID = 7;
     public static final int BACK_LEFT_STEER_ID = 8;

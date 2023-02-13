@@ -24,7 +24,7 @@ public class SwivelAutomatic extends CommandBase {
     this.level = level;
     this.subsystem = subsystem;
     levelPID = Constants.Arm.LevelPID;
-    feedforward = new ArmFeedforward(0, 0,0 );
+    feedforward = new ArmFeedforward(-0.12237, 0.46233, 1.3827, 0.081015);
   }
 
   // Called when the command is initially scheduled.
@@ -51,8 +51,15 @@ public class SwivelAutomatic extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-
-    subsystem.swivel(levelPID.calculate(subsystem.getTicks(), GoalTicks) / 5.0);
+    //System.out.println(GoalTicks + ", " + subsystem.getTicks());
+    double feed = feedforward.calculate(subsystem.getRad() - (Math.PI / 4), -0.1, 0.0);
+    System.out.println(feed);
+    subsystem.getSpeed();
+    //System.out.println(subsystem.getRad() + ", " + subsystem.getTicks());
+    //subsystem.swivel(levelPID.calculate(subsystem.getTicks(), GoalTicks));
+    
+    subsystem.swivel((feed / (Math.PI * 2)));
+    //subsystem.swivel(feedforward.calculate(GoalTicks, 2));
   }
 
   // Called once the command ends or is interrupted.
@@ -62,6 +69,10 @@ public class SwivelAutomatic extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return Math.abs(subsystem.getTicks() - GoalTicks) < Constants.Arm.TICK_THRESHOLD;
+    if(Math.abs(subsystem.getTicks() - GoalTicks) < Constants.Arm.TICK_THRESHOLD) {
+      subsystem.swivel(0);
+      //return true;
+    }
+    return false;
   }
 }

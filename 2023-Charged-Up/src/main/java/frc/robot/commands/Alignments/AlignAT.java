@@ -23,7 +23,10 @@ public class AlignAT extends CommandBase {
   
   // Need some offset, don't bash into driver station tingz D:
   double tagOffset = 0.25;
-  double thresh = 0.1;
+  double thresh = 0.2;
+  double maxRotationSpeed = 0.15;
+
+  double maxAlignSpeed = 0.85;
 
   public AlignAT(Limelight light, DrivetrainSubsystem subsystem) {
     limelightSubsystem = light;
@@ -49,8 +52,13 @@ public class AlignAT extends CommandBase {
     double xSpeed=0;
     double ySpeed=0;
 
-    xSpeed = targetPose.getX() / 1.5;
-    ySpeed = targetPose.getY() / -1.5;
+    Rotation2d botRot = driveSubsystem.getGyroscopeRotation();
+    double rotation = botRot.getRadians();
+    //System.out.println(botRot);
+    //if(rotation > Math.PI / 2)
+
+    xSpeed = targetPose.getX() * 1.5;
+    ySpeed = targetPose.getY() * -1.5;
 
     if(Math.abs(targetPose.getX()) < thresh) {
       xSpeed = 0;
@@ -60,10 +68,23 @@ public class AlignAT extends CommandBase {
       ySpeed = 0;
     }
 
+    if(xSpeed > maxAlignSpeed) {
+      xSpeed = maxAlignSpeed;
+    }
+    if(xSpeed < maxAlignSpeed * -1) {
+      xSpeed = maxAlignSpeed * -1;
+    }
+
+    if(ySpeed > maxAlignSpeed) {
+      ySpeed = maxAlignSpeed;
+    }
+    if(ySpeed < maxAlignSpeed * -1) {
+      ySpeed = maxAlignSpeed * -1;
+    }
 
     driveSubsystem.drive(new ChassisSpeeds(ySpeed, xSpeed, 0));
 
-    System.out.println(xSpeed + ", " + ySpeed);
+    //System.out.println(xSpeed + ", " + ySpeed);
     //System.out.println("X: " + xSpeed * -6 + " & " + ("Y: " + ySpeed * 6));
   }
 
@@ -74,6 +95,9 @@ public class AlignAT extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return Math.abs(targetPose.getX() - robotPosition.getX()) < thresh && Math.abs(targetPose.getY() - robotPosition.getY()) < thresh;
+    if(!limelightSubsystem.getTargets()) {
+      return true;
+    }
+    return Math.abs(targetPose.getX()) < 0.05 && Math.abs(targetPose.getY()) < thresh;
   }
 }

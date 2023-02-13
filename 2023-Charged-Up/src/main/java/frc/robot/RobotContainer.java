@@ -45,6 +45,7 @@ import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.ResetArmEncoder;
 import frc.robot.commands.ZeroGyro;
 import frc.robot.commands.Alignments.AlignAT;
+import frc.robot.commands.Alignments.Level;
 import frc.robot.commands.Arm.Extend;
 import frc.robot.commands.Arm.Swivel;
 import frc.robot.commands.Arm.SwivelAutomatic;
@@ -150,7 +151,8 @@ public class RobotContainer {
     // Grab Intake (TOGGLE)
     driveController.leftBumper().whileTrue(new IntakePneumatic(pneumaticSubsystem));
 
-    driveController.leftTrigger(0.1).whileTrue(new AlignAT(limelightSubsystem, m_drivetrainSubsystem));
+    driveController.leftTrigger(0.1).onTrue(new AlignAT(limelightSubsystem, m_drivetrainSubsystem));
+    driveController.rightTrigger(0.1).onTrue(new Level(m_drivetrainSubsystem, 1));
 
     //extend (WHILE HELD)
     armController.rightBumper().whileTrue(new Extend(armSubsystem, Constants.Arm.EXTEND_SPEED ));
@@ -172,12 +174,12 @@ public class RobotContainer {
     armController.x().whileTrue(new ClawPneumatic(pneumaticSubsystem));
 
     //Automated Swivel ()
-    //armController.y().whileTrue(new SwivelAutomatic(armSubsystem, "high"));
-    //armController.b().whileTrue(new SwivelAutomatic(armSubsystem, "mid"));
-    //armController.a().whileTrue(new SwivelAutomatic(armSubsystem, "low"));
+    armController.y().onTrue(new SwivelAutomatic(armSubsystem, "high"));
+    armController.b().onTrue(new SwivelAutomatic(armSubsystem, "mid"));
+    armController.a().onTrue(new SwivelAutomatic(armSubsystem, "low"));
 
     //Reset Arm Encoder (ON PRESS)
-    armController.start().whileTrue(new ResetArmEncoder(armSubsystem));
+    //armController.start().whileTrue(new ResetArmEncoder(armSubsystem));
   }
 
   public void test() {

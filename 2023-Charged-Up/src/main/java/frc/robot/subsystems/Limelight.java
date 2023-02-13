@@ -50,4 +50,12 @@ public class Limelight extends SubsystemBase {
     double[] temp = table.getEntry("botpose").getDoubleArray(new double[6]);
     return new Pose2d(temp[0], temp[2], new Rotation2d(temp[5]));
   }
+
+  public boolean getTargets() {
+    System.out.println(table.getEntry("tid").getDouble(-1));
+    if(table.getEntry("tid").getDouble(-1) >= 0) {
+      return true;
+    }
+    return false;
+  }
 }

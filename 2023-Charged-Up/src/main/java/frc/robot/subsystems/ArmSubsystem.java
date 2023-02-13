@@ -4,7 +4,6 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import edu.wpi.first.wpilibj.Encoder;
@@ -17,14 +16,13 @@ public class ArmSubsystem extends SubsystemBase {
   WPI_TalonFX swivelMotor;
   WPI_TalonFX extendMotor;
 
+  double maxSwivelSpeed = 0.15;
+
   Encoder throughBore = new Encoder(Constants.Arm.ENCODER_INPUT_ID, Constants.Arm.ENCODER_OUTPUT_ID);
 
   public ArmSubsystem() {
-
     swivelMotor = new WPI_TalonFX(Constants.Arm.SWIVEL_MOTOR_ID);
     extendMotor = new WPI_TalonFX(Constants.Arm.EXTENTION_MOTOR_ID);
-    
-
   }
 
   @Override
@@ -32,23 +30,34 @@ public class ArmSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run
   }
 
-  public void swivel(double val)
-  {
+  public void swivel(double val) {
+    if (val > maxSwivelSpeed) {
+      val = maxSwivelSpeed;
+    }
+    if (val < maxSwivelSpeed * -1) {
+      val = maxSwivelSpeed * -1;
+    }
     swivelMotor.set(val);
   }
 
-  public void extend(double val)
-  {
+  public void extend(double val) {
     extendMotor.set(val);
   }
 
-  public void resetEncoder()
-  {
+  public void resetEncoder() {
     throughBore.reset();
   }
 
-  public int getTicks()
-  {
-    return throughBore.get();
+  public double getSpeed() {
+   // System.out.print("RATE: " + throughBore.getRate());
+    return throughBore.getRate();
+  }
+
+  public int getTicks() {
+    return throughBore.get() * -1;
+  }
+
+  public double getRad() {
+    return ((double)throughBore.get() * -1/2000.0) * Math.PI * 2.0;
   }
 }
