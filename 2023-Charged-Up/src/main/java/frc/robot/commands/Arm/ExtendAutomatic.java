@@ -4,61 +4,48 @@
 
 package frc.robot.commands.Arm;
 
-import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.ArmSubsystem;
 
-public class SwivelAutomatic extends CommandBase {
-  /** Creates a new SwivelAutomatic. */
-
+public class ExtendAutomatic extends CommandBase {
+  /** Creates a new ExtendAutomatic. */
   ArmSubsystem subsystem;
-  String level;
+  PIDController extendPID;
+  String distance;
   int GoalTicks;
-  PIDController levelPID;
-  ArmFeedforward feedforward;
-
-  public SwivelAutomatic(ArmSubsystem subsystem, String level) {
-    // Use addRequirements() here to declare subsystem dependencies.
-    this.level = level;
+  public ExtendAutomatic(ArmSubsystem subsystem, String distance) {
     this.subsystem = subsystem;
-    levelPID = Constants.Arm.LevelPID;
-    feedforward = new ArmFeedforward(
-      Constants.Arm.KS, 
-      Constants.Arm.KG,
-      Constants.Arm.KV,
-      Constants.Arm.KA);
+    this.distance = distance;
+    extendPID = Constants.Arm.ExtendPID;
+    // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-
-    if(level.equals("high"))
+    if(distance.equals("far"))
     {
-      GoalTicks = Constants.Arm.TICKS_TO_HIGH;
+      GoalTicks = Constants.Arm.TICKS_TO_FAR;
     }
-    else if(level.equals("mid"))
+    else if(distance.equals("close"))
     {
-      GoalTicks = Constants.Arm.TICKS_TO_MID;
+      GoalTicks = Constants.Arm.TICKS_TO_CLOSE;
     }
-    else if (level.equals("low"))
-    {
-      GoalTicks = Constants.Arm.TICKS_TO_BOTTOM;
-    }
-    else 
+    else
     {
       GoalTicks = 0;
     }
+
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    this.subsystem.setMove(true);
-    this.subsystem.setManuelMove(true);
-    subsystem.swivel(levelPID.calculate(subsystem.getTicks(), GoalTicks));
+    this.subsystem.setExtending(true);
+    //this.subsystem.setManuelMove(true);
+    subsystem.extend(extendPID.calculate(subsystem.getTicks(), GoalTicks));
   }
 
   // Called once the command ends or is interrupted.
@@ -69,9 +56,9 @@ public class SwivelAutomatic extends CommandBase {
   @Override
   public boolean isFinished() {
     if(Math.abs(subsystem.getTicks() - GoalTicks) < Constants.Arm.TICK_THRESHOLD) {
-      subsystem.swivel(0);
-      this.subsystem.setMove(false);
-      this.subsystem.setManuelMove(false);
+      subsystem.extend(0);
+      this.subsystem.setExtending(false);
+      //this.subsystem.setManuelMove(false);
       return true;
     }
     return false;

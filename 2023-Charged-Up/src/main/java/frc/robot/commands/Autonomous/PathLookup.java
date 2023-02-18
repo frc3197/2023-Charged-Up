@@ -17,7 +17,19 @@ public class PathLookup {
         switch (pathName) {
             case "practice":
                 ret = new PathContainer("practice", getSpeeds(SPEEDS.ONE), 1.25, true, true);
-                break;                        
+                break;
+            case "practice2":
+                ret = new PathContainer("practice2", getSpeeds(SPEEDS.ONE), 1.25, false, true);
+                break;
+            case "1.1":
+                ret = new PathContainer("1.1", getSpeeds(SPEEDS.THREE), 3, true, true);
+                break;
+            case "1.2":
+                ret = new PathContainer("1.2", getSpeeds(SPEEDS.TWO), 1, false, true);
+                break;
+            case "1.3.PLACE":
+                ret = new PathContainer("1.3.PLACE", getSpeeds(SPEEDS.ONE), 3, false, true);
+                break;
         }
         return ret;
     }

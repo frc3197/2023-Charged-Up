@@ -4,7 +4,9 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.revrobotics.RelativeEncoder;
 
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -18,11 +20,20 @@ public class ArmSubsystem extends SubsystemBase {
 
   double maxSwivelSpeed = 0.15;
 
+  private boolean isMoving = false;
+  private boolean cancelManuel = false;
+
+  private boolean extending = false;
+
   Encoder throughBore = new Encoder(Constants.Arm.ENCODER_INPUT_ID, Constants.Arm.ENCODER_OUTPUT_ID);
+  //RelativeEncoder extendEncoder;
 
   public ArmSubsystem() {
     swivelMotor = new WPI_TalonFX(Constants.Arm.SWIVEL_MOTOR_ID);
     extendMotor = new WPI_TalonFX(Constants.Arm.EXTENTION_MOTOR_ID);
+
+    extendMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
+    extendMotor.setSelectedSensorPosition(0);
   }
 
   @Override
@@ -42,6 +53,7 @@ public class ArmSubsystem extends SubsystemBase {
 
   public void extend(double val) {
     extendMotor.set(val);
+    System.out.println("ENCODER EXTEND: " + extendMotor.getSelectedSensorPosition());
   }
 
   public void resetEncoder() {
@@ -54,10 +66,40 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public int getTicks() {
+    System.out.println(throughBore.getDistance());
     return throughBore.get() * -1;
   }
 
   public double getRad() {
-    return ((double)throughBore.get() * -1/2000.0) * Math.PI * 2.0;
+    return ((double)throughBore.get() * -1/2048.0) * Math.PI * 2.0;
+  }
+
+  public void setMove(boolean bool) {
+    isMoving = bool;
+  }
+
+  public boolean getMove() {
+    return isMoving;
+  }
+
+  public void setManuelMove(boolean bool) {
+    cancelManuel = bool;
+  }
+
+  public boolean getManuelMove() {
+    return cancelManuel;
+  }
+
+  public void setExtending(boolean bool) {
+    extending = bool;
+  }
+
+  public boolean getExtending() {
+    return extending;
+  }
+
+  public double getExtendTicks()
+  {
+    return extendMotor.getSelectedSensorPosition();
   }
 }

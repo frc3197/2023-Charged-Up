@@ -12,19 +12,27 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.Limelight;
 
+/*
+
+ */
+
+
 public class AlignAT extends CommandBase {
   Limelight limelightSubsystem;
   DrivetrainSubsystem driveSubsystem;
   int desiredTag;
   double[] targetspace;
 
+  Rotation2d robotAngle;
+  Rotation2d targetAngle;
   Pose2d robotPosition;
   Pose2d targetPose;
   
   // Need some offset, don't bash into driver station tingz D:
-  double tagOffset = 0.25;
+  double tagOffset = 0.5;
   double thresh = 0.2;
-  double maxRotationSpeed = 0.15;
+  double degreesThresh = 1;
+  double maxRotationSpeed = 0.45;
 
   double maxAlignSpeed = 0.85;
 
@@ -42,23 +50,29 @@ public class AlignAT extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-   robotPosition = limelightSubsystem.getBotPose();
+    //robotAngle = limelightSubsystem.getBotRotation();
+   //robotPosition = limelightSubsystem.getBotPose();
+   
     targetspace = limelightSubsystem.getTargetSpace();
     targetPose = new Pose2d(targetspace[0], targetspace[2] + tagOffset, new Rotation2d(0.0, 0.0));
-/*/
+
+    targetAngle = new Rotation2d(targetspace[5]);
+    /*/
     double xSpeed = (robotPosition.getX() - targetPose.getX()) /6.0;    ;
     double ySpeed = (robotPosition.getY() - targetPose.getY()) /6.0;*/
 
     double xSpeed=0;
     double ySpeed=0;
+    double rotSpeed=0;
 
-    Rotation2d botRot = driveSubsystem.getGyroscopeRotation();
-    double rotation = botRot.getRadians();
+    //Rotation2d botRot = driveSubsystem.getGyroscopeRotation();
+    //double rotation = botRot.getRadians();
     //System.out.println(botRot);
     //if(rotation > Math.PI / 2)
 
     xSpeed = targetPose.getX() * 1.5;
     ySpeed = targetPose.getY() * -1.5;
+    //rotSpeed = targetPose.getRotation().getDegrees() * 1.5;
 
     if(Math.abs(targetPose.getX()) < thresh) {
       xSpeed = 0;
@@ -66,6 +80,11 @@ public class AlignAT extends CommandBase {
 
     if(Math.abs(targetPose.getY()) < thresh) {
       ySpeed = 0;
+    }
+
+    if(Math.abs(targetPose.getRotation().getDegrees()) < degreesThresh)
+    {
+      rotSpeed = 0;    
     }
 
     if(xSpeed > maxAlignSpeed) {
@@ -81,6 +100,18 @@ public class AlignAT extends CommandBase {
     if(ySpeed < maxAlignSpeed * -1) {
       ySpeed = maxAlignSpeed * -1;
     }
+
+    rotSpeed = targetAngle.getDegrees();
+
+    if(rotSpeed > maxRotationSpeed) {
+      rotSpeed = maxRotationSpeed;
+    }
+
+    if(rotSpeed < maxRotationSpeed * -1) {
+      rotSpeed = maxRotationSpeed * -1;
+    }
+
+    System.out.println(targetAngle + ", " + rotSpeed);
 
     driveSubsystem.drive(new ChassisSpeeds(ySpeed, xSpeed, 0));
 
@@ -98,6 +129,6 @@ public class AlignAT extends CommandBase {
     if(!limelightSubsystem.getTargets()) {
       return true;
     }
-    return Math.abs(targetPose.getX()) < 0.05 && Math.abs(targetPose.getY()) < thresh;
+    return Math.abs(targetPose.getX()) < 0.05 && Math.abs(targetPose.getY()) < thresh && Math.abs(targetAngle.getDegrees()) < degreesThresh;
   }
 }

@@ -364,6 +364,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
         }
 
         public void resetOdometry() {
+                zeroGyroscope();
                 RobotContainer.getOdometry().resetPosition(getGyroscopeRotation(),
                                 new SwerveModulePosition[] { frontLeftPos(), frontRightPos(), backLeftPos(),
                                                 frontRightPos() },
@@ -372,6 +373,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
         }
 
         public void resetOdometry(Pose2d resetPos) {
+                zeroGyroscope();
                 RobotContainer.getOdometry().resetPosition(getGyro(),
                                 new SwerveModulePosition[] { frontLeftPos(), frontRightPos(), backLeftPos(),
                                                 backRightPos() },

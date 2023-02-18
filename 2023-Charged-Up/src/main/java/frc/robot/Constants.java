@@ -30,10 +30,13 @@ public final class Constants {
   }
 
   public static class Pneumatics {
-    public static final int CLAW_FORWARD_CHANNEL = 6;
-    public static final int CLAW_REVERSE_CHANNEL = 7;
+    public static final int CLAW_CHANNEL = 6;
+    //public static final int CLAW_REVERSE_CHANNEL = 7;
     public static final int INTAKE_FORWARD_CHANNEL = 4;
     public static final int INTAKE_REVERSE_CHANNEL = 5;
+
+    public static final int INTAKE_DEPLOY_FORWARD_CHANNEL = 3;
+    public static final int INTAKE_DEPLOY_REVERSE_CHANNEL = 8;
   }
 
   public static class Controller {
@@ -59,8 +62,8 @@ public final class Constants {
     public static final double SWIVEL_SPEED = 0.15;
     public static final double EXTEND_SPEED = 0.25;
 
-    public static final int TICKS_TO_HIGH = 300;
-    public static final int TICKS_TO_MID = 200;
+    public static final int TICKS_TO_HIGH = 400;
+    public static final int TICKS_TO_MID = 315;
     public static final int TICKS_TO_BOTTOM = 50;
 
     public static final int TICKS_TO_FAR = 8000;
@@ -68,7 +71,21 @@ public final class Constants {
 
     public static final int TICK_THRESHOLD = 2;
 
-    public static final PIDController LevelPID = new PIDController(0.3, 0, 0);
+    public static final int MAX_TICKS = 400;
+    //public static final int MIN_TICKS = -5;
+
+    public static final PIDController LevelPID = new PIDController(0.4, 0, 0);
+    public static final PIDController ExtendPID = new PIDController(0.2, 0, 0);
+
+    public static final double KS = 0.32889;
+    public static final double KA = 2.4516;
+    public static final double KG = 3.3777;
+    public static final double KV = 6.3053;
+
+    public static final double EXTEND_KS = 0.032812;
+    public static final double EXTEND_KA = 0.00040743;
+    public static final double EXTEND_KG = -0.27321;
+    public static final double EXTEND_KV = 0.019186;
   }
 
   public static class Drivetrain {
@@ -77,22 +94,22 @@ public final class Constants {
     public static final int FRONT_LEFT_DRIVE_ID = 1;
     public static final int FRONT_LEFT_STEER_ID = 2;
     public static final int FRONT_LEFT_ENCODER_ID = 1;
-    public static final double FRONT_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(291.17889404296875);
+    public static final double FRONT_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(290.91796875);
 
     public static final int FRONT_RIGHT_DRIVE_ID = 3;
     public static final int FRONT_RIGHT_STEER_ID = 4;
     public static final int FRONT_RIGHT_ENCODER_ID = 2;
-    public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(280.951904296875);
+    public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(286.083984375);
 
     public static final int BACK_LEFT_DRIVE_ID = 7;
     public static final int BACK_LEFT_STEER_ID = 8;
     public static final int BACK_LEFT_ENCODER_ID = 4;
-    public static final double BACK_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(296.01287841796875);
+    public static final double BACK_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(295.916748046875);
 
     public static final int BACK_RIGHT_DRIVE_ID = 5;
     public static final int BACK_RIGHT_STEER_ID = 6;
     public static final int BACK_RIGHT_ENCODER_ID = 3;
-    public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(288.62457275390625);
+    public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(285.7269287109375);
 
     public static final double DRIVETRAIN_TRACKWIDTH_METERS = 0.4572;
     public static final double DRIVETRAIN_WHEELBASE_METERS = 0.4572;
@@ -109,9 +126,9 @@ public final class Constants {
       public static final TrapezoidProfile.Constraints ROT_PROFILE = new TrapezoidProfile.Constraints(6380.0/60.0, 10*Math.PI);
 
       
-      public static final PIDController X_PID_CONTROLLER = new PIDController(.2358, 0, 0.18);
+      public static final PIDController X_PID_CONTROLLER = new PIDController(.2353, 0.00001, 0.19);
       
-      public static final PIDController Y_PID_CONTROLLER = new PIDController(.00709, 0.03, 0.07);
+      public static final PIDController Y_PID_CONTROLLER = new PIDController(.03709, 0.0, 0.07);
       
       public static final ProfiledPIDController ROT_PID_CONTROLLER = new ProfiledPIDController(0.415, 0, 0.205,
               ROT_PROFILE);

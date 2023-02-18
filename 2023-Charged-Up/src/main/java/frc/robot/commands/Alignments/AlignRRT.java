@@ -30,7 +30,7 @@ public class AlignRRT extends CommandBase {
   @Override
   public void execute() {
 
-    //0-2 are offset in meters, goes x, y, z, rest are rotations I assume
+    //0-2 are offset in meters, goes x, y, z, rest are rotations I assume hi mason
     
     // MOVE TO SUBSYSTEM, more organized
 

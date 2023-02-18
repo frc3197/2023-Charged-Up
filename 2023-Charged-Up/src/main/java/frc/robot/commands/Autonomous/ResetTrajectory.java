@@ -43,6 +43,7 @@ public class ResetTrajectory extends InstantCommand {
       }
     // DriveSubsystem.getGyroscopeObj().setAngleAdjustment(trajectory.getInitialState().holonomicRotation.getDegrees());
     driveSubsystem.resetOdometry(new Pose2d(trajectory.getInitialState().poseMeters.getTranslation(),trajectory.getInitialState().holonomicRotation));
+    driveSubsystem.zeroGyroscope();
   }
   else{
     // DriveSubsystem.getGyroscopeObj().setAngleAdjustment(trajectory.getEndState().holonomicRotation.getDegrees());

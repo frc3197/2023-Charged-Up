@@ -6,6 +6,7 @@ package frc.robot.commands.Arm;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants;
 import frc.robot.subsystems.ArmSubsystem;
@@ -49,7 +50,7 @@ public class Swivel extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-
+    m_subsystem.setMove(true);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -61,21 +62,24 @@ public class Swivel extends CommandBase {
       this.val = this.maxVal;
     }
       m_subsystem.swivel(val);
-      System.out.println(m_subsystem.getTicks());
-        //swivelPID.calculate(m_subsystem.getTicks(), GoalTicks);
-
+      //System.out.println("ENCODER-SWIVEL: " + m_subsystem.getTicks());
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     m_subsystem.swivel(0);
+    m_subsystem.setMove(false);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
 
+    if(m_subsystem.getManuelMove()) {
+      m_subsystem.setMove(false);
+      return true;
+    }
     //Finished if the tick value is within the threshold
     return false;
     //Math.abs(m_subsystem.getTicks() - GoalTicks) < Constants.Arm.TICK_THRESHOLD;

@@ -7,21 +7,17 @@ package frc.robot.commands.Arm;
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
-import frc.robot.RobotContainer;
 import frc.robot.subsystems.ArmSubsystem;
 
-public class Extend extends CommandBase {
-  /** Creates a new Extend. */
-  ArmSubsystem m_subsystem;
-  double val;
-  //ElevatorFeedforward feedforward;
+public class ExtendLevel extends CommandBase {
 
-  public Extend(ArmSubsystem m_subsystem, double val) {
-    // Use addRequirements() here to declare subsystem dependencies.
-    this.m_subsystem = m_subsystem;
-    this.val = val;
-    //feedforward = new ElevatorFeedforward(Constants.Arm.EXTEND_KS, Constants.Arm.EXTEND_KG, Constants.Arm.EXTEND_KV, Constants.Arm.EXTEND_KS);
-    addRequirements(m_subsystem);
+  ElevatorFeedforward feedforward;
+  ArmSubsystem subsystem;
+  
+  public ExtendLevel(ArmSubsystem sub) {
+    feedforward = new ElevatorFeedforward(Constants.Arm.EXTEND_KS, Constants.Arm.EXTEND_KG, Constants.Arm.EXTEND_KV, Constants.Arm.EXTEND_KS);
+    subsystem = sub;
+    addRequirements(subsystem);
   }
 
   // Called when the command is initially scheduled.
@@ -31,21 +27,19 @@ public class Extend extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    //double feedVal = feedforward.calculate(0) / 4.0;
-    m_subsystem.extend(val);
-    m_subsystem.setExtending(true);
+    if(!subsystem.getExtending()) {
+      double feedVal = feedforward.calculate(0) / 4.0;
+      subsystem.extend(feedVal);
+    }
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    m_subsystem.setExtending(false);
-    m_subsystem.extend(0);
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return subsystem.getExtending();
   }
 }

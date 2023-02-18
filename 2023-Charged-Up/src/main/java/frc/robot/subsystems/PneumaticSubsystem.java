@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -9,12 +10,13 @@ import static edu.wpi.first.wpilibj.DoubleSolenoid.Value.*;
 
 public class PneumaticSubsystem extends SubsystemBase {
   
-  DoubleSolenoid clawSolenoid;
+  //DoubleSolenoid clawSolenoid;
+  Solenoid clawSolenoid;
   DoubleSolenoid intakeSolenoid;
 
   public PneumaticSubsystem() {
-    clawSolenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, Constants.Pneumatics.CLAW_FORWARD_CHANNEL, Constants.Pneumatics.CLAW_REVERSE_CHANNEL);
-    clawSolenoid.set(kReverse);
+    clawSolenoid = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.Pneumatics.CLAW_CHANNEL);
+    //clawSolenoid.set(kReverse);
     intakeSolenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, Constants.Pneumatics.INTAKE_FORWARD_CHANNEL, Constants.Pneumatics.INTAKE_REVERSE_CHANNEL);
     intakeSolenoid.set(kReverse);
   }
@@ -24,15 +26,15 @@ public class PneumaticSubsystem extends SubsystemBase {
   }
 
   public void closeClaw() {
-    if(clawSolenoid.get() == kForward) {
+    /*if(clawSolenoid.get() == kForward) {
       clawSolenoid.toggle();
-    }
+    }*/
   }
 
   public void openClaw() {
-    if(clawSolenoid.get() == kReverse) {
+    /*if(clawSolenoid.get() == kReverse) {
       clawSolenoid.toggle();
-    }
+    }*/
   }
 
   public void toggleIntake() {
