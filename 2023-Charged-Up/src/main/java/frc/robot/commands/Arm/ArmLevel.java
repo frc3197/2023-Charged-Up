@@ -40,10 +40,10 @@ public class ArmLevel extends CommandBase {
   @Override
   public void execute() {
     if (!this.subsystem.getMove()) {
-      double val = feed.calculate(subsystem.getRad() - (Math.PI * (6 / 18.0)), 0.0, 0.0);
+      double val = feed.calculate(subsystem.getRad() - (Math.PI * (0.5)), 0.0, 0.0);
       //System.out.println("Feed Forward: " + val / (Math.PI * 2) / 2.0);
       subsystem.getSpeed();
-      val /= 8.00;
+      val /= 2.5;
 
       subsystem.swivel((val / (Math.PI * 2)));
     }

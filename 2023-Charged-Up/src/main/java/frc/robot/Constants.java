@@ -32,11 +32,12 @@ public final class Constants {
   public static class Pneumatics {
     public static final int CLAW_CHANNEL = 6;
     //public static final int CLAW_REVERSE_CHANNEL = 7;
-    public static final int INTAKE_FORWARD_CHANNEL = 4;
-    public static final int INTAKE_REVERSE_CHANNEL = 5;
+
+    public static final int INTAKE_FORWARD_CHANNEL = 5;
+    public static final int INTAKE_REVERSE_CHANNEL = 4;
 
     public static final int INTAKE_DEPLOY_FORWARD_CHANNEL = 3;
-    public static final int INTAKE_DEPLOY_REVERSE_CHANNEL = 8;
+    public static final int INTAKE_DEPLOY_REVERSE_CHANNEL = 2;
   }
 
   public static class Controller {
@@ -45,10 +46,7 @@ public final class Constants {
   }
 
   public static class Intake {
-    public static final int MOTOR_DEPLOY_ID = 0;
     public static final int MOTOR_SPIN_ID = 11;
-
-    public static final double DEPLOY_SPEED = 0.25;
     public static final double SPIN_SPEED = 0.90;
   }
 
@@ -59,12 +57,12 @@ public final class Constants {
     public static final int ENCODER_INPUT_ID = 0;
     public static final int ENCODER_OUTPUT_ID = 1;
 
-    public static final double SWIVEL_SPEED = 0.15;
-    public static final double EXTEND_SPEED = 0.25;
+    public static final double SWIVEL_SPEED = 0.25;
+    public static final double EXTEND_SPEED = 0.45;
 
-    public static final int TICKS_TO_HIGH = 400;
-    public static final int TICKS_TO_MID = 315;
-    public static final int TICKS_TO_BOTTOM = 50;
+    public static final double TICKS_TO_HIGH = 0.775;
+    public static final double TICKS_TO_MID = 315;
+    public static final double TICKS_TO_BOTTOM = 50;
 
     public static final int TICKS_TO_FAR = 8000;
     public static final int TICKS_TO_CLOSE = 2500;
@@ -137,6 +135,5 @@ public final class Constants {
 // BEST SO FAR .1 .1 3.4
 
     }
-
   }
 }

@@ -23,6 +23,7 @@ import com.pathplanner.lib.auto.PIDConstants;
 import com.pathplanner.lib.auto.SwerveAutoBuilder;
 import com.pathplanner.lib.commands.PPSwerveControllerCommand;
 
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -86,12 +87,15 @@ public class RobotContainer {
   static PneumaticSubsystem pneumaticSubsystem = new PneumaticSubsystem();
   static ArmSubsystem armSubsystem = new ArmSubsystem();
   Limelight limelightSubsystem = new Limelight();
+  
 
   @SuppressWarnings("rawtypes")
   private static SendableChooser m_autoChooser;
 
   @SuppressWarnings("rawtypes")
   private static SendableChooser m_allianceChooser;
+
+  
   
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -104,6 +108,7 @@ public class RobotContainer {
     
     m_autoChooser.addOption("practice", AutoLookup.getAuto("practice"));
     m_autoChooser.addOption("1PLACE", AutoLookup.getAuto("1PLACE"));
+    m_autoChooser.addOption("SussexAuto", AutoLookup.getAuto("SussexAuto"));
 
     SmartDashboard.putData(m_autoChooser);
 
@@ -124,6 +129,9 @@ public class RobotContainer {
 
     m_drivetrainSubsystem.resetOdometry();
     // Configure the button bindings
+
+    CameraServer.startAutomaticCapture();
+
     configureButtonBindings();
   }
 
@@ -157,7 +165,7 @@ public class RobotContainer {
     driveController.leftBumper().whileTrue(new IntakePneumatic(pneumaticSubsystem));
 
     driveController.leftTrigger(0.1).whileTrue(new AlignAT(limelightSubsystem, m_drivetrainSubsystem));
-    driveController.rightTrigger(0.1).onTrue(new Level(m_drivetrainSubsystem, 1));
+    //driveController.rightTrigger(0.1).onTrue(new Level(m_drivetrainSubsystem, 1));
 
     //extend (WHILE HELD)
     armController.rightBumper().whileTrue(new Extend(armSubsystem, Constants.Arm.EXTEND_SPEED ));
@@ -179,13 +187,13 @@ public class RobotContainer {
     armController.x().whileTrue(new ClawPneumatic(pneumaticSubsystem));
 
     //Automated Swivel ()
-    armController.y().onTrue(new SwivelAutomatic(armSubsystem, "high"));
-    armController.b().onTrue(new SwivelAutomatic(armSubsystem, "mid"));
-    armController.a().onTrue(new SwivelAutomatic(armSubsystem, "low"));
+    //armController.y().onTrue(new SwivelAutomatic(armSubsystem, "high"));
+    //armController.b().onTrue(new SwivelAutomatic(armSubsystem, "mid"));
+    //armController.a().onTrue(new SwivelAutomatic(armSubsystem, "low"));
 
-    armController.y().onFalse(new SwivelEnd(armSubsystem));
-    armController.b().onFalse(new SwivelEnd(armSubsystem));
-    armController.a().onFalse(new SwivelEnd(armSubsystem));
+    //armController.y().onFalse(new SwivelEnd(armSubsystem));
+    //armController.b().onFalse(new SwivelEnd(armSubsystem));
+    //armController.a().onFalse(new SwivelEnd(armSubsystem));
 
     armController.povUp().onTrue(new ExtendAutomatic(armSubsystem, "far"));
     armController.povDown().onTrue(new ExtendAutomatic(armSubsystem, "close"));

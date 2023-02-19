@@ -12,10 +12,6 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.Limelight;
 
-/*
-
- */
-
 
 public class AlignAT extends CommandBase {
   Limelight limelightSubsystem;

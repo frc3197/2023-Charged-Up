@@ -15,7 +15,7 @@ public class SwivelAutomatic extends CommandBase {
 
   ArmSubsystem subsystem;
   String level;
-  int GoalTicks;
+  double GoalTicks;
   PIDController levelPID;
   ArmFeedforward feedforward;
 

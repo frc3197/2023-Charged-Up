@@ -34,6 +34,10 @@ public class AutoLookup {
                 new RunAutonomous(RobotContainer.getDriveSubsystem(), PathLookup.getContainer("1.2")),
                 new RunAutonomous(RobotContainer.getDriveSubsystem(), PathLookup.getContainer("1.3.PLACE"))
             );
+        case "SussexAuto":
+        ret = new AutoRoutine(
+            new RunAutonomous(RobotContainer.getDriveSubsystem(), PathLookup.getContainer("practice"))
+        );
     }
     return ret;
     }

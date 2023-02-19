@@ -13,12 +13,14 @@ public class PneumaticSubsystem extends SubsystemBase {
   //DoubleSolenoid clawSolenoid;
   Solenoid clawSolenoid;
   DoubleSolenoid intakeSolenoid;
+  DoubleSolenoid intakeDep;
 
   public PneumaticSubsystem() {
     clawSolenoid = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.Pneumatics.CLAW_CHANNEL);
-    //clawSolenoid.set(kReverse);
     intakeSolenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, Constants.Pneumatics.INTAKE_FORWARD_CHANNEL, Constants.Pneumatics.INTAKE_REVERSE_CHANNEL);
-    intakeSolenoid.set(kReverse);
+    intakeDep = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, Constants.Pneumatics.INTAKE_DEPLOY_FORWARD_CHANNEL, Constants.Pneumatics.INTAKE_DEPLOY_REVERSE_CHANNEL);
+    intakeSolenoid.set(kOff);
+    intakeDep.set(kOff);
   }
 
   public void toggleClaw() {
@@ -51,6 +53,11 @@ public class PneumaticSubsystem extends SubsystemBase {
     if(intakeSolenoid.get() == kReverse) {
       intakeSolenoid.toggle();
     }
+  }
+
+  public void turnOffIntake()
+  {
+    intakeDep.set(kOff);
   }
 
   @Override

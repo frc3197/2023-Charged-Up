@@ -20,7 +20,7 @@ public class Swivel extends CommandBase {
   double maxVal;
   int GoalTicks;
   PIDController swivelPID;
-  Encoder throughBore;
+  //Encoder throughBore;
   ArmFeedforward feedforward;
   CommandXboxController controller;
   int targetAxis = -1;
@@ -62,7 +62,7 @@ public class Swivel extends CommandBase {
       this.val = this.maxVal;
     }
       m_subsystem.swivel(val);
-      //System.out.println("ENCODER-SWIVEL: " + m_subsystem.getTicks());
+      System.out.println("ENCODER-SWIVEL: " + m_subsystem.getTicks());
   }
 
   // Called once the command ends or is interrupted.
@@ -75,7 +75,6 @@ public class Swivel extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-
     if(m_subsystem.getManuelMove()) {
       m_subsystem.setMove(false);
       return true;

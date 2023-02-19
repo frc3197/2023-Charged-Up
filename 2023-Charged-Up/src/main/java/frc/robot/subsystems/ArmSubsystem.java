@@ -6,8 +6,11 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.RelativeEncoder;
 
+import edu.wpi.first.wpilibj.AnalogEncoder;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -25,7 +28,9 @@ public class ArmSubsystem extends SubsystemBase {
 
   private boolean extending = false;
 
-  Encoder throughBore = new Encoder(Constants.Arm.ENCODER_INPUT_ID, Constants.Arm.ENCODER_OUTPUT_ID);
+  //Encoder throughBore = new Encoder();
+  DutyCycleEncoder encoder;
+  
   //RelativeEncoder extendEncoder;
 
   public ArmSubsystem() {
@@ -34,6 +39,8 @@ public class ArmSubsystem extends SubsystemBase {
 
     extendMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
     extendMotor.setSelectedSensorPosition(0);
+
+    encoder = new DutyCycleEncoder(0);
   }
 
   @Override
@@ -57,21 +64,22 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public void resetEncoder() {
-    throughBore.reset();
+    encoder.reset();
   }
 
   public double getSpeed() {
    // System.out.print("RATE: " + throughBore.getRate());
-    return throughBore.getRate();
+    return 0;
   }
 
-  public int getTicks() {
-    System.out.println(throughBore.getDistance());
-    return throughBore.get() * -1;
+  public double getTicks() {
+    //System.out.println(throughBore.get() * -1);
+    System.out.println(encoder.isConnected());
+    return encoder.getAbsolutePosition();
   }
 
   public double getRad() {
-    return ((double)throughBore.get() * -1/2048.0) * Math.PI * 2.0;
+    return ((double)encoder.getAbsolutePosition() * 1/2048.0) * Math.PI * 2.0;
   }
 
   public void setMove(boolean bool) {
