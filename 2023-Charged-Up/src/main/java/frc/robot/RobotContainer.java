@@ -43,7 +43,6 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 //import frc.robot.commands.AutoLookup;
 import frc.robot.commands.DefaultDriveCommand;
-import frc.robot.commands.ResetArmEncoder;
 import frc.robot.commands.ZeroGyro;
 import frc.robot.commands.Alignments.AlignAT;
 import frc.robot.commands.Alignments.Level;
@@ -51,9 +50,11 @@ import frc.robot.commands.Arm.ArmLevel;
 import frc.robot.commands.Arm.Extend;
 import frc.robot.commands.Arm.ExtendAutomatic;
 import frc.robot.commands.Arm.ExtendLevel;
+import frc.robot.commands.Arm.ResetArmEncoder;
 import frc.robot.commands.Arm.Swivel;
 import frc.robot.commands.Arm.SwivelAutomatic;
 import frc.robot.commands.Arm.SwivelEnd;
+import frc.robot.commands.Arm.ZeroExtendEncoder;
 import frc.robot.commands.Autonomous.AutoLookup;
 import frc.robot.commands.Intake.SpinIntake;
 import frc.robot.commands.Pneumatics.ClawPneumatic;
@@ -107,8 +108,8 @@ public class RobotContainer {
     m_autoChooser.setDefaultOption("Nothing", null);
     
     m_autoChooser.addOption("practice", AutoLookup.getAuto("practice"));
-    m_autoChooser.addOption("1PLACE", AutoLookup.getAuto("1PLACE"));
-    m_autoChooser.addOption("SussexAuto", AutoLookup.getAuto("SussexAuto"));
+    m_autoChooser.addOption("1PLACEB", AutoLookup.getAuto("1PLACEB"));
+    m_autoChooser.addOption("Tester", AutoLookup.getAuto("Tester"));
 
     SmartDashboard.putData(m_autoChooser);
 
@@ -176,30 +177,30 @@ public class RobotContainer {
     armController.leftBumper().onFalse(new ExtendLevel(armSubsystem));
 
     //Swivel Up (WHILE HELD)
-    armController.leftTrigger(0.1).whileTrue(new Swivel(armSubsystem, Constants.Arm.SWIVEL_SPEED, armController, 2));
+    armController.leftTrigger(0.1).whileTrue(new Swivel(armSubsystem, pneumaticSubsystem, Constants.Arm.SWIVEL_SPEED, armController, 2));
     armController.leftTrigger(0.1).onFalse(new SwivelEnd(armSubsystem));
 
     //Swivel Down (WHILE HELD)
-    armController.rightTrigger(0.1).whileTrue(new Swivel(armSubsystem, -Constants.Arm.SWIVEL_SPEED, armController, 3));
+    armController.rightTrigger(0.1).whileTrue(new Swivel(armSubsystem, pneumaticSubsystem, -Constants.Arm.SWIVEL_SPEED, armController, 3));
     armController.rightTrigger(0.1).onFalse(new SwivelEnd(armSubsystem));
 
     //Claw Grab (TOGGLE)
     armController.x().whileTrue(new ClawPneumatic(pneumaticSubsystem));
 
     //Automated Swivel ()
-    //armController.y().onTrue(new SwivelAutomatic(armSubsystem, "high"));
-    //armController.b().onTrue(new SwivelAutomatic(armSubsystem, "mid"));
-    //armController.a().onTrue(new SwivelAutomatic(armSubsystem, "low"));
+    armController.y().onTrue(new SwivelAutomatic(armSubsystem, pneumaticSubsystem, "high"));
+    armController.b().onTrue(new SwivelAutomatic(armSubsystem, pneumaticSubsystem, "mid"));
+    armController.a().onTrue(new SwivelAutomatic(armSubsystem, pneumaticSubsystem, "low"));
 
-    //armController.y().onFalse(new SwivelEnd(armSubsystem));
-    //armController.b().onFalse(new SwivelEnd(armSubsystem));
-    //armController.a().onFalse(new SwivelEnd(armSubsystem));
+    armController.y().onFalse(new SwivelEnd(armSubsystem));
+    armController.b().onFalse(new SwivelEnd(armSubsystem));
+    armController.a().onFalse(new SwivelEnd(armSubsystem));
 
     armController.povUp().onTrue(new ExtendAutomatic(armSubsystem, "far"));
     armController.povDown().onTrue(new ExtendAutomatic(armSubsystem, "close"));
 
     //Reset Arm Encoder (ON PRESS)
-    armController.start().whileTrue(new ResetArmEncoder(armSubsystem));
+    armController.start().whileTrue(new ZeroExtendEncoder(armSubsystem));
   }
 
   public void test() {

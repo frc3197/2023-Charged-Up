@@ -9,10 +9,6 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.ArmSubsystem;
 
-/*
-
-*/
-
 public class ArmLevel extends CommandBase {
   /** Creates a new ArmLevel. */
 
@@ -43,9 +39,12 @@ public class ArmLevel extends CommandBase {
       double val = feed.calculate(subsystem.getRad() - (Math.PI * (0.5)), 0.0, 0.0);
       //System.out.println("Feed Forward: " + val / (Math.PI * 2) / 2.0);
       subsystem.getSpeed();
-      val /= 2.5;
+
+      //Randians to Quaternians
+      val /= Constants.Arm.LEVEL_CONSTANT;
 
       subsystem.swivel((val / (Math.PI * 2)));
+      //System.out.println(val / (Math.PI * 2));
     }
   }
 

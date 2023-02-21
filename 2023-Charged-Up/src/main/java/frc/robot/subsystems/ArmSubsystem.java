@@ -21,7 +21,8 @@ public class ArmSubsystem extends SubsystemBase {
   WPI_TalonFX swivelMotor;
   WPI_TalonFX extendMotor;
 
-  double maxSwivelSpeed = 0.15;
+  double maxSwivelSpeed = Constants.Arm.SWIVEL_SPEED;
+  double maxExtendSpeed = Constants.Arm.EXTEND_SPEED;
 
   private boolean isMoving = false;
   private boolean cancelManuel = false;
@@ -59,12 +60,22 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public void extend(double val) {
+    if(val>maxExtendSpeed)
+    {
+      val = maxExtendSpeed;
+    }
+    if(val < -maxExtendSpeed)
+    {
+      val = -maxExtendSpeed;
+    }
     extendMotor.set(val);
     System.out.println("ENCODER EXTEND: " + extendMotor.getSelectedSensorPosition());
   }
 
   public void resetEncoder() {
-    encoder.reset();
+    //encoder.reset();
+    //for(int i = 0; i < 100; i ++)
+    //System.out.println("Reset Encoder: " + encoder.getAbsolutePosition());
   }
 
   public double getSpeed() {
@@ -73,9 +84,10 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public double getTicks() {
+    encoder.setPositionOffset(Constants.Arm.SWIVEL_ABSOLUTE_OFFSET);
     //System.out.println(throughBore.get() * -1);
-    System.out.println(encoder.isConnected());
-    return encoder.getAbsolutePosition();
+    //System.out.println(encoder.isConnected());
+    return encoder.getAbsolutePosition() - encoder.getPositionOffset();
   }
 
   public double getRad() {
@@ -109,5 +121,20 @@ public class ArmSubsystem extends SubsystemBase {
   public double getExtendTicks()
   {
     return extendMotor.getSelectedSensorPosition();
+  }
+
+  public double mapAbsoluteEncoder() {
+    double startValue = encoder.getAbsolutePosition() * 10;
+    if(startValue > 5) {
+      startValue -= 5;
+    } else {
+      startValue += 5;
+    }
+    return startValue;
+  }
+
+  public void zeroExtendEncoder()
+  {
+    extendMotor.setSelectedSensorPosition(0);
   }
 }

@@ -14,7 +14,7 @@ public class ExtendAutomatic extends CommandBase {
   ArmSubsystem subsystem;
   PIDController extendPID;
   String distance;
-  int GoalTicks;
+  double GoalTicks;
   public ExtendAutomatic(ArmSubsystem subsystem, String distance) {
     this.subsystem = subsystem;
     this.distance = distance;
@@ -27,11 +27,11 @@ public class ExtendAutomatic extends CommandBase {
   public void initialize() {
     if(distance.equals("far"))
     {
-      GoalTicks = Constants.Arm.TICKS_TO_FAR;
+      GoalTicks = Constants.Arm.TICKS_TO_FAR_EXTEND;
     }
     else if(distance.equals("close"))
     {
-      GoalTicks = Constants.Arm.TICKS_TO_CLOSE;
+      GoalTicks = Constants.Arm.TICKS_TO_CLOSE_EXTEND;
     }
     else
     {
@@ -45,7 +45,8 @@ public class ExtendAutomatic extends CommandBase {
   public void execute() {
     this.subsystem.setExtending(true);
     //this.subsystem.setManuelMove(true);
-    subsystem.extend(extendPID.calculate(subsystem.getTicks(), GoalTicks));
+    subsystem.extend(Constants.Arm.ExtendPID.calculate(subsystem.getExtendTicks(), GoalTicks) / 200.0);
+    System.out.println(Constants.Arm.ExtendPID.calculate(subsystem.getExtendTicks(), GoalTicks) / 200.0);
   }
 
   // Called once the command ends or is interrupted.
@@ -55,7 +56,7 @@ public class ExtendAutomatic extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if(Math.abs(subsystem.getTicks() - GoalTicks) < Constants.Arm.TICK_THRESHOLD) {
+    if(Math.abs(subsystem.getExtendTicks() - GoalTicks) < Constants.Arm.EXTEND_TICK_THRESHOLD) {
       subsystem.extend(0);
       this.subsystem.setExtending(false);
       //this.subsystem.setManuelMove(false);

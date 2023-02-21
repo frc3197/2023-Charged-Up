@@ -51,6 +51,11 @@ public final class Constants {
   }
 
   public static class Arm {
+
+    public static final double SWIVEL_ABSOLUTE_OFFSET = -0.07030065175751629 * 0;
+
+    public static final double LEVEL_CONSTANT = 3.0;
+
     public static final int SWIVEL_MOTOR_ID = 9;
     public static final int EXTENTION_MOTOR_ID = 10;
 
@@ -60,20 +65,21 @@ public final class Constants {
     public static final double SWIVEL_SPEED = 0.25;
     public static final double EXTEND_SPEED = 0.45;
 
-    public static final double TICKS_TO_HIGH = 0.775;
-    public static final double TICKS_TO_MID = 315;
-    public static final double TICKS_TO_BOTTOM = 50;
+    public static final double TICKS_TO_HIGH = 2.60;
+    public static final double TICKS_TO_MID = 3.25;
+    public static final double TICKS_TO_BOTTOM = 5.0;
 
-    public static final int TICKS_TO_FAR = 8000;
-    public static final int TICKS_TO_CLOSE = 2500;
+    public static final double TICKS_TO_FAR_EXTEND = 60000.0;
+    public static final double TICKS_TO_CLOSE_EXTEND = 40000.0;
 
-    public static final int TICK_THRESHOLD = 2;
+    public static final double TICK_THRESHOLD = .2;
+    public static final double EXTEND_TICK_THRESHOLD = 100;
 
     public static final int MAX_TICKS = 400;
     //public static final int MIN_TICKS = -5;
 
     public static final PIDController LevelPID = new PIDController(0.4, 0, 0);
-    public static final PIDController ExtendPID = new PIDController(0.2, 0, 0);
+    public static final PIDController ExtendPID = new PIDController(0.01, 0, 0);
 
     public static final double KS = 0.32889;
     public static final double KA = 2.4516;

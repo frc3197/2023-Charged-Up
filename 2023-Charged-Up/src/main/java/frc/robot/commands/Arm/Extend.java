@@ -14,13 +14,13 @@ public class Extend extends CommandBase {
   /** Creates a new Extend. */
   ArmSubsystem m_subsystem;
   double val;
-  //ElevatorFeedforward feedforward;
+  ElevatorFeedforward feedforward;
 
   public Extend(ArmSubsystem m_subsystem, double val) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.m_subsystem = m_subsystem;
     this.val = val;
-    //feedforward = new ElevatorFeedforward(Constants.Arm.EXTEND_KS, Constants.Arm.EXTEND_KG, Constants.Arm.EXTEND_KV, Constants.Arm.EXTEND_KS);
+    feedforward = new ElevatorFeedforward(Constants.Arm.EXTEND_KS, Constants.Arm.EXTEND_KG, Constants.Arm.EXTEND_KV, Constants.Arm.EXTEND_KS);
     addRequirements(m_subsystem);
   }
 
@@ -31,7 +31,7 @@ public class Extend extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    //double feedVal = feedforward.calculate(0) / 4.0;
+    double feedVal = feedforward.calculate(0) / 4.0;
     m_subsystem.extend(val);
     m_subsystem.setExtending(true);
   }

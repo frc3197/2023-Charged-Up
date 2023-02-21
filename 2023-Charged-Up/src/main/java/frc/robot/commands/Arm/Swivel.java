@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants;
 import frc.robot.subsystems.ArmSubsystem;
+import frc.robot.subsystems.PneumaticSubsystem;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.XboxController;
 
@@ -23,9 +24,11 @@ public class Swivel extends CommandBase {
   //Encoder throughBore;
   ArmFeedforward feedforward;
   CommandXboxController controller;
+  PneumaticSubsystem pneumatics;
   int targetAxis = -1;
+  boolean once = false;
    
-  public Swivel(ArmSubsystem m_subsystem, double val, CommandXboxController controller, int axis) {
+  public Swivel(ArmSubsystem m_subsystem, PneumaticSubsystem p, double val, CommandXboxController controller, int axis) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.m_subsystem = m_subsystem;
     this.maxVal = val;
@@ -33,6 +36,7 @@ public class Swivel extends CommandBase {
     swivelPID = Constants.Arm.LevelPID;
     //feedforward = new ArmFeedforward(0, 0, 0);
     this.targetAxis = axis;
+    pneumatics = p;
 
     addRequirements(m_subsystem);
   }
@@ -61,8 +65,21 @@ public class Swivel extends CommandBase {
     } else {
       this.val = this.maxVal;
     }
+    
+    if(m_subsystem.mapAbsoluteEncoder() > 5 && m_subsystem.mapAbsoluteEncoder() < 6.5) {
+      pneumatics.closeClaw();
+      once = false;
+    } else {
+      pneumatics.enteringZone();
+    } 
+    /*if(m_subsystem.mapAbsoluteEncoder() < 5 && m_subsystem.mapAbsoluteEncoder() > 6.5 &&  !once) {
+      once = true;
+      if(!pneumatics.getPrevious()) {
+        pneumatics.openClaw();
+      }
+    }*/
       m_subsystem.swivel(val);
-      System.out.println("ENCODER-SWIVEL: " + m_subsystem.getTicks());
+      System.out.println("ENCODER-SWIVEL: " + m_subsystem.mapAbsoluteEncoder());
   }
 
   // Called once the command ends or is interrupted.
@@ -75,10 +92,10 @@ public class Swivel extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if(m_subsystem.getManuelMove()) {
+    /*if(m_subsystem.getManuelMove()) {
       m_subsystem.setMove(false);
       return true;
-    }
+    }*/
     //Finished if the tick value is within the threshold
     return false;
     //Math.abs(m_subsystem.getTicks() - GoalTicks) < Constants.Arm.TICK_THRESHOLD;

@@ -9,16 +9,21 @@ import frc.robot.Constants;
 import static edu.wpi.first.wpilibj.DoubleSolenoid.Value.*;
 
 public class PneumaticSubsystem extends SubsystemBase {
-  
-  //DoubleSolenoid clawSolenoid;
+
+  // DoubleSolenoid clawSolenoid;
   Solenoid clawSolenoid;
   DoubleSolenoid intakeSolenoid;
   DoubleSolenoid intakeDep;
 
+  boolean wasClosed = true;
+  boolean firstZone = true;
+
   public PneumaticSubsystem() {
     clawSolenoid = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.Pneumatics.CLAW_CHANNEL);
-    intakeSolenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, Constants.Pneumatics.INTAKE_FORWARD_CHANNEL, Constants.Pneumatics.INTAKE_REVERSE_CHANNEL);
-    intakeDep = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, Constants.Pneumatics.INTAKE_DEPLOY_FORWARD_CHANNEL, Constants.Pneumatics.INTAKE_DEPLOY_REVERSE_CHANNEL);
+    intakeSolenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, Constants.Pneumatics.INTAKE_FORWARD_CHANNEL,
+        Constants.Pneumatics.INTAKE_REVERSE_CHANNEL);
+    intakeDep = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, Constants.Pneumatics.INTAKE_DEPLOY_FORWARD_CHANNEL,
+        Constants.Pneumatics.INTAKE_DEPLOY_REVERSE_CHANNEL);
     intakeSolenoid.set(kOff);
     intakeDep.set(kOff);
   }
@@ -27,16 +32,28 @@ public class PneumaticSubsystem extends SubsystemBase {
     clawSolenoid.toggle();
   }
 
+  public void enteringZone() {
+    firstZone = true;
+  }
+
   public void closeClaw() {
-    /*if(clawSolenoid.get() == kForward) {
+    if (!clawSolenoid.get()) {
+      if (firstZone) {
+        wasClosed = false;
+      }
+      firstZone = false;
       clawSolenoid.toggle();
-    }*/
+    }
+  }
+
+  public boolean getPrevious() {
+    return wasClosed;
   }
 
   public void openClaw() {
-    /*if(clawSolenoid.get() == kReverse) {
+    if (clawSolenoid.get()) {
       clawSolenoid.toggle();
-    }*/
+    }
   }
 
   public void toggleIntake() {
@@ -44,19 +61,18 @@ public class PneumaticSubsystem extends SubsystemBase {
   }
 
   public void lowerIntake() {
-    if(intakeSolenoid.get() == kForward) {
+    if (intakeSolenoid.get() == kForward) {
       intakeSolenoid.toggle();
     }
   }
 
   public void raiseIntake() {
-    if(intakeSolenoid.get() == kReverse) {
+    if (intakeSolenoid.get() == kReverse) {
       intakeSolenoid.toggle();
     }
   }
 
-  public void turnOffIntake()
-  {
+  public void turnOffIntake() {
     intakeDep.set(kOff);
   }
 
