@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.Limelight;
 
-public class AlignAT extends CommandBase {
+public class AlignOnceAT extends CommandBase {
   Limelight limelightSubsystem;
   DrivetrainSubsystem driveSubsystem;
   int desiredTag;
@@ -24,22 +24,34 @@ public class AlignAT extends CommandBase {
   Pose2d targetPose;
 
   // Need some offset, don't bash into driver station tingz D:
-  double tagOffset = 0.5;
+  double tagOffsetX = 0.5;
+  double tagOffsetY = 0.5;
   double thresh = 0.2;
   double degreesThresh = 1;
   double maxRotationSpeed = 0.4;
   double rotSpeed;
 
-  double maxAlignSpeed = 0.95;
+  double distanceX;
+  double distanceY;
+
+  double maxAlignSpeed = 0.85;
   boolean search;
 
-  public AlignAT(Limelight light, DrivetrainSubsystem subsystem, double offset, boolean search) {
+  public AlignOnceAT(Limelight light, DrivetrainSubsystem subsystem, double offsetX, double offsetY) {
     limelightSubsystem = light;
     // The arguement for pipelines should be either "april" or "tape"
     limelightSubsystem.setPipeline("april");
     driveSubsystem = subsystem;
-    tagOffset = offset;
-    this.search = search;
+    tagOffsetX = offsetX;
+    tagOffsetY = offsetY;
+
+    targetspace = limelightSubsystem.getTargetSpace();
+    targetPose = new Pose2d(targetspace[0]+ tagOffsetX, targetspace[2] + tagOffsetY, new Rotation2d(0.0, 0.0));
+
+    targetAngle = new Rotation2d(targetspace[5]);
+
+    distanceX = targetspace[0];
+    distanceY = targetspace[2];
   }
 
   // Called when the command is initially scheduled.
@@ -53,10 +65,6 @@ public class AlignAT extends CommandBase {
     // robotAngle = limelightSubsystem.getBotRotation();
     // robotPosition = limelightSubsystem.getBotPose();
 
-    targetspace = limelightSubsystem.getTargetSpace();
-    targetPose = new Pose2d(targetspace[0], targetspace[2] + tagOffset, new Rotation2d(0.0, 0.0));
-
-    targetAngle = new Rotation2d(targetspace[5]);
     /*
      * /
      * double xSpeed = (robotPosition.getX() - targetPose.getX()) /6.0; ;
@@ -71,8 +79,8 @@ public class AlignAT extends CommandBase {
     // System.out.println(botRot);
     // if(rotation > Math.PI / 2)
 
-    xSpeed = targetPose.getX() * 1.5;
-    ySpeed = targetPose.getY() * -1.5;
+    xSpeed = distanceX * 1.5;
+    ySpeed = distanceY * -1.5;
     rotSpeed = limelightSubsystem.getRot() * -1.5;
 
     if (search  && Math.abs(driveSubsystem.getRoll()) < 2) {
@@ -122,7 +130,10 @@ public class AlignAT extends CommandBase {
     }
 
     System.out.println(targetspace[2]);
-    driveSubsystem.drive(new ChassisSpeeds(ySpeed, xSpeed, rotSpeed));
+    driveSubsystem.drive(new ChassisSpeeds(ySpeed, xSpeed, 0));
+
+    distanceX -= xSpeed;
+    distanceY -= ySpeed;
 
     // System.out.println(xSpeed + ", " + ySpeed);
     // System.out.println("X: " + xSpeed * -6 + " & " + ("Y: " + ySpeed * 6));

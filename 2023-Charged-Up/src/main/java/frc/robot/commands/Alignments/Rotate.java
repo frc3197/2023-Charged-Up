@@ -8,37 +8,33 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DrivetrainSubsystem;
 
-public class Level extends CommandBase {
-  /** Creates a new Level. */
-  int direction = 1;
-  double levelSpeed = 1;
-  double thresh = 5;
+public class Rotate extends CommandBase {
+  double degrees;
+  double maxRot = 3;
+  double rotSpeed = 0;
 
   DrivetrainSubsystem subsystem;
-  public Level(DrivetrainSubsystem sub, int dir) {
-    subsystem = sub;
-    direction = dir;
+  public Rotate(double degrees, DrivetrainSubsystem subsystem) {
+    this.degrees = degrees;
+    this.subsystem = subsystem;
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+ }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    System.out.println(subsystem.getRoll());
-    double speed = 0;
-    if(subsystem.getRoll() > thresh) {
-      speed = levelSpeed;
+    rotSpeed = ((subsystem.getYaw()) - degrees) /-10;
+    if(rotSpeed > maxRot) {
+      rotSpeed = maxRot;
     }
-    if(subsystem.getRoll() < thresh * -1) {
-      speed = levelSpeed * -1;
+    if(rotSpeed < maxRot * -1) {
+      rotSpeed = maxRot * -1;
     }
-    speed = subsystem.getRoll() / 15;
-    speed *= -0.95;
-    System.out.println("SPEED: " + speed);
-    subsystem.drive(new ChassisSpeeds(speed, 0.0, 0.0));
+    subsystem.drive(new ChassisSpeeds(0, 0, rotSpeed));
   }
 
   // Called once the command ends or is interrupted.
@@ -48,6 +44,6 @@ public class Level extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return Math.abs(rotSpeed) < 0.5;
   }
 }

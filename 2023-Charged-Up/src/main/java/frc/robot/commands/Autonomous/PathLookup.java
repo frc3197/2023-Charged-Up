@@ -16,7 +16,7 @@ public class PathLookup {
         // DOUBLE TIMEOUT, BOOLEAN FIRST_PATH_IN AUTO)
         switch (pathName) {
             case "practice":
-                ret = new PathContainer("practice", getSpeeds(SPEEDS.ONE), 1.25, true, true);
+                ret = new PathContainer("practice", getSpeeds(SPEEDS.ONE), 1.25, false, true);
                 break;
             case "practice2":
                 ret = new PathContainer("practice2", getSpeeds(SPEEDS.ONE), 1.25, false, true);
@@ -30,6 +30,14 @@ public class PathLookup {
             case "1.3.PLACEB":
                 ret = new PathContainer("1.3.PLACE", getSpeeds(SPEEDS.ONE), 3, false, true);
                 break;
+            case "1.pre":
+                ret = new PathContainer("1.pre", getSpeeds(SPEEDS.ONE), 2, false, false);
+                break;
+            case "3.1":
+                ret = new PathContainer("3.1", new double[]{0.5, 0.5}, 4, true, false);
+            case "leaveShort":
+                ret = new PathContainer("leaveShort", new double[]{0.5, 0.5}, 5, false, false);
+            
         }
         return ret;
     }

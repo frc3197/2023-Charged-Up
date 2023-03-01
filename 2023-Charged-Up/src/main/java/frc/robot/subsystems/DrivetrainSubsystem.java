@@ -265,6 +265,14 @@ public class DrivetrainSubsystem extends SubsystemBase {
                 return m_pigeon2.getPitch();
         }
 
+        public double getRoll() {
+                return m_pigeon2.getRoll();
+        }
+
+        public double getYaw() {
+                return m_pigeon2.getYaw();
+        }
+
         public void drive(ChassisSpeeds chassisSpeeds) {
                 m_chassisSpeeds = chassisSpeeds;
                 m_desiredStates = m_kinematics.toSwerveModuleStates(chassisSpeeds);

@@ -92,10 +92,7 @@ public class Swivel extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    /*if(m_subsystem.getManuelMove()) {
-      m_subsystem.setMove(false);
-      return true;
-    }*/
+    
     //Finished if the tick value is within the threshold
     return false;
     //Math.abs(m_subsystem.getTicks() - GoalTicks) < Constants.Arm.TICK_THRESHOLD;

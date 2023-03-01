@@ -15,6 +15,7 @@ public class Extend extends CommandBase {
   ArmSubsystem m_subsystem;
   double val;
   ElevatorFeedforward feedforward;
+  
 
   public Extend(ArmSubsystem m_subsystem, double val) {
     // Use addRequirements() here to declare subsystem dependencies.

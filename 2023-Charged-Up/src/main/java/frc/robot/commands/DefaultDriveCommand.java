@@ -48,4 +48,19 @@ public class DefaultDriveCommand extends CommandBase {
     public void end(boolean interrupted) {
         m_drivetrainSubsystem.drive(new ChassisSpeeds(0.0, 0.0, 0.0));
     }
+
+    public DoubleSupplier getTransXSupplier()
+    {
+        return m_translationXSupplier;
+    }
+
+    public DoubleSupplier getTransYSupplier()
+    {
+        return m_translationYSupplier;
+    }
+
+    public DoubleSupplier getRotationSupplier()
+    {
+        return m_rotationSupplier;
+    }
 }

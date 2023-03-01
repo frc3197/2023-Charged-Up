@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
+import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.PneumaticSubsystem;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
@@ -20,6 +21,7 @@ public class AutoRoutine extends SequentialCommandGroup {
   private static DrivetrainSubsystem m_driveSubsystem = RobotContainer.getDriveSubsystem();
   private static ArmSubsystem m_armSubsystem = RobotContainer.getArmSubsystem();
   private static PneumaticSubsystem m_pneumaticSubsystem = RobotContainer.getPneumaticSubsystem();
+  private static Limelight m_limelightSubsystem = RobotContainer.getLimelightSubsystem();
 
 
   public AutoRoutine(Command... commands) {
@@ -28,6 +30,7 @@ public class AutoRoutine extends SequentialCommandGroup {
     addCommands(commands);
     addRequirements(m_driveSubsystem);
     addRequirements(m_armSubsystem);
+    addRequirements(m_limelightSubsystem);
   }
 
 
@@ -44,6 +47,11 @@ public ArmSubsystem getArmSubsystem()
 public PneumaticSubsystem getPneumaticSubsystem()
 {
   return m_pneumaticSubsystem;
+}
+
+public Limelight getLimelightSubsystem()
+{
+  return m_limelightSubsystem;
 }
 
 }

@@ -25,6 +25,7 @@ public class Limelight extends SubsystemBase {
 
   public double[] getTargetSpace() {
     pose = table.getEntry("botpose_targetspace").getDoubleArray(new double[6]);
+    System.out.println(pose);
     return pose;
   }
 
@@ -40,21 +41,13 @@ public class Limelight extends SubsystemBase {
     }
   }
 
+  public double getRot() {
+    return table.getEntry("botpose").getDoubleArray(new double[6])[5];
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-  }
-
-  public Pose2d getBotPose()
-  {
-    double[] temp = table.getEntry("botpose").getDoubleArray(new double[6]);
-    return new Pose2d(temp[0], temp[2], new Rotation2d(temp[5]));
-  }
-
-  public Rotation2d getBotRotation()
-  {
-    double[] temp = table.getEntry("botpose").getDoubleArray(new double[6]);
-    return new Rotation2d(temp[5]);
   }
 
   public boolean getTargets() {

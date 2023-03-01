@@ -7,17 +7,19 @@ package frc.robot.commands.Alignments;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DrivetrainSubsystem;
+import frc.robot.subsystems.Limelight;
 
-public class Level extends CommandBase {
-  /** Creates a new Level. */
-  int direction = 1;
-  double levelSpeed = 1;
-  double thresh = 5;
+public class AlignCharge extends CommandBase {
+  Limelight limelightSubsyetem;
+  DrivetrainSubsystem driveSubsystem;
+  double ySpeed;
+  double distance;
+  double maxSpeed = 0.75;
+  double thresh = 0.15;
 
-  DrivetrainSubsystem subsystem;
-  public Level(DrivetrainSubsystem sub, int dir) {
-    subsystem = sub;
-    direction = dir;
+  public AlignCharge(Limelight sub, DrivetrainSubsystem train) {
+    limelightSubsyetem = sub;
+    driveSubsystem = train;
   }
 
   // Called when the command is initially scheduled.
@@ -27,18 +29,20 @@ public class Level extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    System.out.println(subsystem.getRoll());
-    double speed = 0;
-    if(subsystem.getRoll() > thresh) {
-      speed = levelSpeed;
+    distance = limelightSubsyetem.getTargetSpace()[2];
+    System.out.println(distance);
+    if(!limelightSubsyetem.getTargets()) {
+      //ySpeed = -0.5;
     }
-    if(subsystem.getRoll() < thresh * -1) {
-      speed = levelSpeed * -1;
+    ySpeed = (distance + 1.6) * -1;
+    ySpeed = -1;
+    if(ySpeed > maxSpeed) {
+      ySpeed = maxSpeed;
     }
-    speed = subsystem.getRoll() / 15;
-    speed *= -0.95;
-    System.out.println("SPEED: " + speed);
-    subsystem.drive(new ChassisSpeeds(speed, 0.0, 0.0));
+    if(ySpeed < maxSpeed * -1) {
+      ySpeed = maxSpeed * -1;
+    }
+    driveSubsystem.drive(new ChassisSpeeds(ySpeed, 0, 0));
   }
 
   // Called once the command ends or is interrupted.
@@ -48,6 +52,6 @@ public class Level extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return Math.abs(distance + 1.75) < thresh;
   }
 }

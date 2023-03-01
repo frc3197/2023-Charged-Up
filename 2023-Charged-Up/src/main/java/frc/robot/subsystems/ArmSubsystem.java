@@ -29,6 +29,8 @@ public class ArmSubsystem extends SubsystemBase {
 
   private boolean extending = false;
 
+  int divideAmount = 150000;
+
   //Encoder throughBore = new Encoder();
   DutyCycleEncoder encoder;
   
@@ -137,4 +139,22 @@ public class ArmSubsystem extends SubsystemBase {
   {
     extendMotor.setSelectedSensorPosition(0);
   }
+
+  public void setDivide(int num)
+  {
+    divideAmount = num;
+  }
+
+  public int getDivide()
+  {
+    return divideAmount;
+  }
+
+  public void setMaxSpeed(double val)
+  {
+    maxSwivelSpeed = Constants.Arm.SWIVEL_SPEED *  val;
+    maxExtendSpeed = Constants.Arm.EXTEND_SPEED *  val;
+  }
+  
+  
 }

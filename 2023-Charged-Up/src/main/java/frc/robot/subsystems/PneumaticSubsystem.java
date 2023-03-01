@@ -8,15 +8,20 @@ import frc.robot.Constants;
 
 import static edu.wpi.first.wpilibj.DoubleSolenoid.Value.*;
 
+import edu.wpi.first.wpilibj.Compressor;
+
 public class PneumaticSubsystem extends SubsystemBase {
 
   // DoubleSolenoid clawSolenoid;
   Solenoid clawSolenoid;
   DoubleSolenoid intakeSolenoid;
   DoubleSolenoid intakeDep;
+  Compressor compressor;
 
   boolean wasClosed = true;
   boolean firstZone = true;
+
+  int numTriggers = 0;
 
   public PneumaticSubsystem() {
     clawSolenoid = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.Pneumatics.CLAW_CHANNEL);
@@ -26,10 +31,12 @@ public class PneumaticSubsystem extends SubsystemBase {
         Constants.Pneumatics.INTAKE_DEPLOY_REVERSE_CHANNEL);
     intakeSolenoid.set(kOff);
     intakeDep.set(kOff);
+    compressor = new Compressor(PneumaticsModuleType.CTREPCM);
   }
 
   public void toggleClaw() {
     clawSolenoid.toggle();
+    numTriggers++;
   }
 
   public void enteringZone() {
@@ -74,6 +81,16 @@ public class PneumaticSubsystem extends SubsystemBase {
 
   public void turnOffIntake() {
     intakeDep.set(kOff);
+  }
+
+  public boolean getCompressor()
+  {
+    return !compressor.isEnabled();
+  }
+
+  public int getTriggers()
+  {
+    return numTriggers;
   }
 
   @Override

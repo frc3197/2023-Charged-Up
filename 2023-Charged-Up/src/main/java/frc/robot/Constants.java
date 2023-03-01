@@ -54,7 +54,7 @@ public final class Constants {
 
     public static final double SWIVEL_ABSOLUTE_OFFSET = -0.07030065175751629 * 0;
 
-    public static final double LEVEL_CONSTANT = 3.0;
+    public static final double LEVEL_CONSTANT = 0.95;
 
     public static final int SWIVEL_MOTOR_ID = 9;
     public static final int EXTENTION_MOTOR_ID = 10;
@@ -62,23 +62,26 @@ public final class Constants {
     public static final int ENCODER_INPUT_ID = 0;
     public static final int ENCODER_OUTPUT_ID = 1;
 
-    public static final double SWIVEL_SPEED = 0.25;
+    public static final double SWIVEL_SPEED = 0.40;
     public static final double EXTEND_SPEED = 0.45;
 
-    public static final double TICKS_TO_HIGH = 2.60;
-    public static final double TICKS_TO_MID = 3.25;
+    public static final double TICKS_TO_HIGH = 2.70;
+    public static final double TICKS_TO_MID = 3.15;
     public static final double TICKS_TO_BOTTOM = 5.0;
+    public static final double TICKS_TO_SUBSTATION = 2.90;
+    public static final double TICKS_TO_ZERO = 5.65;
+    public static final double TICKS_TO_FlOOR = 4.5;
 
-    public static final double TICKS_TO_FAR_EXTEND = 60000.0;
-    public static final double TICKS_TO_CLOSE_EXTEND = 40000.0;
+    public static final int TICKS_TO_FAR_EXTEND = 65000;
+    public static final int TICKS_TO_CLOSE_EXTEND = 10000;
 
-    public static final double TICK_THRESHOLD = .2;
-    public static final double EXTEND_TICK_THRESHOLD = 100;
+    public static final double TICK_THRESHOLD = .35;
+    public static final double EXTEND_TICK_THRESHOLD = 1000;
 
     public static final int MAX_TICKS = 400;
     //public static final int MIN_TICKS = -5;
 
-    public static final PIDController LevelPID = new PIDController(0.4, 0, 0);
+    public static final PIDController LevelPID = new PIDController(0.23, 0, 0);
     public static final PIDController ExtendPID = new PIDController(0.01, 0, 0);
 
     public static final double KS = 0.32889;
@@ -98,22 +101,26 @@ public final class Constants {
     public static final int FRONT_LEFT_DRIVE_ID = 1;
     public static final int FRONT_LEFT_STEER_ID = 2;
     public static final int FRONT_LEFT_ENCODER_ID = 1;
-    public static final double FRONT_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(290.91796875);
+    public static final double FRONT_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(291.45355224609375);
+    //-336.357422
 
     public static final int FRONT_RIGHT_DRIVE_ID = 3;
     public static final int FRONT_RIGHT_STEER_ID = 4;
     public static final int FRONT_RIGHT_ENCODER_ID = 2;
-    public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(286.083984375);
+    public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(341.5374755859375);
+    //-352.6172
 
     public static final int BACK_LEFT_DRIVE_ID = 7;
     public static final int BACK_LEFT_STEER_ID = 8;
     public static final int BACK_LEFT_ENCODER_ID = 4;
-    public static final double BACK_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(295.916748046875);
+    public static final double BACK_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(296.630859375);
+    //-289.160156
 
     public static final int BACK_RIGHT_DRIVE_ID = 5;
     public static final int BACK_RIGHT_STEER_ID = 6;
     public static final int BACK_RIGHT_ENCODER_ID = 3;
-    public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(285.7269287109375);
+    public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(289.86053466796875);
+    //-296.1914
 
     public static final double DRIVETRAIN_TRACKWIDTH_METERS = 0.4572;
     public static final double DRIVETRAIN_WHEELBASE_METERS = 0.4572;
@@ -130,7 +137,7 @@ public final class Constants {
       public static final TrapezoidProfile.Constraints ROT_PROFILE = new TrapezoidProfile.Constraints(6380.0/60.0, 10*Math.PI);
 
       
-      public static final PIDController X_PID_CONTROLLER = new PIDController(.2353, 0.00001, 0.19);
+      public static final PIDController X_PID_CONTROLLER = new PIDController(.2357, 0.0, 0.19);
       
       public static final PIDController Y_PID_CONTROLLER = new PIDController(.03709, 0.0, 0.07);
       
