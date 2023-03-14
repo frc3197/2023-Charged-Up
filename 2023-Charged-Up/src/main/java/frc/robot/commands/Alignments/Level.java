@@ -12,12 +12,17 @@ public class Level extends CommandBase {
   /** Creates a new Level. */
   int direction = 1;
   double levelSpeed = 1;
-  double thresh = 5;
+  double thresh = 2;
+  //double currRoll;
+  //double desiredRoll;
 
   DrivetrainSubsystem subsystem;
   public Level(DrivetrainSubsystem sub, int dir) {
     subsystem = sub;
     direction = dir;
+    //currRoll = subsystem.getRoll();
+    //desiredRoll = currRoll - 1;
+
   }
 
   // Called when the command is initially scheduled.
@@ -27,18 +32,33 @@ public class Level extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    //currRoll = sub.getRoll();
     System.out.println(subsystem.getRoll());
     double speed = 0;
-    if(subsystem.getRoll() > thresh) {
-      speed = levelSpeed;
+    speed = subsystem.getRoll() / -25.0;
+    if(subsystem.getRoll() < thresh && subsystem.getRoll() > thresh * -1) {
+      speed = 0;
     }
-    if(subsystem.getRoll() < thresh * -1) {
-      speed = levelSpeed * -1;
-    }
-    speed = subsystem.getRoll() / 15;
-    speed *= -0.95;
     System.out.println("SPEED: " + speed);
     subsystem.drive(new ChassisSpeeds(speed, 0.0, 0.0));
+
+    /*
+     * 
+     * 
+     * 
+     * 
+     * if(desiredRoll > currRoll)
+     * {
+     * STOPPPP
+     *  subsystem.drive(new ChassisSpeeds(0, 0, 0));
+     * }
+     * else
+     * {
+     * keep moving forward very slowly
+     * subsystem.drive(new ChassisSpeeds(0, getRoll() / 50.0, 0));
+     * }
+     * 
+     */
   }
 
   // Called once the command ends or is interrupted.

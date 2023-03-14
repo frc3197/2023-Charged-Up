@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands;
+package frc.robot.commands.Arm;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.Timer;
@@ -68,6 +68,12 @@ public class SwivelAutomatic2 extends CommandBase {
     }
     else{
       extendFirst();
+    }
+
+    if(aSubsystem.mapAbsoluteEncoder() < 4) {
+      pSubsystem.closeWrist();
+    } else {
+      pSubsystem.openWrist();
     }
   }
 
@@ -138,7 +144,7 @@ public class SwivelAutomatic2 extends CommandBase {
 
       if (true || false) {
         if (Math.abs(aSubsystem.mapAbsoluteEncoder() - swivelGoal) > Constants.Arm.TICK_THRESHOLD) {
-          aSubsystem.swivel(levelPID.calculate(aSubsystem.mapAbsoluteEncoder(), swivelGoal) / -1);
+          aSubsystem.swivel(levelPID.calculate(aSubsystem.mapAbsoluteEncoder(), swivelGoal) *-1.16);
           aSubsystem.setMove(true);
 
         } else {

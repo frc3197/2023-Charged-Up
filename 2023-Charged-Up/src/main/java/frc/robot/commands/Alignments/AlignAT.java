@@ -29,8 +29,9 @@ public class AlignAT extends CommandBase {
   double degreesThresh = 1;
   double maxRotationSpeed = 0.4;
   double rotSpeed;
+  double offsetX = 0.25;
 
-  double maxAlignSpeed = 0.95;
+  double maxAlignSpeed = 0.85;
   boolean search;
 
   public AlignAT(Limelight light, DrivetrainSubsystem subsystem, double offset, boolean search) {
@@ -45,6 +46,7 @@ public class AlignAT extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    limelightSubsystem.setPipeline("april");
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -71,9 +73,9 @@ public class AlignAT extends CommandBase {
     // System.out.println(botRot);
     // if(rotation > Math.PI / 2)
 
-    xSpeed = targetPose.getX() * 1.5;
+    xSpeed = (targetPose.getX() + offsetX) * 1.5;
     ySpeed = targetPose.getY() * -1.5;
-    rotSpeed = limelightSubsystem.getRot() * -1.5;
+    rotSpeed = limelightSubsystem.getRot() * -1;
 
     if (search  && Math.abs(driveSubsystem.getRoll()) < 2) {
       ySpeed = -0.85;
@@ -138,7 +140,7 @@ public class AlignAT extends CommandBase {
   @Override
   public boolean isFinished() {
     if (!limelightSubsystem.getTargets() && !search) {
-      //System.out.println("FINISHED 1");
+      System.out.println("FINISHED 1");
       return true;
     }
 

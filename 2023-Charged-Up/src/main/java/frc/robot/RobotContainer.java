@@ -48,13 +48,16 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 //import frc.robot.commands.AutoLookup;
 import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.MoniterPnuematics;
+import frc.robot.commands.PoseTracker;
 import frc.robot.commands.SetLevelMode;
-import frc.robot.commands.SwivelAutomatic2;
+import frc.robot.commands.SlowMove;
+import frc.robot.commands.ToggleLimelight;
 import frc.robot.commands.ZeroGyro;
 import frc.robot.commands.Alignments.AlignAT;
 import frc.robot.commands.Alignments.AlignCharge;
 import frc.robot.commands.Alignments.AlignGamepiece;
 import frc.robot.commands.Alignments.AlignOnceAT;
+import frc.robot.commands.Alignments.AlignRRT;
 import frc.robot.commands.Alignments.Level;
 import frc.robot.commands.Arm.ArmLevel;
 import frc.robot.commands.Arm.CloseClaw;
@@ -65,12 +68,14 @@ import frc.robot.commands.Arm.OpenClaw;
 import frc.robot.commands.Arm.ResetArmEncoder;
 import frc.robot.commands.Arm.Swivel;
 import frc.robot.commands.Arm.SwivelAutomatic;
+import frc.robot.commands.Arm.SwivelAutomatic2;
 import frc.robot.commands.Arm.SwivelEnd;
 import frc.robot.commands.Arm.ZeroExtendEncoder;
 import frc.robot.commands.Autonomous.AutoLookup;
 import frc.robot.commands.Intake.SpinIntake;
 import frc.robot.commands.Pneumatics.ClawPneumatic;
 import frc.robot.commands.Pneumatics.IntakePneumatic;
+import frc.robot.commands.Pneumatics.ToggleWrist;
 import frc.robot.subsystems.ArmSubsystem;
 //import frc.robot.commands.PathContainer;
 //import frc.robot.commands.RunAutonomous;
@@ -123,10 +128,13 @@ public class RobotContainer {
     m_autoChooser = new SendableChooser<>();
     m_autoChooser.setDefaultOption("Nothing", null);
 
-    //m_autoChooser.addOption("practice", AutoLookup.getAuto("practice"));
+    // m_autoChooser.addOption("practice", AutoLookup.getAuto("practice"));
     m_autoChooser.addOption("Middle", AutoLookup.getAuto("Middle"));
-    m_autoChooser.addOption("Cable", AutoLookup.getAuto("Cable"));
-    m_autoChooser.addOption("Right", AutoLookup.getAuto("Right"));
+    m_autoChooser.addOption("Cable_RED", AutoLookup.getAuto("Cable_RED"));
+    m_autoChooser.addOption("Right_RED", AutoLookup.getAuto("Right_RED"));
+
+    m_autoChooser.addOption("Cable_BLUE", AutoLookup.getAuto("Cable_BLUE"));
+    m_autoChooser.addOption("Right_BLUE", AutoLookup.getAuto("Right_BLUE"));
 
     m_autoChooser.addOption("Tester", AutoLookup.getAuto("Tester"));
 
@@ -145,6 +153,7 @@ public class RobotContainer {
 
     armSubsystem.setDefaultCommand(new ArmLevel(armSubsystem));
     pneumaticSubsystem.setDefaultCommand(new MoniterPnuematics(pneumaticSubsystem));
+    vision.setDefaultCommand(new PoseTracker(m_drivetrainSubsystem, vision));
 
     m_drivetrainSubsystem.resetOdometry();
     // Configure the button bindings
@@ -178,26 +187,26 @@ public class RobotContainer {
     // Zero Gyro (ON PRESS)
     driveController.start().whileTrue(new ZeroGyro(m_drivetrainSubsystem));
 
-    // Spin Intake (WHILE HELD)
-    driveController.rightBumper().whileTrue(new SpinIntake(intakeSubsystem, Constants.Intake.SPIN_SPEED));
-    driveController.rightBumper().whileFalse(new SpinIntake(intakeSubsystem, 0));
-
-    // Grab Intake (TOGGLE)
-    driveController.leftBumper().whileTrue(new IntakePneumatic(pneumaticSubsystem));
-
     // driveController.leftTrigger(0.1).whileTrue(new AlignAT(limelightSubsystem,
     // m_drivetrainSubsystem, 2.05, true));
-    driveController.leftTrigger(0.1).onTrue(
+    driveController.leftBumper().onTrue(
         new SequentialCommandGroup(
-          new OpenClaw(pneumaticSubsystem),
-            new AlignGamepiece(armSubsystem, m_drivetrainSubsystem, vision),
-            new CloseClaw(pneumaticSubsystem)
-            ));
-    driveController.rightTrigger(0.1).whileTrue(new Level(m_drivetrainSubsystem, 1));
+            new OpenClaw(pneumaticSubsystem),
+            new AlignGamepiece(armSubsystem, m_drivetrainSubsystem, vision, 1),
+            new CloseClaw(pneumaticSubsystem)));
+    driveController.rightBumper().onTrue(
+        new SequentialCommandGroup(
+            new OpenClaw(pneumaticSubsystem),
+            new AlignGamepiece(armSubsystem, m_drivetrainSubsystem, vision, 0),
+            new CloseClaw(pneumaticSubsystem)));
+     driveController.rightTrigger(0.25).whileTrue(new AlignAT(limelightSubsystem, m_drivetrainSubsystem, 0.5, false));
+     driveController.leftTrigger(0.25).whileTrue(new AlignRRT(limelightSubsystem, m_drivetrainSubsystem));
 
-    // driveController.y().onTrue(new SetLevelMode(armSubsystem, "cone"));
-    // driveController.x().onTrue(new SetLevelMode(armSubsystem, "cube"));
-    // driveController.b().onTrue(new SetLevelMode(armSubsystem, "none"));
+      driveController.povRight().whileTrue(new SlowMove(m_drivetrainSubsystem, new ChassisSpeeds(0, 0, 0.25)));
+      driveController.povLeft().whileTrue(new SlowMove(m_drivetrainSubsystem, new ChassisSpeeds(0, 0, -0.25)));
+
+
+    driveController.y().onTrue(new ToggleLimelight(limelightSubsystem));
 
     // extend (WHILE HELD)
     armController.rightBumper().whileTrue(new Extend(armSubsystem, Constants.Arm.EXTEND_SPEED));
@@ -226,9 +235,11 @@ public class RobotContainer {
     armController.b().onTrue(new SwivelAutomatic2(armSubsystem, pneumaticSubsystem, Constants.Arm.TICKS_TO_MID,
         Constants.Arm.TICKS_TO_CLOSE_EXTEND, true, false));
     armController.a()
-        .onTrue(new SwivelAutomatic2(armSubsystem, pneumaticSubsystem, Constants.Arm.TICKS_TO_BOTTOM, 100, true, false));
+        .onTrue(
+            new SwivelAutomatic2(armSubsystem, pneumaticSubsystem, Constants.Arm.TICKS_TO_BOTTOM, 100, true, false));
     armController.povUp()
-        .onTrue(new SwivelAutomatic2(armSubsystem, pneumaticSubsystem, Constants.Arm.TICKS_TO_SUBSTATION, 10, true, false));
+        .onTrue(
+            new SwivelAutomatic2(armSubsystem, pneumaticSubsystem, Constants.Arm.TICKS_TO_SUBSTATION, 10, true, false));
     armController.povUp().onFalse(new SwivelEnd(armSubsystem));
 
     armController.povRight()
@@ -236,7 +247,8 @@ public class RobotContainer {
     armController.povRight().onFalse(new SwivelEnd(armSubsystem));
 
     armController.povDown()
-        .onTrue(new SwivelAutomatic2(armSubsystem, pneumaticSubsystem, Constants.Arm.TICKS_TO_FlOOR, 65000, true, false));
+        .onTrue(new SwivelAutomatic2(armSubsystem, pneumaticSubsystem, Constants.Arm.TICKS_TO_FlOOR,
+            Constants.Arm.EXTEND_FLOOR, true, false));
     armController.povDown().onFalse(new SwivelEnd(armSubsystem));
 
     armController.y().onFalse(new SwivelEnd(armSubsystem));
@@ -244,6 +256,8 @@ public class RobotContainer {
     armController.a().onFalse(new SwivelEnd(armSubsystem));
     // Reset Arm Encoder (ON PRESS)
     armController.start().whileTrue(new ZeroExtendEncoder(armSubsystem));
+  
+    driveController.x().onTrue(new ToggleWrist(pneumaticSubsystem));
   }
 
   public void test() {

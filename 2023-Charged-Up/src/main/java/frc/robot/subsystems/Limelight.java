@@ -17,6 +17,7 @@ public class Limelight extends SubsystemBase {
 
   double[] pose;
   NetworkTableEntry pipelineEntry;
+  boolean on = false;
 
   public Limelight() {
     table = NetworkTableInstance.getDefault().getTable(Constants.Limelight.limelightName);
@@ -32,10 +33,10 @@ public class Limelight extends SubsystemBase {
   public void setPipeline(String pipeline) {
     switch(pipeline) {
       case "april":
-        pipelineEntry.setNumber(Constants.Limelight.APRIL_TAG_PIPELINE_INDEX);
+        pipelineEntry.setNumber(0);
         break;
       case "tape":
-        pipelineEntry.setNumber(Constants.Limelight.RETRO_REFLECTIVE_TAPE_PIPELINE_INDEX);
+        pipelineEntry.setNumber(1);
         break;
       default: break;
     }
@@ -56,5 +57,27 @@ public class Limelight extends SubsystemBase {
       return true;
     }
     return false;
+  }
+
+  public boolean getLimeTargets()
+  {
+  if(table.getEntry("limelight").getDouble(-1) >= 0)
+  {
+    return true;
+  }
+  return false;
+  }
+
+  public void toggleLimelight()
+  {
+    on = !on;
+
+    if(on)
+    {
+    table.getEntry("ledMode").setNumber(1);
+    }
+    else{
+      table.getEntry("ledMode").setNumber(3);
+    }
   }
 }

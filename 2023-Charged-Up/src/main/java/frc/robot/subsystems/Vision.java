@@ -15,7 +15,7 @@ public class Vision extends SubsystemBase {
   NetworkTable table;
   NetworkTableInstance instance;
   PhotonCamera cameraFront;
-  
+
   /** Creates a new Vision. */
   public Vision() {
 
@@ -30,15 +30,19 @@ public class Vision extends SubsystemBase {
     // This method will be called once per scheduler run
   }
 
-  public double getPitch()
-  {
+  public double getPitch() {
     var results = cameraFront.getLatestResult();
-    if(results.hasTargets())
-    {
+    if (results.hasTargets()) {
       var target = results.getBestTarget();
       return target.getPitch();
     }
     return 0.0;
+  }
+
+  public void setPipeline(int num) {
+    cameraFront.setPipelineIndex(num);
+    for (int i = 0; i < 100; i++)
+      System.out.println("PIPELINE: " + cameraFront.getPipelineIndex());
   }
 
   public boolean hasTarget() {
@@ -46,11 +50,9 @@ public class Vision extends SubsystemBase {
     return results.hasTargets();
   }
 
-  public double getYaw()
-  {
+  public double getYaw() {
     var results = cameraFront.getLatestResult();
-    if(results.hasTargets())
-    {
+    if (results.hasTargets()) {
       var target = results.getBestTarget();
       return target.getYaw();
     }

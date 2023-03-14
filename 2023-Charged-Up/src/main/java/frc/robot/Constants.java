@@ -70,7 +70,9 @@ public final class Constants {
     public static final double TICKS_TO_BOTTOM = 5.0;
     public static final double TICKS_TO_SUBSTATION = 2.90;
     public static final double TICKS_TO_ZERO = 5.65;
-    public static final double TICKS_TO_FlOOR = 4.5;
+    public static final double TICKS_TO_FlOOR = 4.75;
+
+    public static final int EXTEND_FLOOR = 75000;
 
     public static final int TICKS_TO_FAR_EXTEND = 65000;
     public static final int TICKS_TO_CLOSE_EXTEND = 10000;
@@ -107,7 +109,7 @@ public final class Constants {
     public static final int FRONT_RIGHT_DRIVE_ID = 3;
     public static final int FRONT_RIGHT_STEER_ID = 4;
     public static final int FRONT_RIGHT_ENCODER_ID = 2;
-    public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(341.5374755859375);
+    public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(344.5374755859375);
     //-352.6172
 
     public static final int BACK_LEFT_DRIVE_ID = 7;
@@ -122,7 +124,10 @@ public final class Constants {
     public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(289.86053466796875);
     //-296.1914
 
+    //L-R between center of wheels
     public static final double DRIVETRAIN_TRACKWIDTH_METERS = 0.4572;
+
+    //F-B between center of wheels
     public static final double DRIVETRAIN_WHEELBASE_METERS = 0.4572;
 
     public static final Translation2d FRONT_LEFT_TRANS_FROM_CENTER = new Translation2d(0.2832, 0.2832);

@@ -33,8 +33,12 @@ public class Extend extends CommandBase {
   @Override
   public void execute() {
     double feedVal = feedforward.calculate(0) / 4.0;
+
+    if(m_subsystem.getExtendTicks() < 100000 || val < 0)
+    {
     m_subsystem.extend(val);
     m_subsystem.setExtending(true);
+    }
   }
 
   // Called once the command ends or is interrupted.
@@ -47,6 +51,7 @@ public class Extend extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+
     return false;
   }
 }

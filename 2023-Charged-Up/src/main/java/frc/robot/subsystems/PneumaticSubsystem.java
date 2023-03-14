@@ -16,6 +16,7 @@ public class PneumaticSubsystem extends SubsystemBase {
   Solenoid clawSolenoid;
   DoubleSolenoid intakeSolenoid;
   DoubleSolenoid intakeDep;
+  DoubleSolenoid armWrist;
   Compressor compressor;
 
   boolean wasClosed = true;
@@ -25,13 +26,13 @@ public class PneumaticSubsystem extends SubsystemBase {
 
   public PneumaticSubsystem() {
     clawSolenoid = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.Pneumatics.CLAW_CHANNEL);
-    intakeSolenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, Constants.Pneumatics.INTAKE_FORWARD_CHANNEL,
-        Constants.Pneumatics.INTAKE_REVERSE_CHANNEL);
-    intakeDep = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, Constants.Pneumatics.INTAKE_DEPLOY_FORWARD_CHANNEL,
-        Constants.Pneumatics.INTAKE_DEPLOY_REVERSE_CHANNEL);
-    intakeSolenoid.set(kOff);
-    intakeDep.set(kOff);
     compressor = new Compressor(PneumaticsModuleType.CTREPCM);
+    armWrist = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 5, 4);
+    armWrist.set(kForward);
+  }
+
+  public void toggleWrist() {
+    armWrist.toggle();
   }
 
   public void toggleClaw() {
@@ -60,6 +61,20 @@ public class PneumaticSubsystem extends SubsystemBase {
   public void openClaw() {
     if (clawSolenoid.get()) {
       clawSolenoid.toggle();
+    }
+  }
+
+  public void openWrist()
+  {
+    if(armWrist.get() == kForward) {
+      armWrist.toggle();
+    }
+  }
+
+  public void closeWrist()
+  {
+    if (armWrist.get() == kReverse) {
+      armWrist.toggle();
     }
   }
 

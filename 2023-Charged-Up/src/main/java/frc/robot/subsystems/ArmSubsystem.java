@@ -31,10 +31,10 @@ public class ArmSubsystem extends SubsystemBase {
 
   int divideAmount = 150000;
 
-  //Encoder throughBore = new Encoder();
+  // Encoder throughBore = new Encoder();
   DutyCycleEncoder encoder;
-  
-  //RelativeEncoder extendEncoder;
+
+  // RelativeEncoder extendEncoder;
 
   public ArmSubsystem() {
     swivelMotor = new WPI_TalonFX(Constants.Arm.SWIVEL_MOTOR_ID);
@@ -62,12 +62,10 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public void extend(double val) {
-    if(val>maxExtendSpeed)
-    {
+    if (val > maxExtendSpeed) {
       val = maxExtendSpeed;
     }
-    if(val < -maxExtendSpeed)
-    {
+    if (val < -maxExtendSpeed) {
       val = -maxExtendSpeed;
     }
     extendMotor.set(val);
@@ -75,25 +73,25 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public void resetEncoder() {
-    //encoder.reset();
-    //for(int i = 0; i < 100; i ++)
-    //System.out.println("Reset Encoder: " + encoder.getAbsolutePosition());
+    // encoder.reset();
+    // for(int i = 0; i < 100; i ++)
+    // System.out.println("Reset Encoder: " + encoder.getAbsolutePosition());
   }
 
   public double getSpeed() {
-   // System.out.print("RATE: " + throughBore.getRate());
+    // System.out.print("RATE: " + throughBore.getRate());
     return 0;
   }
 
   public double getTicks() {
     encoder.setPositionOffset(Constants.Arm.SWIVEL_ABSOLUTE_OFFSET);
-    //System.out.println(throughBore.get() * -1);
-    //System.out.println(encoder.isConnected());
+    // System.out.println(throughBore.get() * -1);
+    // System.out.println(encoder.isConnected());
     return encoder.getAbsolutePosition() - encoder.getPositionOffset();
   }
 
   public double getRad() {
-    return ((double)encoder.getAbsolutePosition() * 1/2048.0) * Math.PI * 2.0;
+    return ((double) encoder.getAbsolutePosition() * 1 / 2048.0) * Math.PI * 2.0;
   }
 
   public void setMove(boolean bool) {
@@ -120,14 +118,13 @@ public class ArmSubsystem extends SubsystemBase {
     return extending;
   }
 
-  public double getExtendTicks()
-  {
+  public double getExtendTicks() {
     return extendMotor.getSelectedSensorPosition();
   }
 
   public double mapAbsoluteEncoder() {
     double startValue = encoder.getAbsolutePosition() * 10;
-    if(startValue > 5) {
+    if (startValue > 5) {
       startValue -= 5;
     } else {
       startValue += 5;
@@ -135,26 +132,21 @@ public class ArmSubsystem extends SubsystemBase {
     return startValue;
   }
 
-  public void zeroExtendEncoder()
-  {
+  public void zeroExtendEncoder() {
     extendMotor.setSelectedSensorPosition(0);
   }
 
-  public void setDivide(int num)
-  {
+  public void setDivide(int num) {
     divideAmount = num;
   }
 
-  public int getDivide()
-  {
+  public int getDivide() {
     return divideAmount;
   }
 
-  public void setMaxSpeed(double val)
-  {
-    maxSwivelSpeed = Constants.Arm.SWIVEL_SPEED *  val;
-    maxExtendSpeed = Constants.Arm.EXTEND_SPEED *  val;
+  public void setMaxSpeed(double val) {
+    maxSwivelSpeed = Constants.Arm.SWIVEL_SPEED * val;
+    maxExtendSpeed = Constants.Arm.EXTEND_SPEED * val;
   }
-  
-  
+
 }

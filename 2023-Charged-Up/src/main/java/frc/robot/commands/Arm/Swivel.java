@@ -1,5 +1,6 @@
 package frc.robot.commands.Arm;
 // Copyright (c) FIRST and other WPILib contributors.
+
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
@@ -21,20 +22,21 @@ public class Swivel extends CommandBase {
   double maxVal;
   int GoalTicks;
   PIDController swivelPID;
-  //Encoder throughBore;
+  // Encoder throughBore;
   ArmFeedforward feedforward;
   CommandXboxController controller;
   PneumaticSubsystem pneumatics;
   int targetAxis = -1;
   boolean once = false;
-   
-  public Swivel(ArmSubsystem m_subsystem, PneumaticSubsystem p, double val, CommandXboxController controller, int axis) {
+
+  public Swivel(ArmSubsystem m_subsystem, PneumaticSubsystem p, double val, CommandXboxController controller,
+      int axis) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.m_subsystem = m_subsystem;
     this.maxVal = val;
     this.controller = controller;
     swivelPID = Constants.Arm.LevelPID;
-    //feedforward = new ArmFeedforward(0, 0, 0);
+    // feedforward = new ArmFeedforward(0, 0, 0);
     this.targetAxis = axis;
     pneumatics = p;
 
@@ -46,7 +48,7 @@ public class Swivel extends CommandBase {
     this.m_subsystem = m_subsystem;
     this.maxVal = val;
     swivelPID = Constants.Arm.LevelPID;
-    //feedforward = new ArmFeedforward(0, 0, 0);
+    // feedforward = new ArmFeedforward(0, 0, 0);
 
     addRequirements(m_subsystem);
   }
@@ -60,26 +62,36 @@ public class Swivel extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(this.targetAxis != -1) {
+    if (this.targetAxis != -1) {
       this.val = this.maxVal * controller.getRawAxis(this.targetAxis);
     } else {
       this.val = this.maxVal;
     }
-    
-    if(m_subsystem.mapAbsoluteEncoder() > 5 && m_subsystem.mapAbsoluteEncoder() < 6.5) {
+
+    if (m_subsystem.mapAbsoluteEncoder() > 5 && m_subsystem.mapAbsoluteEncoder() < 6.5) {
       pneumatics.closeClaw();
       once = false;
     } else {
       pneumatics.enteringZone();
-    } 
-    /*if(m_subsystem.mapAbsoluteEncoder() < 5 && m_subsystem.mapAbsoluteEncoder() > 6.5 &&  !once) {
-      once = true;
-      if(!pneumatics.getPrevious()) {
-        pneumatics.openClaw();
-      }
-    }*/
-      m_subsystem.swivel(val);
-      System.out.println("ENCODER-SWIVEL: " + m_subsystem.mapAbsoluteEncoder());
+    }
+    /*
+     * if(m_subsystem.mapAbsoluteEncoder() < 5 && m_subsystem.mapAbsoluteEncoder() >
+     * 6.5 && !once) {
+     * once = true;
+     * if(!pneumatics.getPrevious()) {
+     * pneumatics.openClaw();
+     * }
+     * }
+     */
+
+     if(m_subsystem.mapAbsoluteEncoder() < 4) {
+      pneumatics.closeWrist();
+    } else {
+      pneumatics.openWrist();
+    }
+
+    m_subsystem.swivel(val);
+    System.out.println("ENCODER-SWIVEL: " + m_subsystem.mapAbsoluteEncoder());
   }
 
   // Called once the command ends or is interrupted.
@@ -92,9 +104,9 @@ public class Swivel extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    
-    //Finished if the tick value is within the threshold
+
+    // Finished if the tick value is within the threshold
     return false;
-    //Math.abs(m_subsystem.getTicks() - GoalTicks) < Constants.Arm.TICK_THRESHOLD;
+    // Math.abs(m_subsystem.getTicks() - GoalTicks) < Constants.Arm.TICK_THRESHOLD;
   }
 }

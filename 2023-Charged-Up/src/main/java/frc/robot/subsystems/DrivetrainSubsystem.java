@@ -20,6 +20,7 @@ import com.swervedrivespecialties.swervelib.SwerveModule;
 import com.swervedrivespecialties.swervelib.Mk3SwerveModuleHelper.GearRatio;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -136,6 +137,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
         private SwerveModuleState[] m_desiredStates;
 
+        SwerveDrivePoseEstimator poseEstimation;
+
         Pose2d robotPose = new Pose2d();
         private double offset = 0;
 
@@ -228,8 +231,18 @@ public class DrivetrainSubsystem extends SubsystemBase {
                                 Constants.Drivetrain.BACK_RIGHT_MODULE_STEER_OFFSET);
 
                 m_desiredStates = m_kinematics.toSwerveModuleStates(m_chassisSpeeds);
+
+                //SwerveModulePosition[] positions = {m_frontLeftModule.};
+
+                poseEstimation = new SwerveDrivePoseEstimator(m_kinematics, getGyro(), 
+                new SwerveModulePosition[]{frontLeftPos(), frontRightPos(), backLeftPos(), backRightPos()},
+                new Pose2d());
         }
 
+        /*public double getSwerveDriveEstimation() {
+                
+        }*/
+                
         /**
          * Sets the gyroscope angle to zero. This can be used to set the direction the
          * robot is currently facing to the
@@ -442,5 +455,12 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
         public SwerveModule getBackRightMod() {
                 return m_backRightModule;
+        }
+
+        public Pose2d getPoseEstimation()
+        {
+                
+                poseEstimation.update(getGyro(), new SwerveModulePosition[] {frontLeftPos(), frontRightPos(), backLeftPos(), backRightPos()});
+                return poseEstimation.getEstimatedPosition();
         }
 }
