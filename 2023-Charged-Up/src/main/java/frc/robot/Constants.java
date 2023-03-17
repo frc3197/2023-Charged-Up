@@ -65,12 +65,14 @@ public final class Constants {
     public static final double SWIVEL_SPEED = 0.40;
     public static final double EXTEND_SPEED = 0.45;
 
-    public static final double TICKS_TO_HIGH = 2.70;
-    public static final double TICKS_TO_MID = 3.15;
-    public static final double TICKS_TO_BOTTOM = 5.0;
-    public static final double TICKS_TO_SUBSTATION = 2.90;
-    public static final double TICKS_TO_ZERO = 5.65;
-    public static final double TICKS_TO_FlOOR = 4.75;
+    public static final double TICKS_TO_WRIST = 4.5;
+
+    public static final double TICKS_TO_HIGH = 3.0;
+    public static final double TICKS_TO_MID = 3.75;
+    public static final double TICKS_TO_BOTTOM = 4.5;
+    public static final double TICKS_TO_SUBSTATION = 3.75;
+    public static final double TICKS_TO_ZERO = 6;
+    public static final double TICKS_TO_FlOOR = 5.3;
 
     public static final int EXTEND_FLOOR = 75000;
 
@@ -128,7 +130,7 @@ public final class Constants {
     public static final double DRIVETRAIN_TRACKWIDTH_METERS = 0.4572;
 
     //F-B between center of wheels
-    public static final double DRIVETRAIN_WHEELBASE_METERS = 0.4572;
+    public static final double DRIVETRAIN_WHEELBASE_METERS = 0.559;
 
     public static final Translation2d FRONT_LEFT_TRANS_FROM_CENTER = new Translation2d(0.2832, 0.2832);
     public static final Translation2d FRONT_RIGHT_TRANS_FROM_CENTER = new Translation2d(0.2832, -0.2832);

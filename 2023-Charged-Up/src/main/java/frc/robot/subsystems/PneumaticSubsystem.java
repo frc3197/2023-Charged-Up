@@ -66,14 +66,14 @@ public class PneumaticSubsystem extends SubsystemBase {
 
   public void openWrist()
   {
-    if(armWrist.get() == kForward) {
+    if(armWrist.get() == kReverse) {
       armWrist.toggle();
     }
   }
 
   public void closeWrist()
   {
-    if (armWrist.get() == kReverse) {
+    if (armWrist.get() == kForward) {
       armWrist.toggle();
     }
   }

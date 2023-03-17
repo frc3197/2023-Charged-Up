@@ -13,8 +13,8 @@ public class ExtendRetract extends CommandBase {
   ArmSubsystem subsystem;
   
   double val;
-  double timeout = 0.2;
   int num;
+  
   public ExtendRetract(ArmSubsystem subsystem, double val) {
     this.subsystem = subsystem;
     
@@ -50,6 +50,6 @@ public class ExtendRetract extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return num>35;
+    return num>25;
   }
 }

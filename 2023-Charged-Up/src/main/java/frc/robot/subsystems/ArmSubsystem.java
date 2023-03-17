@@ -7,7 +7,10 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.revrobotics.AbsoluteEncoder;
+import com.revrobotics.CANEncoder;
+import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.AnalogEncoder;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
@@ -18,8 +21,14 @@ import frc.robot.Constants;
 public class ArmSubsystem extends SubsystemBase {
   /** Creates a new ArmSubsystem. */
 
-  WPI_TalonFX swivelMotor;
-  WPI_TalonFX extendMotor;
+  // WPI_TalonFX swivelMotor;
+  // WPI_TalonFX extendMotor;
+
+  CANSparkMax swivelMotor;
+  CANSparkMax extendMotor;
+
+  RelativeEncoder swivelEncoder;
+  RelativeEncoder extEncoder;
 
   double maxSwivelSpeed = Constants.Arm.SWIVEL_SPEED;
   double maxExtendSpeed = Constants.Arm.EXTEND_SPEED;
@@ -37,11 +46,10 @@ public class ArmSubsystem extends SubsystemBase {
   // RelativeEncoder extendEncoder;
 
   public ArmSubsystem() {
-    swivelMotor = new WPI_TalonFX(Constants.Arm.SWIVEL_MOTOR_ID);
-    extendMotor = new WPI_TalonFX(Constants.Arm.EXTENTION_MOTOR_ID);
+    swivelMotor = new CANSparkMax(Constants.Arm.SWIVEL_MOTOR_ID, MotorType.kBrushless);
+    extendMotor = new CANSparkMax(Constants.Arm.EXTENTION_MOTOR_ID, MotorType.kBrushless);
 
-    extendMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
-    extendMotor.setSelectedSensorPosition(0);
+    extEncoder = extendMotor.getEncoder();
 
     encoder = new DutyCycleEncoder(0);
   }
@@ -69,7 +77,7 @@ public class ArmSubsystem extends SubsystemBase {
       val = -maxExtendSpeed;
     }
     extendMotor.set(val);
-    System.out.println("ENCODER EXTEND: " + extendMotor.getSelectedSensorPosition());
+    System.out.println("ENCODER EXTEND: " + extEncoder.getPosition());
   }
 
   public void resetEncoder() {
@@ -119,7 +127,7 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public double getExtendTicks() {
-    return extendMotor.getSelectedSensorPosition();
+    return extEncoder.getPosition();
   }
 
   public double mapAbsoluteEncoder() {
@@ -133,7 +141,7 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public void zeroExtendEncoder() {
-    extendMotor.setSelectedSensorPosition(0);
+    extEncoder.setPosition(0);
   }
 
   public void setDivide(int num) {

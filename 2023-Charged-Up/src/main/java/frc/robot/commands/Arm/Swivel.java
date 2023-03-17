@@ -69,10 +69,10 @@ public class Swivel extends CommandBase {
     }
 
     if (m_subsystem.mapAbsoluteEncoder() > 5 && m_subsystem.mapAbsoluteEncoder() < 6.5) {
-      pneumatics.closeClaw();
+      //pneumatics.closeClaw();
       once = false;
     } else {
-      pneumatics.enteringZone();
+      //pneumatics.enteringZone();
     }
     /*
      * if(m_subsystem.mapAbsoluteEncoder() < 5 && m_subsystem.mapAbsoluteEncoder() >
@@ -84,7 +84,7 @@ public class Swivel extends CommandBase {
      * }
      */
 
-     if(m_subsystem.mapAbsoluteEncoder() < 4) {
+     if(m_subsystem.mapAbsoluteEncoder() < Constants.Arm.TICKS_TO_WRIST) {
       pneumatics.closeWrist();
     } else {
       pneumatics.openWrist();

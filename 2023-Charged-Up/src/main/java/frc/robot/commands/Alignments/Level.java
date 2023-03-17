@@ -35,7 +35,7 @@ public class Level extends CommandBase {
     //currRoll = sub.getRoll();
     System.out.println(subsystem.getRoll());
     double speed = 0;
-    speed = subsystem.getRoll() / -25.0;
+    speed = subsystem.getRoll() / -20.0;
     if(subsystem.getRoll() < thresh && subsystem.getRoll() > thresh * -1) {
       speed = 0;
     }
