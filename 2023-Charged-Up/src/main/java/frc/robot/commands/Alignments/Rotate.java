@@ -10,7 +10,7 @@ import frc.robot.subsystems.DrivetrainSubsystem;
 
 public class Rotate extends CommandBase {
   double degrees;
-  double maxRot = 3;
+  double maxRot = 3.75;
   double rotSpeed = 0;
 
   DrivetrainSubsystem subsystem;

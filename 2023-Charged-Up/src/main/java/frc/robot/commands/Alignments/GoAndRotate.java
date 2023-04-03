@@ -16,7 +16,8 @@ public class GoAndRotate extends CommandBase {
   double degrees;
   double maxRot = 3;
   double rotSpeed = 0;
-  double length;
+  double yLength;
+  double xLength;
   double maxSpeed = 1.65;
   double xVal;
   double rollThresh = 7.5;
@@ -26,12 +27,14 @@ public class GoAndRotate extends CommandBase {
   private DoubleSupplier m_translationYSupplier;
   private DoubleSupplier m_rotationSupplier;
 
-  public GoAndRotate(double length, double degrees, DrivetrainSubsystem subsystem, double xVal, double rollThresh) {
+  public GoAndRotate(double yLength, double xLength, double degrees, DrivetrainSubsystem subsystem, double xVal, double rollThresh, double speed) {
     this.degrees = degrees;
     this.subsystem = subsystem;
-    this.length = length;
+    this.yLength = yLength;
     this.xVal = xVal;
     this.rollThresh = rollThresh;
+    this.maxSpeed = speed;
+    this.xLength = xLength;
   }
 
   // Called when the command is initially scheduled.
@@ -50,20 +53,28 @@ public class GoAndRotate extends CommandBase {
       rotSpeed = maxRot * -1;
     }
 
-    double currentSpeed = length / 3.0;
+    double currentSpeed = yLength / 3.0;
     if (currentSpeed > maxSpeed) {
       currentSpeed = maxSpeed;
     }
     if (currentSpeed < maxSpeed * -1) {
       currentSpeed = maxSpeed * -1;
     }
-    double ySpeed = Math.cos(Units.degreesToRadians(subsystem.getYaw())) * currentSpeed;
     // System.out.println("CURRENT SPEED:" + currentSpeed + ", LENGTH: " + length);
     final double test = currentSpeed;
-    m_translationXSupplier = () -> -xVal;
+    double xSpeed =  xLength;
+    if(xSpeed > maxSpeed * 1.2) {
+      xSpeed = maxSpeed * 1.2;
+    }
+    if(xSpeed < maxSpeed * -1.2) {
+      xSpeed = maxSpeed * -1.2;
+    }
+    final double xSpeedFinal = xSpeed;
+    m_translationXSupplier = () -> xSpeedFinal;
     m_translationYSupplier = () -> test;
     m_rotationSupplier = () -> rotSpeed;
     
+    xLength -= xSpeed;
     
     subsystem.drive(
         ChassisSpeeds.fromFieldRelativeSpeeds(
@@ -71,7 +82,7 @@ public class GoAndRotate extends CommandBase {
             m_translationXSupplier.getAsDouble(),
             m_rotationSupplier.getAsDouble(),
             subsystem.getGyroscopeRotation()));
-    length -= currentSpeed;
+            yLength -= currentSpeed;
   }
 
   // Called once the command ends or is interrupted.
@@ -86,6 +97,6 @@ public class GoAndRotate extends CommandBase {
     if(Math.abs(subsystem.getRoll()) > Math.abs(rollThresh)) {
       return true;
     }
-    return Math.abs(rotSpeed) < 0.5 && Math.abs(length) < 0.1;
+    return Math.abs(rotSpeed) < 0.5 && Math.abs(yLength) < 0.1 && Math.abs(xLength) < 0.1;
   }
 }

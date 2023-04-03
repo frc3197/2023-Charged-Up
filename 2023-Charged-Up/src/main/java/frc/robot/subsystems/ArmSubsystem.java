@@ -15,6 +15,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.AnalogEncoder;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -39,6 +40,8 @@ public class ArmSubsystem extends SubsystemBase {
   private boolean extending = false;
 
   int divideAmount = 150000;
+
+  boolean autoWrist = true;
 
   // Encoder throughBore = new Encoder();
   DutyCycleEncoder encoder;
@@ -77,7 +80,7 @@ public class ArmSubsystem extends SubsystemBase {
       val = -maxExtendSpeed;
     }
     extendMotor.set(val);
-    System.out.println("ENCODER EXTEND: " + extEncoder.getPosition());
+    //System.out.println("ENCODER EXTEND: " + extEncoder.getPosition());
   }
 
   public void resetEncoder() {
@@ -155,6 +158,15 @@ public class ArmSubsystem extends SubsystemBase {
   public void setMaxSpeed(double val) {
     maxSwivelSpeed = Constants.Arm.SWIVEL_SPEED * val;
     maxExtendSpeed = Constants.Arm.EXTEND_SPEED * val;
+  }
+
+  public void toggleAutoWrist() {
+    autoWrist = !autoWrist;
+    SmartDashboard.putBoolean("Auto-Wrist", autoWrist);
+  }
+
+  public boolean getAutoWrist() {
+    return autoWrist;
   }
 
 }

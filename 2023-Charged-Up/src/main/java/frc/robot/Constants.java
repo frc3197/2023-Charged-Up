@@ -63,24 +63,24 @@ public final class Constants {
     public static final int ENCODER_OUTPUT_ID = 1;
 
     public static final double SWIVEL_SPEED = 0.40;
-    public static final double EXTEND_SPEED = 0.45;
+    public static final double EXTEND_SPEED = 0.526;
 
     public static final double TICKS_TO_WRIST = 4.5;
 
-    public static final double TICKS_TO_HIGH = 3.0;
+    public static final double TICKS_TO_HIGH = 3.75;
     public static final double TICKS_TO_MID = 3.75;
     public static final double TICKS_TO_BOTTOM = 4.5;
-    public static final double TICKS_TO_SUBSTATION = 3.75;
+    public static final double TICKS_TO_SUBSTATION = 3.5;
     public static final double TICKS_TO_ZERO = 6;
-    public static final double TICKS_TO_FlOOR = 5.3;
+    public static final double TICKS_TO_FlOOR = 5.75;
 
-    public static final int EXTEND_FLOOR = 75000;
+    public static final int EXTEND_FLOOR = 25;
 
-    public static final int TICKS_TO_FAR_EXTEND = 65000;
-    public static final int TICKS_TO_CLOSE_EXTEND = 10000;
+    public static final int TICKS_TO_FAR_EXTEND = 75;
+    public static final int TICKS_TO_CLOSE_EXTEND = 10;
 
-    public static final double TICK_THRESHOLD = .35;
-    public static final double EXTEND_TICK_THRESHOLD = 1000;
+    public static final double TICK_THRESHOLD = .2;
+    public static final double EXTEND_TICK_THRESHOLD = 2;
 
     public static final int MAX_TICKS = 400;
     //public static final int MIN_TICKS = -5;
@@ -105,25 +105,25 @@ public final class Constants {
     public static final int FRONT_LEFT_DRIVE_ID = 1;
     public static final int FRONT_LEFT_STEER_ID = 2;
     public static final int FRONT_LEFT_ENCODER_ID = 1;
-    public static final double FRONT_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(291.45355224609375);
+    public static final double FRONT_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(319.74334716796875 + 1);
     //-336.357422
 
     public static final int FRONT_RIGHT_DRIVE_ID = 3;
     public static final int FRONT_RIGHT_STEER_ID = 4;
     public static final int FRONT_RIGHT_ENCODER_ID = 2;
-    public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(344.5374755859375);
+    public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(11.2335205078125 + 45 + 3);
     //-352.6172
 
     public static final int BACK_LEFT_DRIVE_ID = 7;
     public static final int BACK_LEFT_STEER_ID = 8;
     public static final int BACK_LEFT_ENCODER_ID = 4;
-    public static final double BACK_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(296.630859375);
+    public static final double BACK_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(295.477294921875);
     //-289.160156
 
     public static final int BACK_RIGHT_DRIVE_ID = 5;
     public static final int BACK_RIGHT_STEER_ID = 6;
     public static final int BACK_RIGHT_ENCODER_ID = 3;
-    public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(289.86053466796875);
+    public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(289.324951171875);
     //-296.1914
 
     //L-R between center of wheels

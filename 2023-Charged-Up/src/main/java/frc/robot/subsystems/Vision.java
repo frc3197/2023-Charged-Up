@@ -12,15 +12,17 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Vision extends SubsystemBase {
 
-  NetworkTable table;
-  NetworkTableInstance instance;
+  //NetworkTable table;
+  //NetworkTableInstance instance;
   PhotonCamera cameraFront;
+
+  boolean cancelDrive = false;
 
   /** Creates a new Vision. */
   public Vision() {
 
-    table = NetworkTableInstance.getDefault().getTable("photonvision");
-    instance = table.getInstance();
+    //table = NetworkTableInstance.getDefault().getTable("photonvision");
+    //instance = table.getInstance();
     cameraFront = new PhotonCamera("front_camera");
 
   }
@@ -50,6 +52,8 @@ public class Vision extends SubsystemBase {
     return results.hasTargets();
   }
 
+  
+
   public double getYaw() {
     var results = cameraFront.getLatestResult();
     if (results.hasTargets()) {
@@ -57,5 +61,24 @@ public class Vision extends SubsystemBase {
       return target.getYaw();
     }
     return 0.0;
+  }
+
+  public double getArea() {
+    var results = cameraFront.getLatestResult();
+    if (results.hasTargets()) {
+      var target = results.getBestTarget();
+      System.out.print(target.getArea()
+      );
+      return target.getArea();
+    }
+    return 0.0;
+  }
+
+  public void setCancel(boolean value) {
+    cancelDrive = value;
+  }
+
+  public boolean getCancel() {
+    return cancelDrive;
   }
 }

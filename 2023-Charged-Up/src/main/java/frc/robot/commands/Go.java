@@ -12,7 +12,7 @@ public class Go extends CommandBase {
   /** Creates a new Go. */
   DrivetrainSubsystem subsystem;
   double length;
-  double maxSpeed = 1.5;
+  double maxSpeed = 0.6;
   double maxRot = 0.65;
 
   public Go(DrivetrainSubsystem subsystem, double length) {

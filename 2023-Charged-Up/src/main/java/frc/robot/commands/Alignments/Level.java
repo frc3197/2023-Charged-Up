@@ -10,37 +10,48 @@ import frc.robot.subsystems.DrivetrainSubsystem;
 
 public class Level extends CommandBase {
   /** Creates a new Level. */
-  int direction = 1;
+  int rotGoal;
   double levelSpeed = 1;
-  double thresh = 2;
-  //double currRoll;
-  //double desiredRoll;
+  double thresh = 9.9;
+  double maxRotSpeed = 0.15;
+  // double currRoll;
+  // double desiredRoll;
 
   DrivetrainSubsystem subsystem;
-  public Level(DrivetrainSubsystem sub, int dir) {
+
+  public Level(DrivetrainSubsystem sub, int rotGoal) {
     subsystem = sub;
-    direction = dir;
-    //currRoll = subsystem.getRoll();
-    //desiredRoll = currRoll - 1;
+    this.rotGoal = rotGoal;
+    // currRoll = subsystem.getRoll();
+    // desiredRoll = currRoll - 1;
 
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    //currRoll = sub.getRoll();
-    System.out.println(subsystem.getRoll());
+
     double speed = 0;
-    speed = subsystem.getRoll() / -20.0;
-    if(subsystem.getRoll() < thresh && subsystem.getRoll() > thresh * -1) {
+    speed = subsystem.getRoll() / -24.5;
+    if (subsystem.getRoll() < thresh && subsystem.getRoll() > thresh * -1) {
       speed = 0;
     }
+
+    double rotSpeed = (rotGoal - subsystem.getYaw());
+
+    if (rotSpeed > maxRotSpeed) {
+      rotSpeed = maxRotSpeed;
+    }
+    if (rotSpeed < maxRotSpeed * -1) {
+      rotSpeed = maxRotSpeed * -1;
+    }
     System.out.println("SPEED: " + speed);
-    subsystem.drive(new ChassisSpeeds(speed, 0.0, 0.0));
+    subsystem.drive(new ChassisSpeeds(speed, 0.0, 0));
 
     /*
      * 
@@ -50,7 +61,7 @@ public class Level extends CommandBase {
      * if(desiredRoll > currRoll)
      * {
      * STOPPPP
-     *  subsystem.drive(new ChassisSpeeds(0, 0, 0));
+     * subsystem.drive(new ChassisSpeeds(0, 0, 0));
      * }
      * else
      * {
@@ -63,7 +74,8 @@ public class Level extends CommandBase {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+  }
 
   // Returns true when the command should end.
   @Override

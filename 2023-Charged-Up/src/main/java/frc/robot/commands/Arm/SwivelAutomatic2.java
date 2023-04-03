@@ -8,6 +8,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.PneumaticSubsystem;
 
@@ -24,9 +25,12 @@ public class SwivelAutomatic2 extends CommandBase {
   boolean swivelFirst;
   boolean auto;
 
+  double threshold;
+
   Timer timer;
 
-  public SwivelAutomatic2(ArmSubsystem aSubsystem, PneumaticSubsystem pSubsystem, double swivelGoal, int extendGoal, boolean swivelFirst, boolean auto) {
+  public SwivelAutomatic2(ArmSubsystem aSubsystem, PneumaticSubsystem pSubsystem, double swivelGoal, int extendGoal,
+      boolean swivelFirst, boolean auto) {
     this.aSubsystem = aSubsystem;
     this.pSubsystem = pSubsystem;
     this.swivelGoal = swivelGoal;
@@ -39,6 +43,21 @@ public class SwivelAutomatic2 extends CommandBase {
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
+  public SwivelAutomatic2(ArmSubsystem aSubsystem, PneumaticSubsystem pSubsystem, double swivelGoal, int extendGoal,
+      boolean swivelFirst, boolean auto, double thresh) {
+    this.aSubsystem = aSubsystem;
+    this.pSubsystem = pSubsystem;
+    this.swivelGoal = swivelGoal;
+    this.extendGoal = extendGoal;
+    this.swivelFirst = swivelFirst;
+    this.auto = auto;
+
+    levelPID = Constants.Arm.LevelPID;
+    timer = new Timer();
+    threshold = thresh;
+    // Use addRequirements() here to declare subsystem dependencies.
+  }
+
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
@@ -46,34 +65,30 @@ public class SwivelAutomatic2 extends CommandBase {
     timer.reset();
     timer.start();
 
-    if(auto)
-    {
-      aSubsystem.setMaxSpeed(1.75);
-    }
-    else
-    {
+    if (auto) {
+      aSubsystem.setMaxSpeed(1.9);
+    } else {
       aSubsystem.setMaxSpeed(1);
     }
-    
+
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-  
 
-    if(swivelFirst)
-    {
+    if (swivelFirst) {
       swivelFirst();
-    }
-    else{
+    } else {
       extendFirst();
     }
 
-    if(aSubsystem.mapAbsoluteEncoder() < 4) {
-      pSubsystem.closeWrist();
-    } else {
-      pSubsystem.openWrist();
+    if (RobotContainer.getArmSubsystem().getAutoWrist()) {
+      if (aSubsystem.mapAbsoluteEncoder() < 4) {
+        pSubsystem.closeWrist();
+      } else {
+        pSubsystem.openWrist();
+      }
     }
   }
 
@@ -91,13 +106,12 @@ public class SwivelAutomatic2 extends CommandBase {
   @Override
   public boolean isFinished() {
 
-    if(timer.get() > 2.5)
-    {
+    if (timer.get() > 2.5) {
       return true;
     }
 
-    if (Math.abs(aSubsystem.mapAbsoluteEncoder() - swivelGoal) < Constants.Arm.TICK_THRESHOLD
-        && Math.abs(aSubsystem.getExtendTicks() - extendGoal) < Constants.Arm.EXTEND_TICK_THRESHOLD) {
+    if (Math.abs(aSubsystem.mapAbsoluteEncoder() - swivelGoal) < threshold
+        && Math.abs(aSubsystem.getExtendTicks() - extendGoal) - 5 < Constants.Arm.EXTEND_TICK_THRESHOLD) {
       aSubsystem.swivel(0);
       aSubsystem.setMove(false);
       aSubsystem.setManuelMove(false);
@@ -108,63 +122,57 @@ public class SwivelAutomatic2 extends CommandBase {
 
   private void extendFirst() {
     System.out.println(aSubsystem.mapAbsoluteEncoder() - swivelGoal);
-      System.out.println("Arm Encoder thing: " + Math.abs(aSubsystem.getExtendTicks() - extendGoal));
-      aSubsystem.setManuelMove(true);
+    System.out.println("Arm Encoder thing: " + Math.abs(aSubsystem.getExtendTicks() - extendGoal));
+    aSubsystem.setManuelMove(true);
 
-      if (/*timer.get() > delay*/true) {
-        if (Math.abs(aSubsystem.mapAbsoluteEncoder() - swivelGoal) > Constants.Arm.TICK_THRESHOLD) {
-          if (Math.abs(aSubsystem.getExtendTicks() - extendGoal) < Constants.Arm.EXTEND_TICK_THRESHOLD + 2250) {
-            aSubsystem.swivel(levelPID.calculate(aSubsystem.mapAbsoluteEncoder(), swivelGoal) / -1);
-            aSubsystem.setMove(true);
-            
-          }
-        } else {
-          // subsystem.swivel(0);
-          reachedHeight = true;
-          aSubsystem.setMove(false);
+    if (/* timer.get() > delay */true) {
+      if (Math.abs(aSubsystem.mapAbsoluteEncoder() - swivelGoal) > threshold) {
+        if (Math.abs(aSubsystem.getExtendTicks() - extendGoal) - 20 < Constants.Arm.EXTEND_TICK_THRESHOLD * 2) {
+          aSubsystem.swivel(levelPID.calculate(aSubsystem.mapAbsoluteEncoder(), swivelGoal) * -1.5);
+          aSubsystem.setMove(true);
+
         }
-      }
-
-      if (aSubsystem.mapAbsoluteEncoder() > 5 && aSubsystem.mapAbsoluteEncoder() < 6.5) {
-        pSubsystem.closeClaw();
-        // once = false;
       } else {
-        pSubsystem.enteringZone();
+        // subsystem.swivel(0);
+        reachedHeight = true;
+        aSubsystem.setMove(false);
       }
+    }
 
-      aSubsystem.setExtending(true);
-      // this.subsystem.setManuelMove(true);
+    aSubsystem.setExtending(true);
+    // this.subsystem.setManuelMove(true);
 
-      aSubsystem.extend(Constants.Arm.ExtendPID.calculate(aSubsystem.getExtendTicks(), extendGoal) / 200.0);
+    aSubsystem.extend(Constants.Arm.ExtendPID.calculate(aSubsystem.getExtendTicks(), extendGoal) * 1.75);
   }
 
   private void swivelFirst() {
-    System.out.println(aSubsystem.mapAbsoluteEncoder() - swivelGoal);
-      aSubsystem.setManuelMove(true);
+    System.out.println(
+        aSubsystem.mapAbsoluteEncoder() - swivelGoal + " , Extend: " + (aSubsystem.getExtendTicks() - extendGoal));
+    aSubsystem.setManuelMove(true);
 
-      if (true || false) {
-        if (Math.abs(aSubsystem.mapAbsoluteEncoder() - swivelGoal) > Constants.Arm.TICK_THRESHOLD) {
-          aSubsystem.swivel(levelPID.calculate(aSubsystem.mapAbsoluteEncoder(), swivelGoal) *-1.16);
-          aSubsystem.setMove(true);
+    if (true || false || 1 > 0 || "test".equals("test")) {
+      if (Math.abs(aSubsystem.mapAbsoluteEncoder() - swivelGoal) > threshold) {
+        aSubsystem.swivel(levelPID.calculate(aSubsystem.mapAbsoluteEncoder(), swivelGoal) * -2.4);
+        aSubsystem.setMove(true);
 
-        } else {
-          // subsystem.swivel(0);
-          reachedHeight = true;
-          aSubsystem.setMove(false);
-        }
-      }
-
-      if (aSubsystem.mapAbsoluteEncoder() > 5 && aSubsystem.mapAbsoluteEncoder() < 6.5) {
-        pSubsystem.closeClaw();
-        // once = false;
       } else {
-        pSubsystem.enteringZone();
+        // subsystem.swivel(0);
+        reachedHeight = true;
+        aSubsystem.setMove(false);
       }
+    }
 
-      aSubsystem.setExtending(true);
-      // this.subsystem.setManuelMove(true);
-      if (Math.abs(aSubsystem.mapAbsoluteEncoder() - swivelGoal) < Constants.Arm.TICK_THRESHOLD) {
-        aSubsystem.extend(Constants.Arm.ExtendPID.calculate(aSubsystem.getExtendTicks(), extendGoal) / 200.0);
-      }
+    if (aSubsystem.mapAbsoluteEncoder() > 5 && aSubsystem.mapAbsoluteEncoder() < 6.5) {
+      // pSubsystem.closeClaw();
+      // once = false;
+    } else {
+      pSubsystem.enteringZone();
+    }
+
+    aSubsystem.setExtending(true);
+    // this.subsystem.setManuelMove(true);
+    if (Math.abs(aSubsystem.mapAbsoluteEncoder() - swivelGoal) < threshold) {
+      aSubsystem.extend(Constants.Arm.ExtendPID.calculate(aSubsystem.getExtendTicks(), extendGoal) / 1.0);
+    }
   }
 }

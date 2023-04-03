@@ -27,7 +27,7 @@ public class AlignAT extends CommandBase {
   double tagOffset = 0.5;
   double thresh = 0.2;
   double degreesThresh = 1;
-  double maxRotationSpeed = 0.4;
+  double maxRotationSpeed = 0.3;
   double rotSpeed;
   double offsetX = 0.25;
 

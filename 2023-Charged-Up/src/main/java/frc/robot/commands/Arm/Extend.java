@@ -34,11 +34,12 @@ public class Extend extends CommandBase {
   public void execute() {
     double feedVal = feedforward.calculate(0) / 4.0;
 
-    //if(m_subsystem.getExtendTicks() < 100000 || val < 0)
+    
     m_subsystem.extend(val);
     m_subsystem.setExtending(true);
-    System.out.println(m_subsystem.getExtendTicks()); 
-  }
+    System.out.println("EXTEND-ENCODER: " + m_subsystem.getExtendTicks()); 
+    }
+
 
   // Called once the command ends or is interrupted.
   @Override

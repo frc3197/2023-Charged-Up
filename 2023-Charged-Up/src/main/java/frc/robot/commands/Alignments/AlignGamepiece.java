@@ -21,7 +21,7 @@ public class AlignGamepiece extends CommandBase {
   Timer timer;
   double pitch;
   double yaw;
-  double maxPitch = 1.25;
+  double maxPitch = 1.5;
   double maxYaw = 0.25;
 
   double xSpeed;
@@ -59,8 +59,8 @@ public class AlignGamepiece extends CommandBase {
   public void execute() {
     System.out.println(driveSubsystem.getYaw());
     //num targets
-    if (vision.hasTarget() && (vision.getPitch()) < 5.5) {
-      // counter = 0;
+    if (vision.hasTarget() && (vision.getPitch()) > 5.5) {
+       counter = 0;
     } else {
       counter++;
     }
@@ -68,13 +68,13 @@ public class AlignGamepiece extends CommandBase {
     if ((vision.getPitch()) < 4.5) {
       counter++;
     } else {
-      counter = 0;
+      //counter = 0;
     }
 
     pitch = vision.getPitch();
     yaw = vision.getYaw();
     //speed regulation
-    double pitchSpeed = pitch / 8.5;
+    double pitchSpeed = pitch / 10;
     if (pitchSpeed > maxPitch) {
       pitchSpeed = maxPitch;
     }
@@ -83,7 +83,6 @@ public class AlignGamepiece extends CommandBase {
     }
 
     yawSpeed = yaw / -6;
-    double botYaw = driveSubsystem.getYaw();
     //sets speeds
     /*xSpeed = Math.cos(Units.degreesToRadians(botYaw)) * pitchSpeed;
     ySpeed = Math.sin(Units.degreesToRadians(botYaw)) * pitchSpeed;
@@ -91,6 +90,7 @@ public class AlignGamepiece extends CommandBase {
       xSpeed *= -1;
     }*/
     //System.out.println(xSpeed + ", " + ySpeed);
+    ySpeed = pitchSpeed;
     driveSubsystem.drive(new ChassisSpeeds(pitchSpeed, 0, yawSpeed));
   }
 
@@ -98,7 +98,6 @@ public class AlignGamepiece extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     //stops driving and timer
-    armSubsystem.swivel(0);
     timer.stop();
     timer.reset();
   }
@@ -106,13 +105,17 @@ public class AlignGamepiece extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+    if(vision.getCancel()) {
+       return true;
+    }
 
     //Ends command if exceeds timeout
     if (timer.get() > timeout) {
-      //return true;
+      return true;
     }
 
     //Ends command if bot is within threshold
-    return Math.abs(xSpeed) < 0.2 && Math.abs(ySpeed) < 0.2 && Math.abs(yawSpeed) < 0.2 && counter > 20;
+    System.out.println(xSpeed);
+    return  Math.abs(ySpeed) < 0.2 && Math.abs(yawSpeed) < 0.2 && counter > 10;
   }
 }
