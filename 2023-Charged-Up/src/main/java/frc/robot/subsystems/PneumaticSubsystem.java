@@ -35,6 +35,18 @@ public class PneumaticSubsystem extends SubsystemBase {
     armWrist.toggle();
   }
 
+  public void autoWristOn() {
+    if(armWrist.get() == kForward) {
+      armWrist.toggle();
+    }
+  }
+
+  public void autoWristOff() {
+    if(armWrist.get() != kForward) {
+      armWrist.toggle();
+    }
+  }
+
   public void toggleClaw() {
     clawSolenoid.toggle();
     numTriggers++;

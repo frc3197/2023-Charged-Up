@@ -13,7 +13,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DrivetrainSubsystem;
 
-public class GoAndRotate2 extends CommandBase {
+public class GOANDROTATE3 extends CommandBase {
   /** Creates a new GoAndRotate. */
   double degrees;
   double maxRot = 3;
@@ -29,7 +29,7 @@ public class GoAndRotate2 extends CommandBase {
   private DoubleSupplier m_translationYSupplier;
   private DoubleSupplier m_rotationSupplier;
 
-  public GoAndRotate2(double length, double degrees, DrivetrainSubsystem subsystem, double xVal, double rollThresh) {
+  public GOANDROTATE3(double length, double degrees, DrivetrainSubsystem subsystem, double xVal, double rollThresh) {
     this.degrees = degrees;
     this.subsystem = subsystem;
     this.length = length;
@@ -52,7 +52,7 @@ public class GoAndRotate2 extends CommandBase {
     if (rotSpeed < maxRot * -1) {
       rotSpeed = maxRot * -1;
     }
-    //rotSpeed = 0;
+    rotSpeed = 0;
 
     double currentSpeed = length / 3.0;
     if (currentSpeed > maxSpeed) {
@@ -88,7 +88,7 @@ public class GoAndRotate2 extends CommandBase {
   @Override
   public boolean isFinished() {
     if(Math.abs(subsystem.getRoll()) > Math.abs(rollThresh)) {
-      //return true;
+      return true;
     }
     return Math.abs(rotSpeed) < 0.5 && Math.abs(length) < 0.1;
   }

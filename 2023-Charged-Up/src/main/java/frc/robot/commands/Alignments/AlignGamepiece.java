@@ -30,9 +30,9 @@ public class AlignGamepiece extends CommandBase {
 
   int pipeline;
 
-  int counter = 0;
+  private int counter = 0;
 
-  double timeout = 5.0;
+  private double timeout = 5.0;
 
   public AlignGamepiece(ArmSubsystem aSub, DrivetrainSubsystem dSub, Vision vSub, int pipeline) {
     //Constructor
@@ -71,8 +71,8 @@ public class AlignGamepiece extends CommandBase {
       //counter = 0;
     }
 
-    pitch = vision.getPitch();
-    yaw = vision.getYaw();
+    pitch = driveSubsystem.getPitch();
+    yaw = driveSubsystem.getYaw();
     //speed regulation
     double pitchSpeed = pitch / 10;
     if (pitchSpeed > maxPitch) {
@@ -116,6 +116,6 @@ public class AlignGamepiece extends CommandBase {
 
     //Ends command if bot is within threshold
     System.out.println(xSpeed);
-    return  Math.abs(ySpeed) < 0.2 && Math.abs(yawSpeed) < 0.2 && counter > 10;
+    return  Math.abs(ySpeed) < 0.2 && Math.abs(yawSpeed) < 0.2 && counter > 20;
   }
 }

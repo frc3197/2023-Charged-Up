@@ -14,13 +14,13 @@ import frc.robot.subsystems.DrivetrainSubsystem;
 public class GoAndRotate extends CommandBase {
   /** Creates a new GoAndRotate. */
   double degrees;
-  double maxRot = 3;
+  double maxRot = 2.25;
   double rotSpeed = 0;
   double yLength;
   double xLength;
   double maxSpeed = 1.65;
   double xVal;
-  double rollThresh = 7.5;
+  double rollThresh = 30;
   DrivetrainSubsystem subsystem;
 
   private DoubleSupplier m_translationXSupplier;
@@ -95,7 +95,7 @@ public class GoAndRotate extends CommandBase {
   @Override
   public boolean isFinished() {
     if(Math.abs(subsystem.getRoll()) > Math.abs(rollThresh)) {
-      return true;
+      //return true;
     }
     return Math.abs(rotSpeed) < 0.5 && Math.abs(yLength) < 0.1 && Math.abs(xLength) < 0.1;
   }

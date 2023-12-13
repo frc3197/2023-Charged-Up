@@ -12,8 +12,8 @@ public class Level extends CommandBase {
   /** Creates a new Level. */
   int rotGoal;
   double levelSpeed = 1;
-  double thresh = 9.9;
-  double maxRotSpeed = 0.15;
+  double thresh = 10.8;
+  double maxRotSpeed = 0.125;
   // double currRoll;
   // double desiredRoll;
 
@@ -37,7 +37,7 @@ public class Level extends CommandBase {
   public void execute() {
 
     double speed = 0;
-    speed = subsystem.getRoll() / -24.5;
+    speed = subsystem.getRoll() / -29.8;
     if (subsystem.getRoll() < thresh && subsystem.getRoll() > thresh * -1) {
       speed = 0;
     }
@@ -50,7 +50,7 @@ public class Level extends CommandBase {
     if (rotSpeed < maxRotSpeed * -1) {
       rotSpeed = maxRotSpeed * -1;
     }
-    System.out.println("SPEED: " + speed);
+    //System.out.println("Roll: " + subsystem.getYaw());
     subsystem.drive(new ChassisSpeeds(speed, 0.0, 0));
 
     /*

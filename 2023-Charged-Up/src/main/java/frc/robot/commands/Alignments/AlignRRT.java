@@ -60,8 +60,8 @@ public class AlignRRT extends CommandBase {
     visionMeasurement = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0);
 
     double xSpeed = visionMeasurement/-7.0;
-    double ySpeed = driveSubsystem.getPoseEstimation().getX() * 3;
-
+    //double ySpeed = driveSubsystem.getPoseEstimation().getX() * 3;
+double ySpeed = 0.0;
     if(xSpeed > maxAlignSpeed)
     {
       xSpeed = maxAlignSpeed;
@@ -104,7 +104,7 @@ public class AlignRRT extends CommandBase {
   public boolean isFinished() {
 
       return Math.abs(visionMeasurement) < thresh*1.25
-      && Math.abs(driveSubsystem.getPoseEstimation().getY()) < 0.02;
+      && Math.abs(0) < 0.02;
    
   }
 }

@@ -10,23 +10,31 @@ import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
+import frc.robot.Robot;
 import frc.robot.RobotContainer;
 import frc.robot.commands.Delay;
+import frc.robot.commands.DriveForward;
 import frc.robot.commands.ExtendRetract;
 import frc.robot.commands.Go;
 import frc.robot.commands.SetPipeline;
 import frc.robot.commands.ZeroGyro;
 import frc.robot.commands.Alignments.AlignAT;
 import frc.robot.commands.Alignments.AlignCharge;
+import frc.robot.commands.Alignments.AlignConeNode;
 import frc.robot.commands.Alignments.AlignGamepiece;
+import frc.robot.commands.Alignments.GOANDROTATE3;
 import frc.robot.commands.Alignments.GoAndRotate;
 import frc.robot.commands.Alignments.GoAndRotate2;
 import frc.robot.commands.Alignments.Level;
 import frc.robot.commands.Alignments.Rotate;
+import frc.robot.commands.Alignments.SnapCube;
 import frc.robot.commands.Arm.CloseClaw;
 import frc.robot.commands.Arm.Extend;
 import frc.robot.commands.Arm.ExtendAutomatic;
+import frc.robot.commands.Arm.ExtendLevel;
+import frc.robot.commands.Arm.NewSwivel;
 import frc.robot.commands.Arm.OpenClaw;
+import frc.robot.commands.Arm.Swivel;
 import frc.robot.commands.Arm.SwivelAutomatic;
 import frc.robot.commands.Arm.SwivelAutomatic2;
 import frc.robot.commands.Arm.ToggleAutoWrist;
@@ -43,10 +51,15 @@ public class AutoLookup {
                 switch (name) {
                         default:
                                 // testing for path planner
-                        case "practice":
+                        case "ONLY PLACE":
                                 ret = new AutoRoutine(
-                                                new RunAutonomous(RobotContainer.getDriveSubsystem(),
-                                                                PathLookup.getContainer("practice")));
+                                                new ParallelCommandGroup(
+                                                                new ExtendLevel(RobotContainer.getArmSubsystem()),
+                                                                new NewSwivel(RobotContainer.getArmSubsystem(),
+                                                                                RobotContainer.getPneumaticSubsystem(),
+                                                                                0.1))
+
+                                );
                                 break;
                         // Place one and balance Charge station
                         case "Middle Potatoes":
@@ -90,31 +103,10 @@ public class AutoLookup {
                                                 new Level(RobotContainer.getDriveSubsystem(), 0));
                                 break;
                         // Tester for auto level
-                        case "ONLY PLACE":
-                                ret = new AutoRoutine(
-                                                new SetPipeline(RobotContainer.getLimelightSubsystem(), "april"),
-                                                new ZeroExtendEncoder(RobotContainer.getArmSubsystem()),
-                                                new CloseClaw(RobotContainer.getPneumaticSubsystem()),
-                                                new ExtendRetract(RobotContainer.getArmSubsystem(), -0.2),
-                                                new ZeroExtendEncoder(RobotContainer.getArmSubsystem()),
-                                                new SequentialCommandGroup(
-                                                                new SwivelAutomatic2(RobotContainer.getArmSubsystem(),
-                                                                                RobotContainer.getPneumaticSubsystem(),
-                                                                                Constants.Arm.TICKS_TO_HIGH,
-                                                                                Constants.Arm.TICKS_TO_FAR_EXTEND - 15,
-                                                                                true, true, 0.4),
-                                                                new SequentialCommandGroup(
-                                                                                new WaitCommand(0.3),
-                                                                                new AlignAT(RobotContainer
-                                                                                                .getLimelightSubsystem(),
-                                                                                                RobotContainer.getDriveSubsystem(),
-                                                                                                0.5, false))),
-                                                new OpenClaw(RobotContainer.getPneumaticSubsystem()),
-                                                new WaitCommand(0.15)
-                                                );
-                                break;
+
                         case "MIDDLE 1.5 TENDERS WITH POTATOES":
                                 ret = new AutoRoutine(
+                                                new ZeroGyro(RobotContainer.getDriveSubsystem()),
                                                 new SetPipeline(RobotContainer.getLimelightSubsystem(), "april"),
                                                 new ZeroExtendEncoder(RobotContainer.getArmSubsystem()),
                                                 new CloseClaw(RobotContainer.getPneumaticSubsystem()),
@@ -144,6 +136,7 @@ public class AutoLookup {
                                                                                 0.1, 90, 1.4624)),
                                                 new Rotate(179, RobotContainer.getDriveSubsystem()),
                                                 new ZeroExtendEncoder(RobotContainer.getArmSubsystem()),
+                                                
                                                 // new OpenClaw(RobotContainer.getPneumaticSubsystem()),
                                                 /*
                                                  * new AlignGamepiece(RobotContainer.getArmSubsystem(),
@@ -153,111 +146,119 @@ public class AutoLookup {
 
                                                 new CloseClaw(RobotContainer.getPneumaticSubsystem()),
                                                 new ToggleAutoWrist(RobotContainer.getArmSubsystem()),
+                                                new WaitCommand(0.25),
+                                                new ZeroGyro(RobotContainer.getDriveSubsystem()),
                                                 new ParallelCommandGroup(
                                                                 new ExtendRetract(RobotContainer.getArmSubsystem(),
                                                                                 -.6),
-                                                                new GoAndRotate2(160, 180,
+                                                                new GOANDROTATE3(-145, 0,
                                                                                 RobotContainer.getDriveSubsystem(),
-                                                                                -0.075, 15)),
+                                                                                0, 15)),
+                                                                
+                                                                
                                                 new Level(RobotContainer.getDriveSubsystem(), 180));
                                 break;
                         case "BLUE LEFT 1.5 TENDERS WITH POTATOES":
                                 ret = new AutoRoutine(
-                                                /*new SetPipeline(RobotContainer.getLimelightSubsystem(), "april"),
-                                                new ZeroExtendEncoder(RobotContainer.getArmSubsystem()),
-                                                new CloseClaw(RobotContainer.getPneumaticSubsystem()),
-                                                new ExtendRetract(RobotContainer.getArmSubsystem(), -0.2),
-                                                new ZeroExtendEncoder(RobotContainer.getArmSubsystem()),
-                                                new SequentialCommandGroup(
-                                                                new SwivelAutomatic2(RobotContainer.getArmSubsystem(),
-                                                                                RobotContainer.getPneumaticSubsystem(),
-                                                                                Constants.Arm.TICKS_TO_HIGH,
-                                                                                Constants.Arm.TICKS_TO_FAR_EXTEND - 15,
-                                                                                true, true, 0.4),
-                                                                new SequentialCommandGroup(
-                                                                                new WaitCommand(0.3),
-                                                                                new AlignAT(RobotContainer
-                                                                                                .getLimelightSubsystem(),
-                                                                                                RobotContainer.getDriveSubsystem(),
-                                                                                                0.5, false))),
-                                                new OpenClaw(RobotContainer.getPneumaticSubsystem()),
-                                                new WaitCommand(0.15),
-                                                new AlignAT(RobotContainer.getLimelightSubsystem(),
-                                                                RobotContainer.getDriveSubsystem(), 1.15, true),
-                                                new SequentialCommandGroup(
-                                                                new SwivelAutomatic2(RobotContainer.getArmSubsystem(),
-                                                                                RobotContainer.getPneumaticSubsystem(),
-                                                                                Constants.Arm.TICKS_TO_FlOOR,
-                                                                                Constants.Arm.EXTEND_FLOOR, false,
-                                                                                true, 0.15),
-                                                                new GoAndRotate(-245, 0, 0,
-                                                                                RobotContainer.getDriveSubsystem(),
-                                                                                0.1, 90, 1.26)),
-                                                new Rotate(179, RobotContainer.getDriveSubsystem()),
-                                                new ZeroExtendEncoder(RobotContainer.getArmSubsystem()),
-                                                new OpenClaw(RobotContainer.getPneumaticSubsystem()),
-                                                new AlignGamepiece(RobotContainer.getArmSubsystem(),
-                                                                RobotContainer.getDriveSubsystem(),
-                                                                RobotContainer.getVision(), 1),
-                                                new CloseClaw(RobotContainer.getPneumaticSubsystem()),
-                                                new ParallelCommandGroup(
-                                                                new ExtendRetract(RobotContainer.getArmSubsystem(),
-                                                                                -.6),
-                                                                new GoAndRotate2(160, 180,
-                                                                                RobotContainer.getDriveSubsystem(),
-                                                                                -0.075, 5)),
-                                                new Level(RobotContainer.getDriveSubsystem(), 180)*/
-                                                );
+                                /*
+                                 * new SetPipeline(RobotContainer.getLimelightSubsystem(), "april"),
+                                 * new ZeroExtendEncoder(RobotContainer.getArmSubsystem()),
+                                 * new CloseClaw(RobotContainer.getPneumaticSubsystem()),
+                                 * new ExtendRetract(RobotContainer.getArmSubsystem(), -0.2),
+                                 * new ZeroExtendEncoder(RobotContainer.getArmSubsystem()),
+                                 * new SequentialCommandGroup(
+                                 * new SwivelAutomatic2(RobotContainer.getArmSubsystem(),
+                                 * RobotContainer.getPneumaticSubsystem(),
+                                 * Constants.Arm.TICKS_TO_HIGH,
+                                 * Constants.Arm.TICKS_TO_FAR_EXTEND - 15,
+                                 * true, true, 0.4),
+                                 * new SequentialCommandGroup(
+                                 * new WaitCommand(0.3),
+                                 * new AlignAT(RobotContainer
+                                 * .getLimelightSubsystem(),
+                                 * RobotContainer.getDriveSubsystem(),
+                                 * 0.5, false))),
+                                 * new OpenClaw(RobotContainer.getPneumaticSubsystem()),
+                                 * new WaitCommand(0.15),
+                                 * new AlignAT(RobotContainer.getLimelightSubsystem(),
+                                 * RobotContainer.getDriveSubsystem(), 1.15, true),
+                                 * new SequentialCommandGroup(
+                                 * new SwivelAutomatic2(RobotContainer.getArmSubsystem(),
+                                 * RobotContainer.getPneumaticSubsystem(),
+                                 * Constants.Arm.TICKS_TO_FlOOR,
+                                 * Constants.Arm.EXTEND_FLOOR, false,
+                                 * true, 0.15),
+                                 * new GoAndRotate(-245, 0, 0,
+                                 * RobotContainer.getDriveSubsystem(),
+                                 * 0.1, 90, 1.26)),
+                                 * new Rotate(179, RobotContainer.getDriveSubsystem()),
+                                 * new ZeroExtendEncoder(RobotContainer.getArmSubsystem()),
+                                 * new OpenClaw(RobotContainer.getPneumaticSubsystem()),
+                                 * new AlignGamepiece(RobotContainer.getArmSubsystem(),
+                                 * RobotContainer.getDriveSubsystem(),
+                                 * RobotContainer.getVision(), 1),
+                                 * new CloseClaw(RobotContainer.getPneumaticSubsystem()),
+                                 * new ParallelCommandGroup(
+                                 * new ExtendRetract(RobotContainer.getArmSubsystem(),
+                                 * -.6),
+                                 * new GoAndRotate2(160, 180,
+                                 * RobotContainer.getDriveSubsystem(),
+                                 * -0.075, 5)),
+                                 * new Level(RobotContainer.getDriveSubsystem(), 180)
+                                 */
+                                );
                                 break;
                         case "RED RIGHT 1.5 TENDERS WITH POTATOES":
                                 ret = new AutoRoutine(
-                                                /*new SetPipeline(RobotContainer.getLimelightSubsystem(), "april"),
-                                                new ZeroExtendEncoder(RobotContainer.getArmSubsystem()),
-                                                new CloseClaw(RobotContainer.getPneumaticSubsystem()),
-                                                new ExtendRetract(RobotContainer.getArmSubsystem(), -0.2),
-                                                new ZeroExtendEncoder(RobotContainer.getArmSubsystem()),
-                                                new SequentialCommandGroup(
-                                                                new SwivelAutomatic2(RobotContainer.getArmSubsystem(),
-                                                                                RobotContainer.getPneumaticSubsystem(),
-                                                                                Constants.Arm.TICKS_TO_HIGH,
-                                                                                Constants.Arm.TICKS_TO_FAR_EXTEND - 15,
-                                                                                true, true, 0.4),
-                                                                new SequentialCommandGroup(
-                                                                                new WaitCommand(0.3),
-                                                                                new AlignAT(RobotContainer
-                                                                                                .getLimelightSubsystem(),
-                                                                                                RobotContainer.getDriveSubsystem(),
-                                                                                                0.5, false))),
-                                                new OpenClaw(RobotContainer.getPneumaticSubsystem()),
-                                                new WaitCommand(0.15),
-                                                new AlignAT(RobotContainer.getLimelightSubsystem(),
-                                                                RobotContainer.getDriveSubsystem(), 1.95, true),
-                                                new ToggleAutoWrist(RobotContainer.getArmSubsystem()),
-                                                new ToggleWrist(RobotContainer.getPneumaticSubsystem()),
-                                                new SequentialCommandGroup(
-                                                                new SwivelAutomatic2(RobotContainer.getArmSubsystem(),
-                                                                                RobotContainer.getPneumaticSubsystem(),
-                                                                                Constants.Arm.TICKS_TO_FlOOR,
-                                                                                Constants.Arm.EXTEND_FLOOR - 5, false,
-                                                                                true, 0.15),
-                                                                new GoAndRotate(-245, 0, 0,
-                                                                                RobotContainer.getDriveSubsystem(),
-                                                                                0.1, 90, 1.26)),
-                                                new Rotate(179, RobotContainer.getDriveSubsystem()),
-                                                new ZeroExtendEncoder(RobotContainer.getArmSubsystem()),
-                                                new OpenClaw(RobotContainer.getPneumaticSubsystem()),
-                                                new AlignGamepiece(RobotContainer.getArmSubsystem(),
-                                                                RobotContainer.getDriveSubsystem(),
-                                                                RobotContainer.getVision(), 1),
-                                                new CloseClaw(RobotContainer.getPneumaticSubsystem()),
-                                                new ParallelCommandGroup(
-                                                                new ExtendRetract(RobotContainer.getArmSubsystem(),
-                                                                                -.6),
-                                                                new GoAndRotate2(160, 180,
-                                                                                RobotContainer.getDriveSubsystem(),
-                                                                                -0.075, 5)),
-                                                new Level(RobotContainer.getDriveSubsystem(), 180)*/
-                                                );
+                                /*
+                                 * new SetPipeline(RobotContainer.getLimelightSubsystem(), "april"),
+                                 * new ZeroExtendEncoder(RobotContainer.getArmSubsystem()),
+                                 * new CloseClaw(RobotContainer.getPneumaticSubsystem()),
+                                 * new ExtendRetract(RobotContainer.getArmSubsystem(), -0.2),
+                                 * new ZeroExtendEncoder(RobotContainer.getArmSubsystem()),
+                                 * new SequentialCommandGroup(
+                                 * new SwivelAutomatic2(RobotContainer.getArmSubsystem(),
+                                 * RobotContainer.getPneumaticSubsystem(),
+                                 * Constants.Arm.TICKS_TO_HIGH,
+                                 * Constants.Arm.TICKS_TO_FAR_EXTEND - 15,
+                                 * true, true, 0.4),
+                                 * new SequentialCommandGroup(
+                                 * new WaitCommand(0.3),
+                                 * new AlignAT(RobotContainer
+                                 * .getLimelightSubsystem(),
+                                 * RobotContainer.getDriveSubsystem(),
+                                 * 0.5, false))),
+                                 * new OpenClaw(RobotContainer.getPneumaticSubsystem()),
+                                 * new WaitCommand(0.15),
+                                 * new AlignAT(RobotContainer.getLimelightSubsystem(),
+                                 * RobotContainer.getDriveSubsystem(), 1.95, true),
+                                 * new ToggleAutoWrist(RobotContainer.getArmSubsystem()),
+                                 * new ToggleWrist(RobotContainer.getPneumaticSubsystem()),
+                                 * new SequentialCommandGroup(
+                                 * new SwivelAutomatic2(RobotContainer.getArmSubsystem(),
+                                 * RobotContainer.getPneumaticSubsystem(),
+                                 * Constants.Arm.TICKS_TO_FlOOR,
+                                 * Constants.Arm.EXTEND_FLOOR - 5, false,
+                                 * true, 0.15),
+                                 * new GoAndRotate(-245, 0, 0,
+                                 * RobotContainer.getDriveSubsystem(),
+                                 * 0.1, 90, 1.26)),
+                                 * new Rotate(179, RobotContainer.getDriveSubsystem()),
+                                 * new ZeroExtendEncoder(RobotContainer.getArmSubsystem()),
+                                 * new OpenClaw(RobotContainer.getPneumaticSubsystem()),
+                                 * new AlignGamepiece(RobotContainer.getArmSubsystem(),
+                                 * RobotContainer.getDriveSubsystem(),
+                                 * RobotContainer.getVision(), 1),
+                                 * new CloseClaw(RobotContainer.getPneumaticSubsystem()),
+                                 * new ParallelCommandGroup(
+                                 * new ExtendRetract(RobotContainer.getArmSubsystem(),
+                                 * -.6),
+                                 * new GoAndRotate2(160, 180,
+                                 * RobotContainer.getDriveSubsystem(),
+                                 * -0.075, 5)),
+                                 * new Level(RobotContainer.getDriveSubsystem(), 180)
+                                 */
+                                );
                                 break;
                         case "RED RIGHT 2 TENDERS":
                                 ret = new AutoRoutine(
@@ -267,17 +268,33 @@ public class AutoLookup {
                                                 new ZeroGyro(RobotContainer.getDriveSubsystem()),
                                                 new ExtendRetract(RobotContainer.getArmSubsystem(), -0.4),
                                                 new ZeroExtendEncoder(RobotContainer.getArmSubsystem()),
-                                                new SwivelAutomatic2(RobotContainer.getArmSubsystem(),
-                                                                RobotContainer.getPneumaticSubsystem(),
-                                                                Constants.Arm.TICKS_TO_HIGH - 0.1,
-                                                                Constants.Arm.TICKS_TO_FAR_EXTEND + 17,
-                                                                true, true, 0.3),
+                                                new ToggleAutoWrist(RobotContainer.getArmSubsystem()),
+                                                new ParallelCommandGroup(
+                                                                new SwivelAutomatic2(RobotContainer.getArmSubsystem(),
+                                                                                RobotContainer.getPneumaticSubsystem(),
+                                                                                Constants.Arm.TICKS_TO_HIGH - 0.2,
+                                                                                Constants.Arm.TICKS_TO_FAR_EXTEND - 2,
+                                                                                true, true, 0.3),
+                                                                new SequentialCommandGroup(
+                                                                                new WaitCommand(1.41),
+                                                                                //new AlignConeNode(RobotContainer.getDriveSubsystem(), RobotContainer.getPoseSubsystem(), RobotContainer.getVision(), 0).withTimeout(.5),
+                                                                                new DriveForward(RobotContainer
+                                                                                                .getDriveSubsystem(),
+                                                                                                0.3,
+                                                                                                RobotContainer.getVision()),
+                                                                                new WaitCommand(0.7),
+                                                                                new ToggleWrist(RobotContainer
+                                                                                                .getPneumaticSubsystem()),
+                                                                                new DriveForward(RobotContainer
+                                                                                                .getDriveSubsystem(), 0,
+                                                                                                RobotContainer.getVision()))),
+                                                new ToggleAutoWrist(RobotContainer.getArmSubsystem()),
                                                 // new ToggleWrist(RobotContainer.getPneumaticSubsystem()),
                                                 new OpenClaw(RobotContainer.getPneumaticSubsystem()),
                                                 new WaitCommand(0.25),
                                                 // new ToggleAutoWrist(RobotContainer.getArmSubsystem()),
                                                 new ParallelCommandGroup(
-                                                                new GoAndRotate(-235, 65, 180,
+                                                                new GoAndRotate(-255, 75, 170,
                                                                                 RobotContainer.getDriveSubsystem(),
                                                                                 0.1, 5, 1.85),
                                                                 new SequentialCommandGroup(
@@ -293,25 +310,30 @@ public class AutoLookup {
                                                                                                                 - 5,
                                                                                                 false,
                                                                                                 true, 0.05))),
-                                                new ZeroGyro(RobotContainer.getDriveSubsystem()),
                                                 new OpenClaw(RobotContainer.getPneumaticSubsystem()),
+                                                new WaitCommand(0.5),
+                                                new ZeroGyro(RobotContainer.getDriveSubsystem()),
                                                 new AlignGamepiece(RobotContainer.getArmSubsystem(),
                                                                 RobotContainer.getDriveSubsystem(),
-                                                                RobotContainer.getVision(), 0),
+                                                                RobotContainer.getVision(), 0).withTimeout(1.5),
                                                 new CloseClaw(RobotContainer.getPneumaticSubsystem()),
                                                 new ParallelCommandGroup(
-                                                                new GoAndRotate2(-240, 180,
+                                
+                                                                new GoAndRotate2(-245, 170,
                                                                                 RobotContainer.getDriveSubsystem(),
-                                                                                0.05, 5),
+                                                                                -0.175, 5),
+                                                                               
                                                                 new SwivelAutomatic2(RobotContainer.getArmSubsystem(),
                                                                                 RobotContainer.getPneumaticSubsystem(),
-                                                                                Constants.Arm.TICKS_TO_HIGH,
+                                                                                Constants.Arm.TICKS_TO_HIGH - 0.2,
                                                                                 Constants.Arm.TICKS_TO_FAR_EXTEND - 4,
                                                                                 true, true, 0.2)),
-                                                new AlignAT(RobotContainer
-                                                                .getLimelightSubsystem(),
-                                                                RobotContainer.getDriveSubsystem(),
-                                                                0.5, false),
+                                                new WaitCommand(0.25),
+                                                new ZeroGyro(RobotContainer.getDriveSubsystem()),
+                                                new Rotate(20, RobotContainer.getDriveSubsystem()),
+                                                new WaitCommand(0.25),
+                                                new ZeroGyro(RobotContainer.getDriveSubsystem()),
+                                                new SnapCube(RobotContainer.getDriveSubsystem(), RobotContainer.getPoseSubsystem(), RobotContainer.getVision(), 0).withTimeout(1.5),
                                                 // new Delay(0.3),
                                                 new OpenClaw(RobotContainer.getPneumaticSubsystem()),
                                                 new SwivelAutomatic2(RobotContainer.getArmSubsystem(),
@@ -322,150 +344,233 @@ public class AutoLookup {
                                 break;
                         case "BLUE LEFT 2 TENDERS":
                         ret = new AutoRoutine(
-                                new SetPipeline(RobotContainer.getLimelightSubsystem(), "april"),
-                                new CloseClaw(RobotContainer.getPneumaticSubsystem()),
-                                new ZeroExtendEncoder(RobotContainer.getArmSubsystem()),
-                                new ZeroGyro(RobotContainer.getDriveSubsystem()),
-                                new ExtendRetract(RobotContainer.getArmSubsystem(), -0.4),
-                                new ZeroExtendEncoder(RobotContainer.getArmSubsystem()),
-                                new SwivelAutomatic2(RobotContainer.getArmSubsystem(),
-                                                RobotContainer.getPneumaticSubsystem(),
-                                                Constants.Arm.TICKS_TO_HIGH - 0.1,
-                                                Constants.Arm.TICKS_TO_FAR_EXTEND + 17,
-                                                true, true, 0.3),
-                                // new ToggleWrist(RobotContainer.getPneumaticSubsystem()),
-                                new OpenClaw(RobotContainer.getPneumaticSubsystem()),
-                                new WaitCommand(0.25),
-                                // new ToggleAutoWrist(RobotContainer.getArmSubsystem()),
-                                new ParallelCommandGroup(
-                                                new GoAndRotate(-235, -65, -179.9,
-                                                                RobotContainer.getDriveSubsystem(),
-                                                                -0.1, 5, 1.85),
-                                                new SequentialCommandGroup(
-                                                                new ExtendRetract(RobotContainer
-                                                                                .getArmSubsystem(),
-                                                                                -.3),
-                                                                new SwivelAutomatic2(RobotContainer
-                                                                                .getArmSubsystem(),
+                                                new SetPipeline(RobotContainer.getLimelightSubsystem(), "april"),
+                                                new CloseClaw(RobotContainer.getPneumaticSubsystem()),
+                                                new ZeroExtendEncoder(RobotContainer.getArmSubsystem()),
+                                                new ZeroGyro(RobotContainer.getDriveSubsystem()),
+                                                new ExtendRetract(RobotContainer.getArmSubsystem(), -0.4),
+                                                new ZeroExtendEncoder(RobotContainer.getArmSubsystem()),
+                                                new ToggleAutoWrist(RobotContainer.getArmSubsystem()),
+                                                new ParallelCommandGroup(
+                                                                new SwivelAutomatic2(RobotContainer.getArmSubsystem(),
                                                                                 RobotContainer.getPneumaticSubsystem(),
-                                                                                Constants.Arm.TICKS_TO_FlOOR
-                                                                                                + 0.5,
-                                                                                Constants.Arm.EXTEND_FLOOR
-                                                                                                - 5,
-                                                                                false,
-                                                                                true, 0.05))),
-                                new ZeroGyro(RobotContainer.getDriveSubsystem()),
-                                new OpenClaw(RobotContainer.getPneumaticSubsystem()),
-                                new AlignGamepiece(RobotContainer.getArmSubsystem(),
-                                                RobotContainer.getDriveSubsystem(),
-                                                RobotContainer.getVision(), 0),
-                                new CloseClaw(RobotContainer.getPneumaticSubsystem()),
-                                new ParallelCommandGroup(
-                                                new GoAndRotate2(-240, 180,
+                                                                                Constants.Arm.TICKS_TO_HIGH - 0.2,
+                                                                                Constants.Arm.TICKS_TO_FAR_EXTEND - 2,
+                                                                                true, true, 0.3),
+                                                                new SequentialCommandGroup(
+                                                                                new WaitCommand(1.41),
+                                                                                //new AlignConeNode(RobotContainer.getDriveSubsystem(), RobotContainer.getPoseSubsystem(), RobotContainer.getVision(), 0).withTimeout(.5),
+                                                                                new DriveForward(RobotContainer
+                                                                                                .getDriveSubsystem(),
+                                                                                                0.3,
+                                                                                                RobotContainer.getVision()),
+                                                                                new WaitCommand(0.7),
+                                                                                new ToggleWrist(RobotContainer
+                                                                                                .getPneumaticSubsystem()),
+                                                                                new DriveForward(RobotContainer
+                                                                                                .getDriveSubsystem(), 0,
+                                                                                                RobotContainer.getVision()))),
+                                                new ToggleAutoWrist(RobotContainer.getArmSubsystem()),
+                                                // new ToggleWrist(RobotContainer.getPneumaticSubsystem()),
+                                                new OpenClaw(RobotContainer.getPneumaticSubsystem()),
+                                                new WaitCommand(0.25),
+                                                // new ToggleAutoWrist(RobotContainer.getArmSubsystem()),
+                                                new ParallelCommandGroup(
+                                                                new GoAndRotate(-255, -75, -170,
+                                                                                RobotContainer.getDriveSubsystem(),
+                                                                                -0.1, 5, 1.85),
+                                                                new SequentialCommandGroup(
+                                                                                new ExtendRetract(RobotContainer
+                                                                                                .getArmSubsystem(),
+                                                                                                -.3),
+                                                                                new SwivelAutomatic2(RobotContainer
+                                                                                                .getArmSubsystem(),
+                                                                                                RobotContainer.getPneumaticSubsystem(),
+                                                                                                Constants.Arm.TICKS_TO_FlOOR
+                                                                                                                + 0.5,
+                                                                                                Constants.Arm.EXTEND_FLOOR
+                                                                                                                - 5,
+                                                                                                false,
+                                                                                                true, 0.05))),
+                                                new OpenClaw(RobotContainer.getPneumaticSubsystem()),
+                                                new WaitCommand(0.5),
+                                                new ZeroGyro(RobotContainer.getDriveSubsystem()),
+                                                new AlignGamepiece(RobotContainer.getArmSubsystem(),
                                                                 RobotContainer.getDriveSubsystem(),
-                                                                -0.05, 5),
+                                                                RobotContainer.getVision(), 0).withTimeout(1.5),
+                                                new CloseClaw(RobotContainer.getPneumaticSubsystem()),
+                                                new ParallelCommandGroup(
+                                
+                                                                new GoAndRotate2(-245, -170,
+                                                                                RobotContainer.getDriveSubsystem(),
+                                                                                0.175, 5),
+                                                                               
+                                                                new SwivelAutomatic2(RobotContainer.getArmSubsystem(),
+                                                                                RobotContainer.getPneumaticSubsystem(),
+                                                                                Constants.Arm.TICKS_TO_HIGH - 0.2,
+                                                                                Constants.Arm.TICKS_TO_FAR_EXTEND - 4,
+                                                                                true, true, 0.2)),
+                                                new WaitCommand(0.25),
+                                                new ZeroGyro(RobotContainer.getDriveSubsystem()),
+                                                new Rotate(-20, RobotContainer.getDriveSubsystem()),
+                                                new WaitCommand(0.25),
+                                                new ZeroGyro(RobotContainer.getDriveSubsystem()),
+                                                new SnapCube(RobotContainer.getDriveSubsystem(), RobotContainer.getPoseSubsystem(), RobotContainer.getVision(), 0).withTimeout(1.5),
+                                                // new Delay(0.3),
+                                                new OpenClaw(RobotContainer.getPneumaticSubsystem()),
                                                 new SwivelAutomatic2(RobotContainer.getArmSubsystem(),
                                                                 RobotContainer.getPneumaticSubsystem(),
-                                                                Constants.Arm.TICKS_TO_HIGH,
-                                                                Constants.Arm.TICKS_TO_FAR_EXTEND - 4,
-                                                                true, true, 0.2)),
-                                new AlignAT(RobotContainer
-                                                .getLimelightSubsystem(),
-                                                RobotContainer.getDriveSubsystem(),
-                                                0.5, false),
-                                // new Delay(0.3),
-                                new OpenClaw(RobotContainer.getPneumaticSubsystem()),
-                                new SwivelAutomatic2(RobotContainer.getArmSubsystem(),
-                                                RobotContainer.getPneumaticSubsystem(),
-                                                Constants.Arm.TICKS_TO_HIGH - 0.3, 0,
-                                                true, true, 0.15));
+                                                                Constants.Arm.TICKS_TO_HIGH - 0.3, 0,
+                                                                true, true, 0.15));
 
-                break;
+                                break;
                         // 2 Cube WITH cable protector
                         case "RED CABLE 2 TENDERS":
                                 ret = new AutoRoutine(
+                                        new ZeroGyro(RobotContainer.getDriveSubsystem()),
                                                 new SetPipeline(RobotContainer.getLimelightSubsystem(), "april"),
                                                 new ZeroExtendEncoder(RobotContainer.getArmSubsystem()),
                                                 new CloseClaw(RobotContainer.getPneumaticSubsystem()),
                                                 new ExtendRetract(RobotContainer.getArmSubsystem(), -0.2),
                                                 new ZeroExtendEncoder(RobotContainer.getArmSubsystem()),
-                                                new SequentialCommandGroup(
+                                                new ToggleAutoWrist(RobotContainer.getArmSubsystem()),
+                                                new ParallelCommandGroup(
                                                                 new SwivelAutomatic2(RobotContainer.getArmSubsystem(),
                                                                                 RobotContainer.getPneumaticSubsystem(),
-                                                                                Constants.Arm.TICKS_TO_HIGH + .3,
-                                                                                Constants.Arm.TICKS_TO_FAR_EXTEND + 2,
-                                                                                true, true, 0.4)),
-                                                new OpenClaw(RobotContainer.getPneumaticSubsystem()),
-                                                new WaitCommand(0.1),
+                                                                                Constants.Arm.TICKS_TO_HIGH - 0.2,
+                                                                                Constants.Arm.TICKS_TO_FAR_EXTEND+2,
+                                                                                true, true, 0.3),
+                                                                new SequentialCommandGroup(
+                                                                                new WaitCommand(1.6),
+                                                                                //new AlignConeNode(RobotContainer.getDriveSubsystem(), RobotContainer.getPoseSubsystem(), RobotContainer.getVision(), 0).withTimeout(.5),
+                                                                                new DriveForward(RobotContainer
+                                                                                                .getDriveSubsystem(),
+                                                                                                0.5,
+                                                                                                RobotContainer.getVision()),
+                                                                                new WaitCommand(0.6),
+                                                                                new ToggleWrist(RobotContainer
+                                                                                                .getPneumaticSubsystem()),
+                                                                                new DriveForward(RobotContainer
+                                                                                                .getDriveSubsystem(), 0,
+                                                                                                RobotContainer.getVision()))),
                                                 new ToggleAutoWrist(RobotContainer.getArmSubsystem()),
-                                                new ToggleWrist(RobotContainer.getPneumaticSubsystem()),
-                                                new AlignAT(RobotContainer.getLimelightSubsystem(),
-                                                                RobotContainer.getDriveSubsystem(), 1.0, true),
+                                                 new ToggleWrist(RobotContainer.getPneumaticSubsystem()),
+                                                new OpenClaw(RobotContainer.getPneumaticSubsystem()),
+                                                new WaitCommand(0.25),
+                                               // new SequentialCommandGroup(
+                                                 //               new SwivelAutomatic2(RobotContainer.getArmSubsystem(),
+                                                   //                             RobotContainer.getPneumaticSubsystem(),
+                                                     //                           Constants.Arm.TICKS_TO_HIGH + .3,
+                                                       //                         Constants.Arm.TICKS_TO_FAR_EXTEND + 2,
+                                                         //                       true, true, 0.4)),
+                                           //     new OpenClaw(RobotContainer.getPneumaticSubsystem()),
+                                             //   new WaitCommand(0.1),
+                                               // new ToggleAutoWrist(RobotContainer.getArmSubsystem()),
+                                       //         new ToggleWrist(RobotContainer.getPneumaticSubsystem()),
+                                         //       new AlignAT(RobotContainer.getLimelightSubsystem(),
+                                           //                     RobotContainer.getDriveSubsystem(), 1.0, true),
                                                 new ParallelCommandGroup(
                                                                 new SwivelAutomatic2(RobotContainer.getArmSubsystem(),
                                                                                 RobotContainer.getPneumaticSubsystem(),
                                                                                 Constants.Arm.TICKS_TO_FlOOR + 0.5,
                                                                                 Constants.Arm.EXTEND_FLOOR - 12, false,
                                                                                 true, 0.05),
-                                                                new GoAndRotate(-245, -20, 0,
+                                                                new GoAndRotate(-245, 0, 0,
                                                                                 RobotContainer.getDriveSubsystem(),
-                                                                                0.1, 90, 1.4624)),
+                                                                                0, 90, 1.4624)),
                                                 new Rotate(179, RobotContainer.getDriveSubsystem()),
                                                 new ZeroExtendEncoder(RobotContainer.getArmSubsystem()),
-                                                 new OpenClaw(RobotContainer.getPneumaticSubsystem()),
-                                                
-                                                new AlignGamepiece(RobotContainer.getArmSubsystem(),
-                                                RobotContainer.getDriveSubsystem(),
-                                                RobotContainer.getVision(), 1),
-                                                 
+                                                new ZeroGyro(RobotContainer.getDriveSubsystem()),
+                                                new OpenClaw(RobotContainer.getPneumaticSubsystem()),
+                                                new AlignGamepiece(RobotContainer.getArmSubsystem(), RobotContainer.getDriveSubsystem(), RobotContainer.getVision(), 1).withTimeout(2)
+                                                //new ToggleAutoWrist(RobotContainer.getArmSubsystem())
 
-                                                new CloseClaw(RobotContainer.getPneumaticSubsystem()),
-                                                new ToggleAutoWrist(RobotContainer.getArmSubsystem()),
-                                                new GoAndRotate(0, 0, 180, RobotContainer.getDriveSubsystem(), 0, 25, 0)
-                                                );
+                                /*
+                                 * new AlignGamepiece(RobotContainer.getArmSubsystem(),
+                                 * RobotContainer.getDriveSubsystem(),
+                                 * RobotContainer.getVision(), 1),
+                                 */
+
+                                /*
+                                 * new CloseClaw(RobotContainer.getPneumaticSubsystem()),
+                                 * new ToggleAutoWrist(RobotContainer.getArmSubsystem()),
+                                 * new GoAndRotate(0, 0, 180, RobotContainer.getDriveSubsystem(), 0, 25, 0)
+                                 */
+                                );
                                 break;
                         case "BLUE CABLE 2 TENDERS":
                         ret = new AutoRoutine(
-                                new SetPipeline(RobotContainer.getLimelightSubsystem(), "april"),
-                                new ZeroExtendEncoder(RobotContainer.getArmSubsystem()),
-                                new CloseClaw(RobotContainer.getPneumaticSubsystem()),
-                                new ExtendRetract(RobotContainer.getArmSubsystem(), -0.2),
-                                new ZeroExtendEncoder(RobotContainer.getArmSubsystem()),
-                                new SequentialCommandGroup(
-                                                new SwivelAutomatic2(RobotContainer.getArmSubsystem(),
-                                                                RobotContainer.getPneumaticSubsystem(),
-                                                                Constants.Arm.TICKS_TO_HIGH + .3,
-                                                                Constants.Arm.TICKS_TO_FAR_EXTEND + 2,
-                                                                true, true, 0.4)),
-                                new OpenClaw(RobotContainer.getPneumaticSubsystem()),
-                                new WaitCommand(0.1),
-                                new ToggleAutoWrist(RobotContainer.getArmSubsystem()),
-                                new ToggleWrist(RobotContainer.getPneumaticSubsystem()),
-                                new AlignAT(RobotContainer.getLimelightSubsystem(),
-                                                RobotContainer.getDriveSubsystem(), 1.0, true),
-                                new ParallelCommandGroup(
-                                                new SwivelAutomatic2(RobotContainer.getArmSubsystem(),
-                                                                RobotContainer.getPneumaticSubsystem(),
-                                                                Constants.Arm.TICKS_TO_FlOOR + 0.5,
-                                                                Constants.Arm.EXTEND_FLOOR - 12, false,
-                                                                true, 0.05),
-                                                new GoAndRotate(-245, 20, 0,
-                                                                RobotContainer.getDriveSubsystem(),
-                                                                -0.1, 90, 1.4624)),
-                                new Rotate(179, RobotContainer.getDriveSubsystem()),
-                                new ZeroExtendEncoder(RobotContainer.getArmSubsystem()),
-                                 new OpenClaw(RobotContainer.getPneumaticSubsystem()),
-                                
-                                new AlignGamepiece(RobotContainer.getArmSubsystem(),
-                                RobotContainer.getDriveSubsystem(),
-                                RobotContainer.getVision(), 1),
-                                 
+                                new ZeroGyro(RobotContainer.getDriveSubsystem()),
+                                        new SetPipeline(RobotContainer.getLimelightSubsystem(), "april"),
+                                        new ZeroExtendEncoder(RobotContainer.getArmSubsystem()),
+                                        new CloseClaw(RobotContainer.getPneumaticSubsystem()),
+                                        new ExtendRetract(RobotContainer.getArmSubsystem(), -0.2),
+                                        new ZeroExtendEncoder(RobotContainer.getArmSubsystem()),
+                                        new ToggleAutoWrist(RobotContainer.getArmSubsystem()),
+                                        new ParallelCommandGroup(
+                                                        new SwivelAutomatic2(RobotContainer.getArmSubsystem(),
+                                                                        RobotContainer.getPneumaticSubsystem(),
+                                                                        Constants.Arm.TICKS_TO_HIGH - 0.2,
+                                                                        Constants.Arm.TICKS_TO_FAR_EXTEND+2,
+                                                                        true, true, 0.3),
+                                                        new SequentialCommandGroup(
+                                                                        new WaitCommand(1.6),
+                                                                        //new AlignConeNode(RobotContainer.getDriveSubsystem(), RobotContainer.getPoseSubsystem(), RobotContainer.getVision(), 0).withTimeout(.5),
+                                                                        new DriveForward(RobotContainer
+                                                                                        .getDriveSubsystem(),
+                                                                                        0.5,
+                                                                                        RobotContainer.getVision()),
+                                                                        new WaitCommand(0.6),
+                                                                        new ToggleWrist(RobotContainer
+                                                                                        .getPneumaticSubsystem()),
+                                                                        new DriveForward(RobotContainer
+                                                                                        .getDriveSubsystem(), 0,
+                                                                                        RobotContainer.getVision()))),
+                                        new ToggleAutoWrist(RobotContainer.getArmSubsystem()),
+                                         new ToggleWrist(RobotContainer.getPneumaticSubsystem()),
+                                        new OpenClaw(RobotContainer.getPneumaticSubsystem()),
+                                        new WaitCommand(0.25),
+                                       // new SequentialCommandGroup(
+                                         //               new SwivelAutomatic2(RobotContainer.getArmSubsystem(),
+                                           //                             RobotContainer.getPneumaticSubsystem(),
+                                             //                           Constants.Arm.TICKS_TO_HIGH + .3,
+                                               //                         Constants.Arm.TICKS_TO_FAR_EXTEND + 2,
+                                                 //                       true, true, 0.4)),
+                                   //     new OpenClaw(RobotContainer.getPneumaticSubsystem()),
+                                     //   new WaitCommand(0.1),
+                                       // new ToggleAutoWrist(RobotContainer.getArmSubsystem()),
+                               //         new ToggleWrist(RobotContainer.getPneumaticSubsystem()),
+                                 //       new AlignAT(RobotContainer.getLimelightSubsystem(),
+                                   //                     RobotContainer.getDriveSubsystem(), 1.0, true),
+                                        new ParallelCommandGroup(
+                                                        new SwivelAutomatic2(RobotContainer.getArmSubsystem(),
+                                                                        RobotContainer.getPneumaticSubsystem(),
+                                                                        Constants.Arm.TICKS_TO_FlOOR + 0.5,
+                                                                        Constants.Arm.EXTEND_FLOOR - 12, false,
+                                                                        true, 0.05),
+                                                        new GoAndRotate(-245, 0, 0,
+                                                                        RobotContainer.getDriveSubsystem(),
+                                                                        0, 90, 1.4624)),
+                                        new Rotate(179, RobotContainer.getDriveSubsystem()),
+                                        new ZeroExtendEncoder(RobotContainer.getArmSubsystem()),
+                                        new ZeroGyro(RobotContainer.getDriveSubsystem()),
+                                        new OpenClaw(RobotContainer.getPneumaticSubsystem()),
+                                        new AlignGamepiece(RobotContainer.getArmSubsystem(), RobotContainer.getDriveSubsystem(), RobotContainer.getVision(), 1).withTimeout(2)
+                                        //new ToggleAutoWrist(RobotContainer.getArmSubsystem())
 
-                                new CloseClaw(RobotContainer.getPneumaticSubsystem()),
-                                new ToggleAutoWrist(RobotContainer.getArmSubsystem()),
-                                new GoAndRotate(0, 0, 180, RobotContainer.getDriveSubsystem(), 0, 25, 0)
-                                );
-                break;
+                        /*
+                         * new AlignGamepiece(RobotContainer.getArmSubsystem(),
+                         * RobotContainer.getDriveSubsystem(),
+                         * RobotContainer.getVision(), 1),
+                         */
+
+                        /*
+                         * new CloseClaw(RobotContainer.getPneumaticSubsystem()),
+                         * new ToggleAutoWrist(RobotContainer.getArmSubsystem()),
+                         * new GoAndRotate(0, 0, 180, RobotContainer.getDriveSubsystem(), 0, 25, 0)
+                         */
+                        );
+                                break;
 
                         // Tester auto
                         case "Tester":

@@ -33,7 +33,7 @@ public class Extend extends CommandBase {
   @Override
   public void execute() {
     double feedVal = feedforward.calculate(0) / 4.0;
-
+    //System.out.println(val);
     
     m_subsystem.extend(val);
     m_subsystem.setExtending(true);

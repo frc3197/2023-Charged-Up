@@ -23,19 +23,29 @@ import edu.wpi.first.wpilibj.shuffleboard.SendableCameraWrapper;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.CancelDrive;
 //import frc.robot.commands.AutoLookup;
 import frc.robot.commands.DefaultDriveCommand;
+import frc.robot.commands.Delay;
+import frc.robot.commands.DriveForward;
+import frc.robot.commands.ExtendRetract;
 import frc.robot.commands.MoniterPnuematics;
 import frc.robot.commands.PoseTracker;
 import frc.robot.commands.SlowMove;
 import frc.robot.commands.ToggleLimelight;
 import frc.robot.commands.ZeroGyro;
 import frc.robot.commands.Alignments.AlignAT;
+import frc.robot.commands.Alignments.AlignConeNode;
 import frc.robot.commands.Alignments.AlignGamepiece;
 import frc.robot.commands.Alignments.AlignRRT;
+import frc.robot.commands.Alignments.Level;
+import frc.robot.commands.Alignments.ResetEstimator;
+import frc.robot.commands.Alignments.SnapCube;
+import frc.robot.commands.Alignments.SnapLoading;
 import frc.robot.commands.Arm.ArmLevel;
 import frc.robot.commands.Arm.CloseClaw;
 import frc.robot.commands.Arm.Extend;
@@ -56,6 +66,7 @@ import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.PneumaticSubsystem;
+import frc.robot.subsystems.PoseEstimatorSubsystem;
 import frc.robot.subsystems.Vision;
 
 /**
@@ -84,12 +95,17 @@ public class RobotContainer {
   static ArmSubsystem armSubsystem = new ArmSubsystem();
   static Vision vision = new Vision();
   static Limelight limelightSubsystem = new Limelight();
+  static PoseEstimatorSubsystem poseSubsystem = new PoseEstimatorSubsystem(m_drivetrainSubsystem, limelightSubsystem);
 
   @SuppressWarnings("rawtypes")
   private static SendableChooser m_autoChooser;
 
   @SuppressWarnings("rawtypes")
   private static SendableChooser m_allianceChooser;
+  @SuppressWarnings("rawtypes")
+  private static SendableChooser allianceChooser;
+  @SuppressWarnings("rawtypes")
+  private static SendableChooser loadingChooser;
 
   private static SendableCameraWrapper m_camera;
 
@@ -116,10 +132,17 @@ public class RobotContainer {
     m_autoChooser.addOption("ONLY PLACE", AutoLookup.getAuto("ONLY PLACE"));
 
     m_autoChooser.addOption("Tester", AutoLookup.getAuto("Tester"));
-
-
-
     SmartDashboard.putData(m_autoChooser);
+
+    allianceChooser = new SendableChooser<>();
+    allianceChooser.setDefaultOption("Red", "red");
+    allianceChooser.addOption("Blue", "blue");
+    SmartDashboard.putData(allianceChooser);
+    
+    loadingChooser = new SendableChooser<>();
+    loadingChooser.setDefaultOption("Inside", "inside");
+    loadingChooser.addOption("Outside", "outside");
+    SmartDashboard.putData(loadingChooser);
 
     // Set up the default command for the drivetrain.
     // The controls are for field-oriented driving:
@@ -170,7 +193,7 @@ public class RobotContainer {
 
     // driveController.leftTrigger(0.1).whileTrue(new AlignAT(limelightSubsystem,
     // m_drivetrainSubsystem, 2.05, true));
-    driveController.leftBumper().onTrue(
+    /*driveController.leftBumper().onTrue(
         new SequentialCommandGroup(
             new OpenClaw(pneumaticSubsystem),
             new AlignGamepiece(armSubsystem, m_drivetrainSubsystem, vision, 1),
@@ -179,16 +202,31 @@ public class RobotContainer {
         new SequentialCommandGroup(
             new OpenClaw(pneumaticSubsystem),
             new AlignGamepiece(armSubsystem, m_drivetrainSubsystem, vision, 0),
-            new CloseClaw(pneumaticSubsystem)));
-    driveController.rightTrigger(0.25).whileTrue(new AlignAT(limelightSubsystem, m_drivetrainSubsystem, 0.5, false));
-    driveController.leftTrigger(0.25).whileTrue(new AlignRRT(limelightSubsystem, m_drivetrainSubsystem));
+            new CloseClaw(pneumaticSubsystem)));*/
+            
+    //driveController.rightTrigger(0.25).whileTrue(new AlignAT(limelightSubsystem, m_drivetrainSubsystem, 0.5, false));
+    //driveController.leftTrigger(0.25).whileTrue(new Level(m_drivetrainSubsystem, 0));
+    
+    // CHOSEN INDEX PRAMETER DOES NOTHING BUT LEAVE IT LAZINESS
+    // LOADING STATION ALIGN FOR CONES
+    driveController.leftTrigger(0.25).onTrue(new SnapLoading(m_drivetrainSubsystem, poseSubsystem, vision, 0, 1));
+    driveController.rightTrigger(0.25).onTrue(new CancelDrive(vision, true));
+    driveController.rightTrigger(0.25).onFalse(new CancelDrive(vision, false));
+    
+    driveController.leftBumper().onTrue(new AlignGamepiece(armSubsystem, m_drivetrainSubsystem, vision, 1));
+    driveController.rightBumper().onTrue(new AlignAT(limelightSubsystem, m_drivetrainSubsystem, 0.8, false));
+
+    // LOADING STATION ALIGN FOR CUBES
+    //driveController.rightTrigger(0.25).onTrue(new SnapLoading(m_drivetrainSubsystem, poseSubsystem, vision, 0, 0));
+
+    //driveController.leftTrigger(0.25).whileTrue(new AlignRRT(limelightSubsystem, m_drivetrainSubsystem));
 
     driveController.povRight().whileTrue(new SlowMove(m_drivetrainSubsystem, new ChassisSpeeds(0, 0, 0.25)));
     driveController.povLeft().whileTrue(new SlowMove(m_drivetrainSubsystem, new ChassisSpeeds(0, 0, -0.25)));
 
     armController.back().onTrue(new ToggleAutoWrist(armSubsystem));
 
-    driveController.y().onTrue(new ToggleLimelight(limelightSubsystem));
+    driveController.a().onTrue(new ToggleLimelight(limelightSubsystem));
 
     // extend (WHILE HELD)
     armController.rightBumper().whileTrue(new Extend(armSubsystem, Constants.Arm.EXTEND_SPEED));
@@ -209,19 +247,30 @@ public class RobotContainer {
     armController.rightTrigger(0.1).onFalse(new SwivelEnd(armSubsystem));
 
     // Claw Grab (TOGGLE)
-    armController.x().whileTrue(new ClawPneumatic(pneumaticSubsystem));
+    armController.x().whileTrue(new ClawPneumatic(pneumaticSubsystem, vision));
 
     // Automated Swivel ()
-    armController.y().onTrue(new SwivelAutomatic2(armSubsystem, pneumaticSubsystem, Constants.Arm.TICKS_TO_HIGH,
-        Constants.Arm.TICKS_TO_FAR_EXTEND, true, false, 0.4));
+    armController.y().onTrue(new SequentialCommandGroup(
+      new ToggleAutoWrist(armSubsystem),
+      new SwivelAutomatic2(armSubsystem, pneumaticSubsystem, Constants.Arm.TICKS_TO_HIGH,
+        Constants.Arm.TICKS_TO_FAR_EXTEND, true, false, 0.4),
+        new ToggleAutoWrist(armSubsystem),
+        new DriveForward(m_drivetrainSubsystem, 0.5, vision).raceWith(new WaitCommand(0.5)),
+        new CancelDrive(vision, true),
+        new DriveForward(m_drivetrainSubsystem, 0, vision),
+        new CancelDrive(vision, true),
+        new ToggleWrist(pneumaticSubsystem),
+        new CancelDrive(vision, false)
+    ));
     armController.b().onTrue(new SwivelAutomatic2(armSubsystem, pneumaticSubsystem, Constants.Arm.TICKS_TO_MID,
         Constants.Arm.TICKS_TO_CLOSE_EXTEND, true, false));
     armController.a()
         .onTrue(
             new SwivelAutomatic2(armSubsystem, pneumaticSubsystem, Constants.Arm.TICKS_TO_BOTTOM, 10, false, false));
-    armController.povUp()
+    // Loading station preset
+            armController.povUp() //, new ToggleWrist(pneumaticSubsystem))), new ToggleAutoWrist(armSubsystem)
         .onTrue(
-            new SwivelAutomatic2(armSubsystem, pneumaticSubsystem, Constants.Arm.TICKS_TO_SUBSTATION + 0.03, 10, true, false));
+           new SequentialCommandGroup(new ParallelCommandGroup(new SwivelAutomatic2(armSubsystem, pneumaticSubsystem, Constants.Arm.TICKS_TO_SUBSTATION + 0.03, 10, true, false), new SequentialCommandGroup(new WaitCommand(0.5), new WaitCommand(0.25), new ExtendRetract(armSubsystem, -0.2), new ExtendLevel(armSubsystem)))));
     armController.povUp().onFalse(new SwivelEnd(armSubsystem));
 
     armController.povRight()
@@ -241,8 +290,15 @@ public class RobotContainer {
 
     driveController.x().onTrue(new ToggleWrist(pneumaticSubsystem));
 
-    driveController.back().onTrue(new CancelDrive(vision, true));
-    driveController.back().onFalse(new CancelDrive(vision, false));
+    //driveController.back().onTrue(new CancelDrive(vision, true));
+    //driveController.back().onFalse(new CancelDrive(vision, false));
+    driveController.back().onTrue(new SnapCube(m_drivetrainSubsystem, poseSubsystem, vision, 0));
+
+
+
+
+    // DONT USE BREAKS CODE
+    //driveController.y().onTrue(new ResetEstimator(poseSubsystem));
   }
 
   public void test() {
@@ -260,6 +316,14 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
     return (Command) m_autoChooser.getSelected();
+  }
+
+  public static String getAllianceColor() {
+    return (String) allianceChooser.getSelected();
+  }
+
+  public static String getLoadingArea() {
+    return (String) loadingChooser.getSelected();
   }
 
   private static double deadband(double value, double deadband) {
@@ -306,5 +370,9 @@ public class RobotContainer {
 
   public static Limelight getLimelightSubsystem() {
     return limelightSubsystem;
+  }
+
+  public static PoseEstimatorSubsystem getPoseSubsystem() {
+    return poseSubsystem;
   }
 }

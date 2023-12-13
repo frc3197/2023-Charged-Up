@@ -8,6 +8,8 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.CANCoder;
 import com.ctre.phoenix.sensors.PigeonIMU;
+import com.kauailabs.navx.frc.AHRS;
+import com.kauailabs.navx.frc.AHRS.SerialDataType;
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
@@ -29,6 +31,11 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.ADXRS450_Gyro;
+import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.SerialPort;
+import edu.wpi.first.wpilibj.SPI.Port;
+import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -54,10 +61,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
         Translation2d backLeftPos = new Translation2d(-0.2832, 0.2832);
         Translation2d backRightPos = new Translation2d(-0.2832, -0.2832);
 
-        CANCoder frontLeftSteerEncoder = new CANCoder(Constants.Drivetrain.FRONT_RIGHT_ENCODER_ID);
-        CANCoder frontRightSteerEncoder = new CANCoder(Constants.Drivetrain.BACK_RIGHT_ENCODER_ID);
+        CANCoder frontLeftSteerEncoder = new CANCoder(Constants.Drivetrain.FRONT_LEFT_ENCODER_ID);
+        CANCoder frontRightSteerEncoder = new CANCoder(Constants.Drivetrain.FRONT_RIGHT_ENCODER_ID);
         CANCoder backLeftSteerEncoder = new CANCoder(Constants.Drivetrain.BACK_LEFT_ENCODER_ID);
-        CANCoder backRightSteerEncoder = new CANCoder(Constants.Drivetrain.FRONT_LEFT_ENCODER_ID);
+        CANCoder backRightSteerEncoder = new CANCoder(Constants.Drivetrain.BACK_RIGHT_ENCODER_ID);
 
         /**
          * The maximum voltage that will be delivered to the drive motors.
@@ -116,10 +123,15 @@ public class DrivetrainSubsystem extends SubsystemBase {
         // cause the angle reading to increase until it wraps back over to zero.
         // FIXME Remove if you are using a Pigeon
         // private final PigeonIMU m_pigeon = new PigeonIMU(DRIVETRAIN_PIGEON_ID);
-        private final com.ctre.phoenix.sensors.Pigeon2 m_pigeon2 = new com.ctre.phoenix.sensors.Pigeon2(
-                        Constants.Drivetrain.GYROSCOPE_ID);
+        // private final com.ctre.phoenix.sensors.Pigeon2 m_pigeon2 = new
+        // com.ctre.phoenix.sensors.Pigeon2(
+        // Constants.Drivetrain.GYROSCOPE_ID);
+
+        // private final Gyro m_pigeon2 = new ADXRS450_Gyro();
+        // AHRS ahrs = new AHRS(SPI.Port.kMXP);
+
         // FIXME Uncomment if you are using a NavX
-        // private final AHRS m_navx = new AHRS(SPI.Port.kMXP, (byte) 200); // NavX
+        private final AHRS m_pigeon2 = new AHRS(SerialPort.Port.kUSB1); // NavX
         // connected over MXP
 
         // These are our modules. We initialize them in the constructor.
@@ -142,7 +154,12 @@ public class DrivetrainSubsystem extends SubsystemBase {
         Pose2d robotPose = new Pose2d();
         private double offset = 0;
 
+        AHRS ahrs;
+
         public DrivetrainSubsystem() {
+
+                ahrs = new AHRS(SPI.Port.kMXP);
+
                 ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
 
                 driveMotor1 = new WPI_TalonFX(Constants.Drivetrain.FRONT_RIGHT_DRIVE_ID);
@@ -155,11 +172,43 @@ public class DrivetrainSubsystem extends SubsystemBase {
                 driveMotor3.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
                 driveMotor4.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
 
-                driveMotor1.setSelectedSensorPosition(0);
-                driveMotor2.setSelectedSensorPosition(0);
-                driveMotor3.setSelectedSensorPosition(0);
-                driveMotor4.setSelectedSensorPosition(0);
+                System.out.println("Motor 1: " + driveMotor1.setSelectedSensorPosition(0, 0, 1000));
+                System.out.println("Motor 2: " + driveMotor2.setSelectedSensorPosition(0, 0, 1000));
+                System.out.println("Motor 3: " + driveMotor3.setSelectedSensorPosition(0, 0, 1000));
+                System.out.println("Motor 4: " + driveMotor4.setSelectedSensorPosition(0, 0, 1000));
 
+                if(driveMotor1.setSelectedSensorPosition(0, 0, 1000).equals("Ok")) {
+                        //driveMotor1.setSelectedSensorPosition(0);
+                } else {
+                        System.out.println("Motor one error");
+                        //while(!driveMotor1.setSelectedSensorPosition(0, 0, 1000).equals("Ok")) {
+                                driveMotor1.setSelectedSensorPosition(0, 0, 1000);
+                        //}
+                }
+                if(driveMotor2.setSelectedSensorPosition(0, 0, 1000).equals("Ok")) {
+                        //driveMotor1.setSelectedSensorPosition(0);
+                } else {
+                        System.out.println("Motor two error");
+                        //while(!driveMotor2.setSelectedSensorPosition(0, 0, 1000).equals("Ok")) {
+                                driveMotor2.setSelectedSensorPosition(0, 0, 1000);
+                        //}
+                }
+                if(driveMotor3.setSelectedSensorPosition(0, 0, 1000).equals("Ok")) {
+                        //driveMotor1.setSelectedSensorPosition(0);
+                } else {
+                        System.out.println("Motor three error");
+                       // while(!driveMotor3.setSelectedSensorPosition(0, 0, 1000).equals("Ok")) {
+                                driveMotor3.setSelectedSensorPosition(0, 0, 1000);
+                        //}
+                }
+                if(driveMotor4.setSelectedSensorPosition(0, 0, 1000).equals("Ok")) {
+                        //driveMotor1.setSelectedSensorPosition(0);
+                } else {
+                        System.out.println("Motor four error");
+                        //while(!driveMotor4.setSelectedSensorPosition(0, 0, 1000).equals("Ok")) {
+                                driveMotor4.setSelectedSensorPosition(0, 0, 1000);
+                        //}
+                }
                 // Your module has two Falcon 500s on it. One for steering and one for driving.
                 //
                 // Mk3SwerveModuleHelper.createNeo(...)
@@ -232,17 +281,16 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
                 m_desiredStates = m_kinematics.toSwerveModuleStates(m_chassisSpeeds);
 
-                //SwerveModulePosition[] positions = {m_frontLeftModule.};
+                // SwerveModulePosition[] positions = {m_frontLeftModule.};
 
-                poseEstimation = new SwerveDrivePoseEstimator(m_kinematics, getGyro(), 
-                new SwerveModulePosition[]{frontLeftPos(), frontRightPos(), backLeftPos(), backRightPos()},
-                new Pose2d());
         }
 
-        /*public double getSwerveDriveEstimation() {
-                
-        }*/
-                
+        /*
+         * public double getSwerveDriveEstimation() {
+         * 
+         * }
+         */
+
         /**
          * Sets the gyroscope angle to zero. This can be used to set the direction the
          * robot is currently facing to the
@@ -251,7 +299,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
         public void zeroGyroscope() {
                 // FIXME Remove if you are using a Pigeon
                 // m_pigeon.setFusedHeading(0.0);
-                m_pigeon2.setYaw(0);
+                // m_pigeon2.setAngleAdjustment(0);
+                m_pigeon2.zeroYaw();
                 // resetOdometry();
 
                 // FIXME Uncomment if you are using a NavX
@@ -261,7 +310,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
         public Rotation2d getGyroscopeRotation() {
                 // FIXME Remove if you are using a Pigeon
                 // return Rotation2d.fromDegrees(m_pigeon.getFusedHeading());
-                return Rotation2d.fromDegrees(m_pigeon2.getYaw());
+                return Rotation2d.fromDegrees(m_pigeon2.getYaw() * -1);
 
                 // FIXME Uncomment if you are using a NavX
                 // if (m_navx.isMagnetometerCalibrated()) {
@@ -283,7 +332,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
         }
 
         public double getYaw() {
-                return m_pigeon2.getYaw();
+                // System.out.println(m_pigeon2.getYaw());
+                return m_pigeon2.getYaw() * -1;
         }
 
         public void drive(ChassisSpeeds chassisSpeeds) {
@@ -326,31 +376,40 @@ public class DrivetrainSubsystem extends SubsystemBase {
         public SwerveModulePosition getPosition(int moduleNum) {
 
                 double driveEncoder1pos = driveMotor1.getSelectedSensorPosition();
+
                 double driveEncoder2pos = driveMotor2.getSelectedSensorPosition();
+
                 double driveEncoder3pos = driveMotor3.getSelectedSensorPosition();
                 double driveEncoder4pos = driveMotor4.getSelectedSensorPosition();
 
                 if (moduleNum == 1) {
+                        // ((6.75) * 4096)
                         return new SwerveModulePosition(
-                                        driveEncoder1pos * Math.PI * SdsModuleConfigurations.MK4_L2.getWheelDiameter()
+                                        driveEncoder1pos * Math.PI * SdsModuleConfigurations.MK4_L2.getWheelDiameter()*2
                                                         / ((6.75) * 4096),
                                         new Rotation2d(frontRightSteerEncoder.getAbsolutePosition() * Math.PI / 180));
                 } else if (moduleNum == 2) {
                         return new SwerveModulePosition(
-                                        driveEncoder2pos * Math.PI * SdsModuleConfigurations.MK4_L2.getWheelDiameter()
+                                        driveEncoder2pos * Math.PI * SdsModuleConfigurations.MK4_L2.getWheelDiameter()*2
                                                         / ((6.75) * 4096),
                                         new Rotation2d(backRightSteerEncoder.getAbsolutePosition() * Math.PI / 180));
                 } else if (moduleNum == 3) {
                         return new SwerveModulePosition(
-                                        driveEncoder3pos * Math.PI * SdsModuleConfigurations.MK4_L2.getWheelDiameter()
+                                        driveEncoder3pos * Math.PI * SdsModuleConfigurations.MK4_L2.getWheelDiameter()*2
                                                         / ((6.75) * 4096),
                                         new Rotation2d(backLeftSteerEncoder.getAbsolutePosition() * Math.PI / 180));
                 } else {
                         return new SwerveModulePosition(
-                                        driveEncoder4pos * Math.PI * SdsModuleConfigurations.MK4_L2.getWheelDiameter()
+                                        driveEncoder4pos * Math.PI * SdsModuleConfigurations.MK4_L2.getWheelDiameter()*2
                                                         / ((6.75) * 4096),
                                         new Rotation2d(frontLeftSteerEncoder.getAbsolutePosition() * Math.PI / 180));
                 }
+        }
+
+        public SwerveModulePosition[] getModulePositions() {
+                SwerveModulePosition[] positions = { getPosition(0), getPosition(1), getPosition(3), getPosition(2) };
+                //System.out.println(positions[1].distanceMeters);
+                return positions;
         }
 
         public SwerveDriveKinematics getKinematics() {
@@ -455,12 +514,5 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
         public SwerveModule getBackRightMod() {
                 return m_backRightModule;
-        }
-
-        public Pose2d getPoseEstimation()
-        {
-                
-                poseEstimation.update(getGyro(), new SwerveModulePosition[] {frontLeftPos(), frontRightPos(), backLeftPos(), backRightPos()});
-                return poseEstimation.getEstimatedPosition();
         }
 }

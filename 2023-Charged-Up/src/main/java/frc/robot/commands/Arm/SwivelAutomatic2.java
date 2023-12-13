@@ -66,7 +66,8 @@ public class SwivelAutomatic2 extends CommandBase {
     timer.start();
 
     if (auto) {
-      aSubsystem.setMaxSpeed(1.9);
+      aSubsystem.setMaxSpeed(0.9);
+      aSubsystem.setMaxExtend(0.4);
     } else {
       aSubsystem.setMaxSpeed(1);
     }
@@ -129,7 +130,7 @@ public class SwivelAutomatic2 extends CommandBase {
       if (Math.abs(aSubsystem.mapAbsoluteEncoder() - swivelGoal) > threshold) {
         if (Math.abs(aSubsystem.getExtendTicks() - extendGoal) - 20 < Constants.Arm.EXTEND_TICK_THRESHOLD * 2) {
           aSubsystem.swivel(levelPID.calculate(aSubsystem.mapAbsoluteEncoder(), swivelGoal) * -1.5);
-          aSubsystem.setMove(true);
+          //aSubsystem.setMove(true);
 
         }
       } else {
@@ -153,7 +154,7 @@ public class SwivelAutomatic2 extends CommandBase {
     if (true || false || 1 > 0 || "test".equals("test")) {
       if (Math.abs(aSubsystem.mapAbsoluteEncoder() - swivelGoal) > threshold) {
         aSubsystem.swivel(levelPID.calculate(aSubsystem.mapAbsoluteEncoder(), swivelGoal) * -2.4);
-        aSubsystem.setMove(true);
+        //aSubsystem.setMove(true);
 
       } else {
         // subsystem.swivel(0);

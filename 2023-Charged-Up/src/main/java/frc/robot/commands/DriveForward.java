@@ -2,24 +2,24 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.Pneumatics;
+package frc.robot.commands;
 
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.PneumaticSubsystem;
+import frc.robot.subsystems.DrivetrainSubsystem;
+import frc.robot.subsystems.Vision;
 
-public class ToggleWrist extends CommandBase {
-  PneumaticSubsystem subsystem;
-  boolean flatWrist;
-  boolean doWrist;
+public class DriveForward extends CommandBase {
+  /** Creates a new DriveForward. */
+  DrivetrainSubsystem subsystem;
+  double speed;
+  Vision visionSub;
 
-  public ToggleWrist(PneumaticSubsystem sub) {
+  public DriveForward(DrivetrainSubsystem sub, double speed, Vision vis) {
+    // Use addRequirements() here to declare subsystem dependencies.
     subsystem = sub;
-    doWrist = false;
-  }
-
-  public ToggleWrist(PneumaticSubsystem sub, boolean flat) {
-    subsystem = sub;
-    doWrist = true;
+    this.speed = speed;
+    visionSub = vis;
   }
 
   // Called when the command is initially scheduled.
@@ -29,13 +29,7 @@ public class ToggleWrist extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(!doWrist) {
-      subsystem.toggleWrist();
-    } else if(flatWrist){
-      subsystem.autoWristOn();
-    } else if(!flatWrist){
-      subsystem.autoWristOff();
-    }
+    subsystem.drive(new ChassisSpeeds(speed, 0, 0));
   }
 
   // Called once the command ends or is interrupted.

@@ -160,6 +160,11 @@ public class ArmSubsystem extends SubsystemBase {
     maxExtendSpeed = Constants.Arm.EXTEND_SPEED * val;
   }
 
+  public void setMaxExtend(double val)
+  {
+    maxExtendSpeed = val;
+  }
+
   public void toggleAutoWrist() {
     autoWrist = !autoWrist;
     SmartDashboard.putBoolean("Auto-Wrist", autoWrist);

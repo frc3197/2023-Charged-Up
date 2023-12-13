@@ -27,6 +27,7 @@ public class Swivel extends CommandBase {
   CommandXboxController controller;
   PneumaticSubsystem pneumatics;
   int targetAxis = -1;
+  int num = 0;
   boolean once = false;
 
   public Swivel(ArmSubsystem m_subsystem, PneumaticSubsystem p, double val, CommandXboxController controller,
@@ -62,6 +63,7 @@ public class Swivel extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    num ++;
     if (this.targetAxis != -1) {
       this.val = this.maxVal * controller.getRawAxis(this.targetAxis);
     } else {
